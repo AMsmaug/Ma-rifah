@@ -1,5 +1,4 @@
-/* Start global rules */
-:root {
+/* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -9,6 +8,32 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+} */
+
+/* Start variables and root options */
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --dark: #000100;
+  --dark-blue: #13213c;
+  --orange: #fca311;
+  --transparent-orange: rgba(252, 162, 17, 0.6);
+  --gray: #e5e5e5;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* End variables and root options */
+
+/* Start global rules */
+::-webkit-scrollbar {
+  width: 12px;
+  background-color: var(--gray);
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--dark);
+}
+::selection {
+  background-color: var(--dark-blue);
 }
 
 * {
@@ -17,4 +42,27 @@
   box-sizing: border-box;
 }
 
+/* Start implementing container feature */
+
+.container {
+  padding: 0 5px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .container {
+    width: 750px;
+  }
+}
+@media (min-width: 992px) {
+  .container {
+    width: 970px;
+  }
+}
+@media (min-width: 1200px) {
+  .container {
+    width: 1170px;
+  }
+}
+/* End implementing container feature */
 /* End global rules */

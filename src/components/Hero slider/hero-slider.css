@@ -1,0 +1,142 @@
+.landing {
+  position: relative;
+}
+
+.landing .wrapper {
+  overflow: hidden;
+  position: relative;
+  z-index: -1;
+  background-color: black;
+}
+
+.landing .wrapper .slider {
+  height: 100vh;
+  left: 0;
+  position: relative;
+  transition: 1s;
+}
+
+.landing .wrapper .slider .background {
+  background-size: cover;
+  width: 100vw;
+  position: absolute;
+  height: 100vh;
+  transition: transform 15s;
+}
+
+.landing .wrapper .slider .background.active {
+  transform: scale(1.3);
+  z-index: 1;
+}
+
+.landing .wrapper .slider .background.active.beginning {
+  transform: scale(1);
+  animation: slider 15s ease-out;
+}
+
+@keyframes slider {
+  100% {
+    transform: scale(1.3);
+  }
+}
+
+.landing::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  left: 0;
+  top: 0;
+  position: absolute;
+}
+
+.landing .desc {
+  background-color: var(--transparent-orange);
+  width: 40%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.landing .desc .text {
+  width: 65%;
+  padding: 30px 15px;
+  opacity: 0;
+  transition: 1.3s;
+  bottom: -30px;
+}
+
+.landing .desc .text.active {
+  bottom: 0px;
+  opacity: 1;
+  position: relative;
+}
+
+.landing .desc .text h1 {
+  font-size: 32px;
+  margin: 0 0 20px 0;
+}
+
+.landing .desc .text p {
+  font-size: 20px;
+}
+
+.landing svg {
+  border-radius: 50%;
+  position: absolute;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+  transform: translateY(-50%);
+  top: 50%;
+  padding: 3px;
+}
+
+.landing svg:hover {
+  background-color: var(--main-color);
+}
+
+.landing .arrow-left {
+  left: 0;
+  margin-left: 20px;
+  transition: 0.3s;
+}
+
+.landing .arrow-right {
+  right: 0;
+  margin-right: 20px;
+  transition: 0.3s;
+}
+
+.landing .arrow-left:hover,
+.landing .arrow-right:hover {
+  background-color: var(--dark-blue);
+}
+
+.landing .bullets {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 30px;
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.landing .bullets li {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--orange);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.landing .bullets li:hover,
+.landing .bullets li.active {
+  background-color: var(--orange);
+  border-color: var(--orange);
+}
