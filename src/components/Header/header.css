@@ -27,11 +27,17 @@
 .header .navbar {
   list-style: none;
   display: flex;
-  font-size: 18px;
+  font-size: 16px;
   border-radius: 16px;
   overflow: hidden;
 }
-
+.header .navbar .sections {
+  display: flex;
+  align-items: center;
+}
+.header .navbar .sections-list {
+  display: none;
+}
 .header .navbar a {
   display: block;
   text-align: center;
@@ -69,4 +75,12 @@
 
 .header .navbar a:hover:before {
   width: 100%;
+}
+@media (max-width: 991px) {
+  .header .navbar .sections-list {
+    display: block;
+  }
+  .header .navbar .sections {
+    display: none;
+  }
 }
