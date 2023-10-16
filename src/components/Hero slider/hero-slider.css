@@ -1,7 +1,3 @@
-.landing {
-  position: relative;
-}
-
 .landing .wrapper {
   overflow: hidden;
   position: relative;
@@ -9,11 +5,33 @@
   background-color: black;
 }
 
+.landing .wrapper .fixed-background {
+  background-image: url("/images/slider/slide 1.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100vw;
+  display: none;
+}
+
+@media (max-width: 991px) {
+  .landing .wrapper .fixed-background {
+    display: block;
+  }
+}
+
 .landing .wrapper .slider {
   height: 100vh;
   left: 0;
   position: relative;
   transition: 1s;
+  display: none;
+}
+
+@media (min-width: 991px) {
+  .landing .wrapper .slider {
+    display: block;
+  }
 }
 
 .landing .wrapper .slider .background {
@@ -61,12 +79,38 @@
   justify-content: flex-end;
 }
 
+@media (max-width: 991px) {
+  .landing .desc {
+    width: 65%;
+  }
+}
+
+@media (max-width: 767px) {
+  .landing .desc {
+    width: 100%;
+  }
+}
+
 .landing .desc .text {
   width: 65%;
   padding: 30px 15px;
   opacity: 0;
   transition: 1.3s;
   bottom: -30px;
+}
+
+@media (max-width: 991px) {
+  .landing .desc .text {
+    width: 70%;
+    padding: 30px;
+  }
+}
+
+@media (max-width: 767px) {
+  .landing .desc .text {
+    width: 100%;
+    padding: 30px;
+  }
 }
 
 .landing .desc .text.active {
@@ -80,8 +124,10 @@
   margin: 0 0 20px 0;
 }
 
-.landing .desc .text p {
-  font-size: 20px;
+@media (min-width: 767px) {
+  .landing .desc .text p {
+    font-size: 20px;
+  }
 }
 
 .landing svg {
@@ -111,6 +157,13 @@
   transition: 0.3s;
 }
 
+@media (max-width: 991px) {
+  .landing .arrow-left,
+  .landing .arrow-right {
+    display: none;
+  }
+}
+
 .landing .arrow-left:hover,
 .landing .arrow-right:hover {
   background-color: var(--dark-blue);
@@ -122,8 +175,14 @@
   transform: translateX(-50%);
   bottom: 30px;
   list-style: none;
-  display: flex;
+  display: none;
   gap: 20px;
+}
+
+@media (min-width: 991px) {
+  .landing .bullets {
+    display: flex;
+  }
 }
 
 .landing .bullets li {

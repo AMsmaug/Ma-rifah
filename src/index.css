@@ -65,4 +65,38 @@
   }
 }
 /* End implementing container feature */
+/* Start main title design */
+.main-title {
+  font-size: 40px;
+  font-weight: normal;
+  position: relative;
+  text-transform: uppercase;
+  margin-bottom: 70px;
+  width: fit-content;
+  margin: 60px auto;
+  color: var(--dark-blue);
+}
+.main-title:before {
+  content: "";
+  position: absolute;
+  height: 2px;
+  background-color: var(--orange);
+  bottom: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 105px;
+}
+.main-title:after {
+  content: "";
+  position: absolute;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  border: 3px solid var(--orange);
+  bottom: -41px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+}
+/* End main title design */
 /* End global rules */

@@ -87,6 +87,7 @@ export const HeroSlider = () => {
         >
           {creactSlides(slidesNumber) as React.ReactNode}
         </div>
+        <div className="fixed-background"></div>
       </div>
       <div className="desc">
         <div className={`text ${textTransition ? `active` : ``}`}>
