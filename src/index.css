@@ -30,10 +30,11 @@
   background-color: var(--gray);
 }
 ::-webkit-scrollbar-thumb {
-  background-color: var(--dark);
+  background-color: var(--orange);
 }
 ::selection {
   background-color: var(--dark-blue);
+  color: var(--orange);
 }
 
 * {
@@ -65,8 +66,8 @@
   }
 }
 /* End implementing container feature */
-/* Start main title design */
-.main-title {
+/* Start section's title design */
+.section-title {
   font-size: 40px;
   font-weight: normal;
   position: relative;
@@ -76,7 +77,7 @@
   margin: 60px auto;
   color: var(--dark-blue);
 }
-.main-title:before {
+.section-title:before {
   content: "";
   position: absolute;
   height: 2px;
@@ -86,7 +87,7 @@
   transform: translateX(-50%);
   width: 105px;
 }
-.main-title:after {
+.section-title:after {
   content: "";
   position: absolute;
   height: 10px;
@@ -98,5 +99,5 @@
   transform: translateX(-50%);
   background-color: white;
 }
-/* End main title design */
+/* End section's title design */
 /* End global rules */

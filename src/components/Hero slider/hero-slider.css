@@ -6,12 +6,19 @@
 }
 
 .landing .wrapper .fixed-background {
-  background-image: url("/images/slider/slide 1.jpg");
+  background-image: url("/images/slider/fixed-background 1.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   height: 100vh;
   width: 100vw;
   display: none;
+}
+
+@media (max-width: 1199px) and (min-width: 991px) {
+  .landing .wrapper .fixed-background {
+    background-image: url("/images/slider/fixed-background.jpg");
+    display: block;
+  }
 }
 
 @media (max-width: 991px) {
@@ -28,7 +35,7 @@
   display: none;
 }
 
-@media (min-width: 991px) {
+@media (min-width: 1200px) {
   .landing .wrapper .slider {
     display: block;
   }
@@ -92,7 +99,7 @@
 }
 
 .landing .desc .text {
-  width: 65%;
+  width: 80%;
   padding: 30px 15px;
   opacity: 0;
   transition: 1.3s;
@@ -101,7 +108,6 @@
 
 @media (max-width: 991px) {
   .landing .desc .text {
-    width: 70%;
     padding: 30px;
   }
 }
@@ -127,6 +133,11 @@
 @media (min-width: 767px) {
   .landing .desc .text p {
     font-size: 20px;
+  }
+}
+@media (max-width: 767px) {
+  .landing .desc .text p {
+    max-width: 500px;
   }
 }
 
