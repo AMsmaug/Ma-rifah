@@ -1,0 +1,6 @@
+.about-us img {
+  width: 100%;
+}
+.text-box.expanded {
+  max-height: 500px;
+}
