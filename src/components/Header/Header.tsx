@@ -42,7 +42,7 @@ export const Header = () => {
           </div>
 
           <li>
-            <a href="#Login">Login</a>
+            <a href="/login">Login</a>
           </li>
           <Menu
             id="sections"

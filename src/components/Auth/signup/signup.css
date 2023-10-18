@@ -1,0 +1,68 @@
+::selection {
+  background-color: var(--orange);
+}
+
+.container .signup {
+  left: 180%;
+}
+
+.container .signup.active {
+  left: 0;
+}
+
+.container form .signup-button {
+  display: block;
+  margin: 0 auto;
+  border-radius: 12px;
+  border: none;
+  text-align: center;
+  margin-top: 50px;
+}
+
+.container form .signup-button .login-here {
+  font-size: 18px;
+  color: var(--orange);
+  cursor: pointer;
+}
+
+.container form .class {
+  display: block;
+  padding-left: 5px;
+  margin-bottom: 5px;
+  color: var(--dark-blue);
+  font-weight: bold;
+}
+
+.container form .choose-class {
+  width: 100%;
+  border: none;
+  background-color: var(--orange);
+  color: var(--dark-blue);
+  font-weight: bold;
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 40px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.container form .choose-class:hover {
+  background-color: #df9d31;
+}
+
+.container form .choose-class:focus {
+  outline: none;
+}
+
+.container form .choose-class option {
+  cursor: pointer;
+  background-color: white;
+}
+
+.container form .password-again {
+  margin-bottom: 30px;
+}
+
+.container form .inp .error.signup-error {
+  top: 85px;
+}
