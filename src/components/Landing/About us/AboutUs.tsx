@@ -23,7 +23,9 @@ const AboutUs = () => {
   };
 
   const toggleReadMore = () => {
-    const textBox = document.querySelector<HTMLParagraphElement>(".text-box");
+    const textBox = document.querySelector<HTMLParagraphElement>(
+      ".about-us .text-box"
+    );
     if (textBox?.classList.contains("expanded")) {
       if (textBox !== null) textBox.innerHTML = "";
       textBox?.append(readLessParagraph());
@@ -38,77 +40,78 @@ const AboutUs = () => {
   };
 
   return (
-    <Box className="container about-us">
-      <h2 className="main-title">About us</h2>
-      <Stack
-        direction={{ md: "row", lg: "row", xl: "row" }}
-        justifyContent="center"
-        className="about-us-content"
-        gap={10}
-        mt={10}
-        mb={10}
-      >
-        <Box
-          height="300px"
-          flexBasis="300px"
-          sx={{
-            backgroundColor: "#ccc",
-            overflow: "hidden",
-          }}
-          mt={3}
+    <Box className="about-us" pt={4} pb={4}>
+      <Box className="container">
+        <h2 className="main-title">About us</h2>
+        <Stack
+          direction={{ md: "row" }}
+          justifyContent="center"
+          className="about-us-content"
+          gap={10}
+          mt={10}
+          pb={7}
         >
-          <img src="../../../../public/images/adam.jpg" alt="" />
-        </Box>
-        <Box
-          p={2}
-          flexBasis={{
-            md: "45%",
-            lg: "45%",
-            xl: "45%",
-          }}
-          sx={{
-            textAlign: {
-              xs: "center",
-              md: "start",
-            },
-          }}
-        >
-          <Typography
+          <Box
+            height="300px"
+            flexBasis="300px"
             sx={{
-              lineHeight: "2",
-              fontSize: "18px",
-              transition: "1s",
-              maxHeight: {
-                xs: "300px",
-                sm: "200px",
-                md: "350px",
-                lg: "300px",
-                xl: "300px",
-              },
-
+              backgroundColor: "#ccc",
               overflow: "hidden",
             }}
-            variant="body1"
-            mb={4}
-            component="div"
-            className="text-box"
+            mt={3}
           >
-            At Ma'rifah, we offer a comprehensive range of study materials and
-            courses specifically curated to align with the Lebanese curriculum.
-            Whether it's clarifying complex math problems, explaining intricate
-            scientific concepts, or demystifying historical events, our platform
-            is here to bridge the gap between what's taught in class and what
-            students need to succeed.
-          </Typography>
-          <Button
-            ref={readMoreButton}
-            variant="contained"
-            onClick={toggleReadMore}
+            <img src="../../../../public/images/adam.jpg" alt="" />
+          </Box>
+          <Box
+            p={2}
+            flexBasis={{
+              md: "45%",
+              lg: "45%",
+              xl: "45%",
+            }}
+            sx={{
+              textAlign: {
+                xs: "center",
+                md: "start",
+              },
+            }}
           >
-            Read more
-          </Button>
-        </Box>
-      </Stack>
+            <Typography
+              sx={{
+                lineHeight: "2",
+                fontSize: "18px",
+                transition: "1s",
+                maxHeight: {
+                  xs: "300px",
+                  sm: "200px",
+                  md: "350px",
+                  lg: "300px",
+                },
+
+                overflow: "hidden",
+              }}
+              variant="body1"
+              mb={4}
+              className="text-box"
+            >
+              At Ma'rifah, we offer a comprehensive range of study materials and
+              courses specifically curated to align with the Lebanese
+              curriculum. Whether it's clarifying complex math problems,
+              explaining intricate scientific concepts, or demystifying
+              historical events, our platform is here to bridge the gap between
+              what's taught in class and what students need to succeed.
+            </Typography>
+            <Button
+              ref={readMoreButton}
+              variant="contained"
+              onClick={toggleReadMore}
+              className="readmore-button"
+            >
+              Read more
+            </Button>
+          </Box>
+        </Stack>
+      </Box>
     </Box>
   );
 };

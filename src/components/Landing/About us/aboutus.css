@@ -1,6 +1,15 @@
+.about-us {
+  background-color: var(--gray);
+}
 .about-us img {
   width: 100%;
 }
-.text-box.expanded {
+.about-us .text-box.expanded {
   max-height: 500px;
+}
+.about-us .readmore-button {
+  background-color: var(--orange);
+}
+.about-us .readmore-button:hover {
+  background-color: var(--transparent-orange);
 }

@@ -1,0 +1,32 @@
+.footer {
+  background-color: var(--gray);
+}
+.footer .logo {
+  background-color: var(--dark-blue);
+}
+.footer .logo .logo-button {
+  color: var(--orange);
+}
+.footer .phone-numbers {
+  list-style: none;
+}
+.footer .phone-numbers li {
+  position: relative;
+}
+.footer .phone-numbers li::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background-color: var(--orange);
+  position: absolute;
+  top: 50%;
+  left: -25px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+}
+.footer .rights {
+  background-color: var(--dark-blue);
+}
+.footer .rights span {
+  color: var(--orange);
+}

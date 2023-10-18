@@ -1,0 +1,15 @@
+.questions-and-answers {
+  background-color: var(--gray);
+}
+.questions-and-answers img {
+  width: 100%;
+}
+.questions-and-answers .view-more-button {
+  background-color: var(--orange);
+}
+.questions-and-answers .view-more-button:hover {
+  background-color: var(--transparent-orange);
+}
+.questions-and-answers .text-box.expanded {
+  max-height: 600px;
+}

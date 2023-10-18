@@ -1,0 +1,9 @@
+.contact-us img {
+  width: 100%;
+}
+.contact-us .submit-button {
+  background-color: var(--dark-blue);
+}
+.contact-us .submit-button:hover {
+  background-color: var(--dark-blue-hover);
+}
