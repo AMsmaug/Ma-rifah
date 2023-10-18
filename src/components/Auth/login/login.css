@@ -27,7 +27,7 @@ body {
 }
 
 @media (max-width: 991px) {
-  .container {
+  .container.auth {
     flex-direction: column;
     gap: 40px;
     text-align: center;
@@ -79,7 +79,7 @@ body {
 .container form input {
   width: 100%;
   font-size: 18px;
-  padding: 15px;
+  padding: 15px 15px 15px 45px;
   border-radius: 12px;
   margin-bottom: 40px;
   color: var(--dark-blue);
@@ -152,4 +152,11 @@ body {
   cursor: pointer;
   left: 15px;
   color: var(--orange);
+}
+
+.icon {
+  position: absolute;
+  left: 12px;
+  top: 14px;
+  color: var(--dark-blue);
 }

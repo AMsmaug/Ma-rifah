@@ -1,5 +1,8 @@
 import React, { FormEvent, useState, useContext } from "react";
 import { activeContext } from "../SharedData.tsx";
+import PersonIcon from "@mui/icons-material/Person";
+import EmailIcon from "@mui/icons-material/Email";
+import LockIcon from "@mui/icons-material/Lock";
 import "./signup.css";
 
 type prop = {
@@ -161,6 +164,7 @@ export const SignUp = ({ isActive }: prop) => {
         {!validation.validUsername && (
           <span className="error">*A username must not contain numbers</span>
         )}
+        <PersonIcon className="icon" />
         <input
           type="text"
           placeholder="Username"
@@ -170,6 +174,7 @@ export const SignUp = ({ isActive }: prop) => {
       </div>
       <div className="inp">
         {!validation.validEmail && <span className="error">*Ivalid email</span>}
+        <EmailIcon className="icon" />
         <input
           type="email"
           placeholder="Email"
@@ -183,6 +188,7 @@ export const SignUp = ({ isActive }: prop) => {
             *field must contain numbers and capital letters
           </span>
         )}
+        <LockIcon className="icon" />
         <input
           type="password"
           placeholder="Password"
@@ -194,6 +200,7 @@ export const SignUp = ({ isActive }: prop) => {
         {!validation.samePasswords && (
           <span className="error">*The two passwords are not the same</span>
         )}
+        <LockIcon className="icon" />
         {validation.validPassword && password !== `` ? (
           <input
             className="password-again"
