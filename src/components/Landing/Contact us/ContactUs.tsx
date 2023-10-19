@@ -20,14 +20,16 @@ const ContactUs = () => {
         >
           <Box
             maxWidth="400px"
-            height="400px"
             overflow="hidden"
             alignSelf={{
               xs: "center",
               lg: "start",
             }}
           >
-            <img src="../../../../public/images/adam.jpg" />
+            <img
+              height="300px"
+              src="../../../../public/images/contactusImg.jpg"
+            />
           </Box>
           <Box
             flexBasis={{
@@ -66,10 +68,10 @@ const ContactUs = () => {
             </Stack>
 
             <Button
-              sx={{ display: "block", margin: "0 auto" }}
+              sx={{ display: "block", margin: "0 auto", color: "white" }}
               variant="contained"
               size="large"
-              className="submit-button"
+              color="secondary"
             >
               Submit
             </Button>

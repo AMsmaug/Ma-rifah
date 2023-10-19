@@ -1,15 +1,13 @@
-.questions-and-answers {
-  background-color: var(--gray);
-}
 .questions-and-answers img {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 0.5s;
 }
-.questions-and-answers .view-more-button {
-  background-color: var(--orange);
+.questions-and-answers img:hover {
+  transform: rotate(5deg) scale(1.1);
 }
-.questions-and-answers .view-more-button:hover {
-  background-color: var(--transparent-orange);
-}
+
 .questions-and-answers .text-box.expanded {
   max-height: 600px;
 }

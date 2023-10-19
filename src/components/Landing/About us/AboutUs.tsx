@@ -40,30 +40,28 @@ const AboutUs = () => {
   };
 
   return (
-    <Box className="about-us" pt={4} pb={4}>
+    <Box className="about-us" pt={4} pb={4} bgcolor="gray.main">
       <Box className="container">
         <h2 className="main-title">About us</h2>
         <Stack
-          direction={{ md: "row" }}
+          direction={{ lg: "row" }}
           justifyContent="center"
           className="about-us-content"
-          gap={10}
+          columnGap={6}
+          rowGap={4}
           mt={10}
           pb={7}
         >
-          <Box
-            height="300px"
-            flexBasis="300px"
-            sx={{
-              backgroundColor: "#ccc",
-              overflow: "hidden",
-            }}
-            mt={3}
-          >
-            <img src="../../../../public/images/adam.jpg" alt="" />
+          <Box textAlign="center">
+            <img
+              width="500px"
+              height="300px"
+              src="../../../../public/images/teaching.jpg"
+              alt=""
+            />
           </Box>
+
           <Box
-            p={2}
             flexBasis={{
               md: "45%",
               lg: "45%",
@@ -72,7 +70,7 @@ const AboutUs = () => {
             sx={{
               textAlign: {
                 xs: "center",
-                md: "start",
+                lg: "start",
               },
             }}
           >
@@ -80,14 +78,13 @@ const AboutUs = () => {
               sx={{
                 lineHeight: "2",
                 fontSize: "18px",
-                transition: "1s",
+                transition: "1s ease-in-out",
                 maxHeight: {
                   xs: "300px",
                   sm: "200px",
                   md: "350px",
                   lg: "300px",
                 },
-
                 overflow: "hidden",
               }}
               variant="body1"
@@ -105,7 +102,8 @@ const AboutUs = () => {
               ref={readMoreButton}
               variant="contained"
               onClick={toggleReadMore}
-              className="readmore-button"
+              color="primary"
+              sx={{ color: "white", "&:hover": { bgcolor: "main.dark" } }}
             >
               Read more
             </Button>

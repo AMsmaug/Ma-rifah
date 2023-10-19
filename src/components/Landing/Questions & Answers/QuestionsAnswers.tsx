@@ -42,7 +42,7 @@ const QuestionsAnswers = () => {
   };
 
   return (
-    <Box className="questions-and-answers" pt={4} pb={4}>
+    <Box className="questions-and-answers" pt={4} pb={4} bgcolor="gray.main">
       <Box className="container">
         <h2 className="main-title">Questions & Answers</h2>
         <Stack
@@ -62,8 +62,7 @@ const QuestionsAnswers = () => {
               maxHeight="300px"
               p={1}
               sx={{
-                transition: "1s",
-
+                transition: "1s ease-in-out",
                 overflow: "hidden",
               }}
             >
@@ -71,7 +70,13 @@ const QuestionsAnswers = () => {
             </Typography>
             <Button
               variant="contained"
-              className="view-more-button"
+              color="primary"
+              sx={{
+                "&:hover": {
+                  bgcolor: "primary.dark",
+                },
+                color: "white",
+              }}
               onClick={toggleReadMore}
               ref={readMoreButton}
             >
@@ -87,7 +92,7 @@ const QuestionsAnswers = () => {
             }}
             mt={3}
           >
-            <img src="../../../../public/images/adam.jpg" alt="" />
+            <img src="../../../../public/images/questionAnswerImg.jpg" alt="" />
           </Box>
         </Stack>
       </Box>

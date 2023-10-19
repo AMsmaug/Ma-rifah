@@ -11,6 +11,7 @@ const AcademicSupport = () => {
           className="under-title"
           textAlign="center"
           mb={2}
+          color="primary.main"
         >
           Courses
         </Typography>
@@ -28,6 +29,7 @@ const AcademicSupport = () => {
             height="175px"
             className="material"
             sx={{ borderRadius: "6px" }}
+            bgcolor="secondary.main"
           >
             <Box>Mathematics</Box>
           </Grid>
@@ -44,6 +46,7 @@ const AcademicSupport = () => {
             height="175px"
             className="material"
             sx={{ borderRadius: "6px" }}
+            bgcolor="secondary.main"
           >
             <Box>Physics</Box>
           </Grid>
@@ -60,6 +63,7 @@ const AcademicSupport = () => {
             height="175px"
             className="material"
             sx={{ borderRadius: "6px" }}
+            bgcolor="secondary.main"
           >
             <Box>Chemistery</Box>
           </Grid>
@@ -76,6 +80,7 @@ const AcademicSupport = () => {
             height="175px"
             className="material"
             sx={{ borderRadius: "6px" }}
+            bgcolor="secondary.main"
           >
             <Box>Biology</Box>
           </Grid>
@@ -92,6 +97,7 @@ const AcademicSupport = () => {
             height="175px"
             className="material"
             sx={{ borderRadius: "6px" }}
+            bgcolor="secondary.main"
           >
             <Box>Arabic</Box>
           </Grid>
@@ -108,6 +114,7 @@ const AcademicSupport = () => {
             height="175px"
             className="material"
             sx={{ borderRadius: "6px" }}
+            bgcolor="secondary.main"
           >
             <Box>French</Box>
           </Grid>
@@ -124,6 +131,7 @@ const AcademicSupport = () => {
             height="175px"
             className="material"
             sx={{ borderRadius: "6px" }}
+            bgcolor="secondary.main"
           >
             <Box>English</Box>
           </Grid>
@@ -140,6 +148,7 @@ const AcademicSupport = () => {
             height="175px"
             className="material"
             sx={{ borderRadius: "6px" }}
+            bgcolor="secondary.main"
           >
             <Box>Social Studies</Box>
           </Grid>
@@ -156,6 +165,7 @@ const AcademicSupport = () => {
             height="175px"
             className="material"
             sx={{ borderRadius: "6px" }}
+            bgcolor="secondary.main"
           >
             <Box>History</Box>
           </Grid>
@@ -172,6 +182,7 @@ const AcademicSupport = () => {
             height="175px"
             className="material"
             sx={{ borderRadius: "6px" }}
+            bgcolor="secondary.main"
           >
             <Box>Geography</Box>
           </Grid>
@@ -188,6 +199,7 @@ const AcademicSupport = () => {
             height="175px"
             className="material"
             sx={{ borderRadius: "6px" }}
+            bgcolor="secondary.main"
           >
             <Box>Cyvics</Box>
           </Grid>
@@ -204,6 +216,7 @@ const AcademicSupport = () => {
             height="175px"
             className="material"
             sx={{ borderRadius: "6px" }}
+            bgcolor="secondary.main"
           >
             <Box>Economy</Box>
           </Grid>

@@ -7,7 +7,7 @@ const Footer = () => {
     return date.getFullYear();
   };
   return (
-    <Box className="footer" pt={4}>
+    <Box className="footer" pt={4} bgcolor="gray.main">
       <Stack
         className="container"
         direction={{ md: "row" }}
@@ -64,11 +64,17 @@ const Footer = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            bgcolor: "secondary.main",
           }}
         >
           <IconButton
             className="logo-button"
-            sx={{ width: "100%", height: "100%", fontWeight: "700" }}
+            sx={{
+              width: "100%",
+              height: "100%",
+              fontWeight: "700",
+              color: "primary.main",
+            }}
           >
             Ma'rifah
           </IconButton>
@@ -82,6 +88,7 @@ const Footer = () => {
         fontSize="22px"
         color="white"
         fontWeight="bold"
+        bgcolor="secondary.main"
       >
         @{getCurrentYear()} , <span>Ma'arifah</span> all rights reserved
       </Box>

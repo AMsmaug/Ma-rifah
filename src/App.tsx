@@ -4,10 +4,26 @@ import "./normalize.css";
 import { Auth } from "./pages/Auth";
 import { Landing } from "./pages/Landing";
 import { SharedData } from "./components/Auth/SharedData";
+import { createTheme, ThemeProvider } from "@mui/material";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#fca311",
+      dark: "#c67d07",
+    },
+    secondary: {
+      main: "#13213c",
+    },
+    gray: {
+      main: "#e5e5e5",
+    },
+  },
+});
 
 function App() {
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <Routes>
         <Route element={<Landing />} path="/" />
         <Route
@@ -19,7 +35,7 @@ function App() {
           path="/login"
         />
       </Routes>
-    </>
+    </ThemeProvider>
   );
 }
 
