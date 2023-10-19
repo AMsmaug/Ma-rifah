@@ -1,5 +1,7 @@
 import { activeContext } from "../SharedData.tsx";
 import React, { FormEvent, useState, useContext } from "react";
+import EmailIcon from "@mui/icons-material/Email";
+import LockIcon from "@mui/icons-material/Lock";
 import "./login.css";
 
 type prop = {
@@ -87,13 +89,17 @@ export const Login = ({ isActive }: prop) => {
           value={email}
           onInput={checkEmail}
         />
+        <EmailIcon className="icon" />
       </div>
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onInput={checkPassword}
-      />
+      <div className="inp">
+        <LockIcon className="icon" />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onInput={checkPassword}
+        />
+      </div>
       <div className="inp">
         {!validation.sendData && (
           <span className="error">*All fields are required</span>
