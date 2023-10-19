@@ -7,3 +7,9 @@
 .about-us .text-box.expanded {
   max-height: 500px;
 }
+
+@media (max-width: 599px) {
+  .about-us .readmore-button {
+    display: none;
+  }
+}
