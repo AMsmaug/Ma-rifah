@@ -46,6 +46,8 @@ export const Header = () => {
           </li>
           <Menu
             id="sections"
+            className="sections"
+            component="ul"
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
@@ -57,19 +59,26 @@ export const Header = () => {
               vertical: "top",
               horizontal: "right",
             }}
-            className="sections"
           >
-            <MenuItem component="li">
-              <a href="#About">About</a>
+            <MenuItem onClick={handleClose} component="li">
+              <a className="sections-link" href="#About">
+                About
+              </a>
             </MenuItem>
-            <MenuItem component="li">
-              <a href="#Academic-Support">Academic Support</a>
+            <MenuItem onClick={handleClose} component="li">
+              <a className="sections-link" href="#Academic-Support">
+                Academic Support
+              </a>
             </MenuItem>
-            <MenuItem component="li">
-              <a href="#Q&A">Q & A</a>
+            <MenuItem onClick={handleClose} component="li">
+              <a className="sections-link" href="#Q&A">
+                Q & A
+              </a>
             </MenuItem>
-            <MenuItem component="li">
-              <a href="#Contact-us">Contact us</a>
+            <MenuItem onClick={handleClose} component="li">
+              <a className="sections-link" href="#Contact-us">
+                Contact us
+              </a>
             </MenuItem>
           </Menu>
         </ul>

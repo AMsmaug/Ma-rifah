@@ -6,7 +6,7 @@ import CommentIcon from "@mui/icons-material/Comment";
 
 const ContactUs = () => {
   return (
-    <Box className="contact-us" pt={4} pb={4} pr={1} pl={1}>
+    <Box className="contact-us" id="Contact-us" pt={4} pb={4} pr={1} pl={1}>
       <Box className="container">
         <h2 className="main-title">Contact Us</h2>
         <Stack

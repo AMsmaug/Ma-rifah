@@ -40,7 +40,13 @@ const QuestionsAnswers = () => {
   };
 
   return (
-    <Box className="questions-and-answers" pt={4} pb={4} bgcolor="gray.main">
+    <Box
+      className="questions-and-answers"
+      id="Q&A"
+      pt={4}
+      pb={4}
+      bgcolor="gray.main"
+    >
       <Box className="container">
         <h2 className="main-title">Questions & Answers</h2>
         <Stack

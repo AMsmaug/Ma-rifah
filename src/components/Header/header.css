@@ -76,6 +76,28 @@
 .header .navbar a:hover:before {
   width: 100%;
 }
+.sections ul {
+  background-color: var(--dark-blue);
+}
+.sections ul li {
+  transition: 0.3s;
+  padding: 10px 24px;
+}
+.sections ul li:hover {
+  background-color: #aaa;
+  padding-right: 18px;
+  padding-left: 30px;
+}
+.sections ul li:not(:last-child) {
+  border-bottom: 1px solid #aaa;
+  padding-bottom: 10px;
+}
+.sections .sections-link {
+  text-decoration: none;
+  color: white;
+  width: 100%;
+}
+
 @media (max-width: 991px) {
   .header .navbar .sections-list {
     display: block;

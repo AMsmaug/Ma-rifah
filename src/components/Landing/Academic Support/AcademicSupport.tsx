@@ -3,7 +3,7 @@ import { Box, Grid, Typography } from "@mui/material";
 
 const AcademicSupport = () => {
   return (
-    <Box className="academic-support" pt={3} pb={7}>
+    <Box className="academic-support" id="Academic-Support" pt={3} pb={7}>
       <Box className="container">
         <h2 className="main-title">Academic Support</h2>
         <Typography

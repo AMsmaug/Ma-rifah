@@ -36,7 +36,7 @@ const AboutUs = () => {
   };
 
   return (
-    <Box className="about-us" pt={4} pb={4} bgcolor="gray.main">
+    <Box className="about-us" id="About" pt={4} pb={4} bgcolor="gray.main">
       <Box className="container">
         <h2 className="main-title">About us</h2>
         <Stack
