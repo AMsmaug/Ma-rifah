@@ -22,7 +22,7 @@ export const SignUp = ({ isActive }: prop) => {
     sendData: true,
   });
 
-  const { setHaveAnAccount } = useContext(activeContext);
+  const { setHasAnAccount } = useContext(activeContext);
 
   const checkUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserName(e.target.value);
@@ -239,7 +239,7 @@ export const SignUp = ({ isActive }: prop) => {
         <span
           className="login-here"
           onClick={() => {
-            setHaveAnAccount(true);
+            setHasAnAccount(true);
           }}
         >
           Login

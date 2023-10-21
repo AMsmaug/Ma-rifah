@@ -4,7 +4,7 @@ import { SignUp } from "../components/Auth/signup/SignUp.tsx";
 import { activeContext } from "../components/Auth/SharedData.tsx";
 
 export const Auth = () => {
-  const { haveAnAccount } = useContext(activeContext);
+  const { hasAnAccount } = useContext(activeContext);
   return (
     <div className="container auth">
       <div className="intro">
@@ -15,7 +15,7 @@ export const Auth = () => {
         </p>
       </div>
       <div className="validation">
-        {haveAnAccount ? (
+        {hasAnAccount ? (
           <>
             <Login isActive={true} />
             <SignUp isActive={false} />
