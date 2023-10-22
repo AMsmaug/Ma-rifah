@@ -235,7 +235,7 @@ export const SignUp = ({ isActive }: prop) => {
       </select>
       <button className="sign-button">Sign up</button>
       <p className="signup-button">
-        Already have an account?{" "}
+        Already have an account?
         <span
           className="login-here"
           onClick={() => {
@@ -243,7 +243,7 @@ export const SignUp = ({ isActive }: prop) => {
           }}
         >
           Login
-        </span>{" "}
+        </span>
         here.
       </p>
     </form>

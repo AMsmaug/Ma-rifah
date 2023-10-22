@@ -112,7 +112,7 @@ export const Login = ({ isActive }: prop) => {
       <button className="sign-button">Log in</button>
       <p className="forgot-password">Forgot you password?</p>
       <p className="signup-now">
-        Don't have an account?{" "}
+        Don't have an account?
         <span
           className="back"
           onClick={() => {
@@ -120,7 +120,7 @@ export const Login = ({ isActive }: prop) => {
           }}
         >
           Sign up
-        </span>{" "}
+        </span>
         here.
       </p>
     </form>

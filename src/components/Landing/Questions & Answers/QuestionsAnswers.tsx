@@ -1,10 +1,13 @@
 import { useRef } from "react";
 import "./questionsAnswers.css";
 import { Box, Stack, Typography, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const QuestionsAnswers = () => {
   const readMoreButton = useRef<HTMLButtonElement>(null!);
   const readMoreParagraphElement = useRef<HTMLButtonElement>(null!);
+
+  const navigate = useNavigate();
 
   const readMoreParagraph = () => {
     return (
@@ -95,7 +98,7 @@ const QuestionsAnswers = () => {
                 },
                 color: "white",
               }}
-              onClick={toggleReadMore}
+              onClick={() => navigate("/hey")}
               ref={readMoreButton}
               className="readmore-button"
             >

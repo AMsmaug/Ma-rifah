@@ -48,7 +48,7 @@ const Footer = () => {
               className="phone-numbers"
               style={{ display: "inline-block", marginLeft: "20px" }}
             >
-              <li>(+961) 81-329-073</li>
+              <li>(+961) 81-328-073</li>
               <li>(+961) 81-290-191</li>
               <li>(+961) 70-439-510</li>
             </ul>
