@@ -17,7 +17,7 @@ export const Login = ({ isActive }: prop) => {
     correctData: true,
   });
 
-  const { setHaveAnAccount } = useContext(activeContext);
+  const { setHasAnAccount } = useContext(activeContext);
 
   const checkEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -116,7 +116,7 @@ export const Login = ({ isActive }: prop) => {
         <span
           className="back"
           onClick={() => {
-            setHaveAnAccount(false);
+            setHasAnAccount(false);
           }}
         >
           Sign up
