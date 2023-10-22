@@ -3,7 +3,12 @@ import { Box, Grid, Typography } from "@mui/material";
 
 const AcademicSupport = () => {
   return (
-    <Box className="academic-support" id="Academic-Support" pt={3} pb={7}>
+    <Box
+      className="academic-support section"
+      id="Academic-Support"
+      pt={3}
+      pb={7}
+    >
       <Box className="container">
         <h2 className="main-title">Academic Support</h2>
         <Typography
@@ -31,7 +36,7 @@ const AcademicSupport = () => {
             sx={{ borderRadius: "6px" }}
             bgcolor="secondary.main"
           >
-            <Box>Mathematics</Box>
+            <Box className="material-name">Mathematics</Box>
           </Grid>
           <Grid
             item

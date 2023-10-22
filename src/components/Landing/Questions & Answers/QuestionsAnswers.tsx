@@ -41,7 +41,7 @@ const QuestionsAnswers = () => {
 
   return (
     <Box
-      className="questions-and-answers"
+      className="questions-and-answers section"
       id="Q&A"
       pt={4}
       pb={4}
