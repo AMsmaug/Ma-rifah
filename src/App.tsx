@@ -5,6 +5,7 @@ import { Auth } from "./pages/Auth";
 import { Landing } from "./pages/Landing";
 import { SharedData } from "./components/Auth/SharedData";
 import { createTheme, ThemeProvider } from "@mui/material";
+import PickingClassDiscussions from "./components/Picking class discussions/PickingClassDiscussions";
 
 const theme = createTheme({
   palette: {
@@ -34,6 +35,7 @@ function App() {
           }
           path="/login"
         />
+        <Route element={<PickingClassDiscussions />} path="/hey" />
       </Routes>
     </ThemeProvider>
   );

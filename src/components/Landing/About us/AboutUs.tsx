@@ -1,10 +1,9 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import "./aboutus.css";
 import { Stack, Box, Typography, Button } from "@mui/material";
 
 const AboutUs = () => {
-  const readMoreButton = useRef<HTMLButtonElement>(null!);
-  const readMoreParagraphElement = useRef<HTMLParagraphElement>(null!);
+  const [isReadMore, setisReadMore] = useState<boolean>(false);
 
   const readMoreParagraph = () => {
     return (
@@ -25,16 +24,6 @@ const AboutUs = () => {
     );
   };
 
-  const toggleReadMore = () => {
-    if (readMoreParagraphElement?.current?.classList.contains("expanded")) {
-      readMoreParagraphElement?.current?.classList.remove("expanded");
-      readMoreButton.current.innerHTML = "Read More";
-    } else {
-      readMoreParagraphElement?.current?.classList.add("expanded");
-      readMoreButton.current.innerHTML = "Read Less";
-    }
-  };
-
   return (
     <Box className="about-us" id="About" pt={4} pb={4} bgcolor="gray.main">
       <Box className="container">
@@ -42,7 +31,6 @@ const AboutUs = () => {
         <Stack
           direction={{ lg: "row" }}
           justifyContent="center"
-          alignItems="center"
           className="about-us-content"
           columnGap={6}
           rowGap={4}
@@ -71,6 +59,7 @@ const AboutUs = () => {
                 lg: "start",
               },
             }}
+            alignSelf="center"
           >
             <Typography
               sx={{
@@ -79,24 +68,26 @@ const AboutUs = () => {
                 transition: "0.6s ease-in-out",
                 overflow: "hidden",
               }}
-              maxHeight={{
-                xs: "350px",
-                sm: "220px",
-                md: "180px",
-                lg: "215px",
-              }}
+              maxHeight={
+                isReadMore
+                  ? "500px"
+                  : {
+                      xs: "350px",
+                      sm: "220px",
+                      md: "180px",
+                      lg: "215px",
+                    }
+              }
               variant="body1"
               mb={4}
               className="text-box"
-              ref={readMoreParagraphElement}
             >
               {readMoreParagraph()}
             </Typography>
             <Button
               className="readmore-button"
-              ref={readMoreButton}
               variant="contained"
-              onClick={toggleReadMore}
+              onClick={() => setisReadMore(!isReadMore)}
               color="primary"
               sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
             >
