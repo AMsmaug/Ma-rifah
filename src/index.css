@@ -47,10 +47,10 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-snap-type: y mandatory;
+  /* scroll-snap-type: y mandatory;
   overflow-y: scroll;
   height: 100vh;
-  position: relative;
+  position: relative; */
 }
 
 /* to turn the snap scrolling on, all you need is uncomment the below code */

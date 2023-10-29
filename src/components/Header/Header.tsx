@@ -21,23 +21,23 @@ export const Header = () => {
         <span className="logo">Ma'rifah</span>
         <ul className="navbar">
           <li>
-            <a href="#Home">Home</a>
+            <a href="/#Home">Home</a>
           </li>
           <li onClick={handleClick} className="sections-list">
             <a href="#">Sections</a>
           </li>
           <div className="sections">
             <li>
-              <a href="#About">About</a>
+              <a href="/#About">About</a>
             </li>
             <li>
-              <a href="#Academic-Support">Academic Support</a>
+              <a href="/#Academic-Support">Academic Support</a>
             </li>
             <li>
-              <a href="#Q&A">Q & A</a>
+              <a href="/#Q&A">Q & A</a>
             </li>
             <li>
-              <a href="#Contact-us">Contact us</a>
+              <a href="/#Contact-us">Contact us</a>
             </li>
           </div>
 

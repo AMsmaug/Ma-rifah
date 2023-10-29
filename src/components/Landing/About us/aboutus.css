@@ -4,8 +4,8 @@
   align-items: center;
 }
 .about-us img {
-  /* transition: transform 0.5s; */
   display: block;
+  transition: 1.5s;
   transform: rotateY(90deg);
 }
 .about-us img.is-shown {
@@ -23,6 +23,7 @@
     display: none;
   }
 }
+*/
 
 .about-us .to-animate {
   opacity: 0;
