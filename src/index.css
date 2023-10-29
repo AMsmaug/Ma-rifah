@@ -44,9 +44,20 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 html {
   scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  height: 100vh;
+  position: relative;
 }
+
+/* to turn the snap scrolling on, all you need is uncomment the below code */
+/* .section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+} */
 /* Start implementing container feature */
 
 .container {
@@ -86,7 +97,7 @@ html {
   position: absolute;
   height: 2px;
   background-color: var(--orange);
-  bottom: -35px;
+  bottom: -25px;
   left: 50%;
   transform: translateX(-50%);
   width: 105px;
@@ -98,7 +109,7 @@ html {
   width: 10px;
   border-radius: 50%;
   border: 3px solid var(--orange);
-  bottom: -41px;
+  bottom: -31px;
   left: 50%;
   transform: translateX(-50%);
   background-color: white;

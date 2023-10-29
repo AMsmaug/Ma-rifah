@@ -7,7 +7,7 @@ const Footer = () => {
     return date.getFullYear();
   };
   return (
-    <Box className="footer" pt={4} bgcolor="gray.main">
+    <Box className="footer section" pt={4} bgcolor="gray.main">
       <Stack
         className="container"
         direction={{ md: "row" }}

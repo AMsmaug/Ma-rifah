@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import "./aboutus.css";
 import { Stack, Box, Typography, Button } from "@mui/material";
 
@@ -24,8 +24,30 @@ const AboutUs = () => {
     );
   };
 
+  const wrapper = useRef<HTMLDivElement>(null);
+  const [isShown, setIsShown] = useState(false);
+  const animateContent = () => {
+    if (window.scrollY >= 300) {
+      setIsShown(true);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", animateContent);
+    return () => {
+      window.removeEventListener("scroll", animateContent);
+    };
+  }, []);
+
   return (
-    <Box className="about-us" id="About" pt={4} pb={4} bgcolor="gray.main">
+    <Box
+      ref={wrapper}
+      className={`about-us section`}
+      id="About"
+      pt={4}
+      pb={4}
+      bgcolor="gray.main"
+    >
       <Box className="container">
         <h2 className="main-title">About us</h2>
         <Stack
@@ -37,8 +59,9 @@ const AboutUs = () => {
           mt={10}
           pb={7}
         >
-          <Box textAlign="center">
+          <Box textAlign="center" className="image-wrapper">
             <img
+              className={`to-animate ${isShown ? `is-shown` : ``}`}
               width="500px"
               height="300px"
               src="../../../../public/images/teaching.jpg"
@@ -47,6 +70,7 @@ const AboutUs = () => {
           </Box>
 
           <Box
+            className={`to-animate ${isShown ? `is-shown` : ``}`}
             width={{
               xs: "350px",
               sm: "580px",

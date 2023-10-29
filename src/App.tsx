@@ -3,6 +3,7 @@ import "./App.css";
 import "./normalize.css";
 import { Auth } from "./pages/Auth";
 import { Landing } from "./pages/Landing";
+import { QuestionsAndAnswers } from "./pages/Q&A/QuestionsAndAnswers";
 import { SharedData } from "./components/Auth/SharedData";
 import { createTheme, ThemeProvider } from "@mui/material";
 import PickingClassDiscussions from "./components/Picking class discussions/PickingClassDiscussions";
@@ -36,6 +37,7 @@ function App() {
           path="/login"
         />
         <Route element={<PickingClassDiscussions />} path="/hey" />
+        <Route element={<QuestionsAndAnswers />} path="/Q&A" />
       </Routes>
     </ThemeProvider>
   );

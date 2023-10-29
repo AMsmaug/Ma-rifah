@@ -32,19 +32,9 @@ const QuestionsAnswers = () => {
     );
   };
 
-  const toggleReadMore = () => {
-    if (readMoreParagraphElement?.current?.classList.contains("expanded")) {
-      readMoreParagraphElement?.current?.classList.remove("expanded");
-      readMoreButton.current.innerHTML = "Read More";
-    } else {
-      readMoreParagraphElement?.current?.classList.add("expanded");
-      readMoreButton.current.innerHTML = "Read Less";
-    }
-  };
-
   return (
     <Box
-      className="questions-and-answers"
+      className="questions-and-answers section"
       id="Q&A"
       pt={4}
       pb={4}

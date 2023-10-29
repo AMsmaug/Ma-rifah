@@ -79,7 +79,7 @@ export const HeroSlider = () => {
   }, []);
 
   return (
-    <div className="landing" id="Home">
+    <div className="landing section" id="Home">
       <div className="wrapper">
         <div
           className="slider"
