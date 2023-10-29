@@ -2,8 +2,15 @@ import "./pickingClassDiscussion.css";
 import { Stack, Box, Typography } from "@mui/material";
 import { Header } from "../Header/Header";
 import Footer from "../Footer/Footer";
+import { useNavigate } from "react-router-dom";
 
 const PickingClassDiscussions = () => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/Q&A");
+  };
+
   return (
     <Box className="class-discussion-picker">
       <Header />
@@ -32,6 +39,7 @@ const PickingClassDiscussions = () => {
               },
             }}
             borderColor="secondary.main"
+            onClick={handleClick}
           >
             Grade - 12 (SG)
           </Box>
@@ -50,6 +58,7 @@ const PickingClassDiscussions = () => {
               },
             }}
             borderColor="secondary.main"
+            onClick={handleClick}
           >
             Grade - 12 (SV)
           </Box>
@@ -68,6 +77,7 @@ const PickingClassDiscussions = () => {
               },
             }}
             borderColor="secondary.main"
+            onClick={handleClick}
           >
             Grade - 12 (SE)
           </Box>

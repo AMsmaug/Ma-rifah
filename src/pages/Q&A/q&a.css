@@ -1,0 +1,10 @@
+.questions-page .search-bar input {
+  border: none;
+  color: var(--dark-blue);
+}
+.questions-page .search-bar input:focus {
+  outline: none;
+}
+.questions-page .question img {
+  object-fit: cover;
+}
