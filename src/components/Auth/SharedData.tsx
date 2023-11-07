@@ -7,22 +7,37 @@ type haveAccountProps = {
 type contextType = {
   hasAnAccount: boolean;
   setHasAnAccount: React.Dispatch<React.SetStateAction<boolean>>;
+  isLoggedIn: boolean;
+  login: () => void;
+  logout: () => void;
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const activeContext = createContext({} as contextType);
+export const ActiveContext = createContext({} as contextType);
 
 export const SharedData = ({ children }: haveAccountProps) => {
   const [hasAnAccount, setHasAnAccount] = useState(true);
+  const [isLoggedIn, setisLoggedIn] = useState<boolean>(false);
+
+  const login = () => {
+    setisLoggedIn(true);
+  };
+
+  const logout = () => {
+    setisLoggedIn(false);
+  };
 
   return (
-    <activeContext.Provider
+    <ActiveContext.Provider
       value={{
         hasAnAccount,
         setHasAnAccount,
+        isLoggedIn,
+        login,
+        logout,
       }}
     >
       {children}
-    </activeContext.Provider>
+    </ActiveContext.Provider>
   );
 };

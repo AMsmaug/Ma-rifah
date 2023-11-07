@@ -1,5 +1,5 @@
 import React, { FormEvent, useState, useContext } from "react";
-import { activeContext } from "../SharedData.tsx";
+import { ActiveContext } from "../SharedData.tsx";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
@@ -22,7 +22,7 @@ export const SignUp = ({ isActive }: prop) => {
     sendData: true,
   });
 
-  const { setHasAnAccount } = useContext(activeContext);
+  const { setHasAnAccount } = useContext(ActiveContext);
 
   const checkUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserName(e.target.value);

@@ -1,4 +1,4 @@
-import { activeContext } from "../SharedData.tsx";
+import { ActiveContext } from "../SharedData.tsx";
 import React, { FormEvent, useState, useContext } from "react";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
@@ -17,7 +17,7 @@ export const Login = ({ isActive }: prop) => {
     correctData: true,
   });
 
-  const { setHasAnAccount } = useContext(activeContext);
+  const { setHasAnAccount } = useContext(ActiveContext);
 
   const checkEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
