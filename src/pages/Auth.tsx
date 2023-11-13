@@ -1,10 +1,10 @@
 import { useContext } from "react";
 import { Login } from "../components/Auth/login/Login.tsx";
 import { SignUp } from "../components/Auth/signup/SignUp.tsx";
-import { activeContext } from "../components/Auth/SharedData.tsx";
+import { ActiveContext } from "../components/Auth/SharedData.tsx";
 
 export const Auth = () => {
-  const { hasAnAccount } = useContext(activeContext);
+  const { hasAnAccount } = useContext(ActiveContext);
   return (
     <div className="container auth">
       <div className="intro">

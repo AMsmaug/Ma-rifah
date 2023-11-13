@@ -8,3 +8,14 @@
 .questions-page .question img {
   object-fit: cover;
 }
+.questions-page .question .add-answer-input {
+  border: none;
+  padding-left: 20px;
+  font-weight: 600;
+  color: var(--dark-blue);
+  resize: none;
+  flex: 1;
+}
+.questions-page .question .add-answer-input:focus {
+  outline: none;
+}
