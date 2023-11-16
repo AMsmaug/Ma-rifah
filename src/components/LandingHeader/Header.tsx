@@ -6,8 +6,6 @@ export const Header = () => {
   const [anchorEl, setanchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  console.log(open);
-
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setanchorEl(event.currentTarget);
   };
@@ -42,7 +40,7 @@ export const Header = () => {
           </div>
 
           <li>
-            <a href="/login">Login</a>
+            <a href="/login">Start learning</a>
           </li>
           <Menu
             id="sections"

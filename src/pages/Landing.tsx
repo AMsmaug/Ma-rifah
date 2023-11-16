@@ -1,4 +1,4 @@
-import { Header } from "../components/Header/Header";
+import { Header } from "../components/LandingHeader/Header";
 import { HeroSlider } from "../components/Hero slider/HeroSlider";
 import AboutUs from "../components/Landing/About us/AboutUs";
 import AcademicSupport from "../components/Landing/Academic Support/AcademicSupport";

@@ -40,7 +40,7 @@ function App() {
           />
           <Route element={<PickingClassDiscussions />} path="/hey" />
           <Route element={<QuestionsAndAnswers />} path="/Q&A" />
-          <Route element={<CoursesProgress />} path="/Courses progress" />
+          <Route element={<CoursesProgress />} path="/CoursesProgress" />
         </Routes>
       </ThemeProvider>
     </SharedData>

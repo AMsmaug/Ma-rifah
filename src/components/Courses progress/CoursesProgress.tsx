@@ -4,6 +4,7 @@ import { useState, useContext } from "react";
 import Footer from "../Footer/Footer";
 import { ActiveContext } from "../Auth/SharedData";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const c = [
   {
@@ -45,6 +46,8 @@ const CoursesProgress = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
+    Cookies.remove(`isLoggedIn`);
+    Cookies.remove(`id`);
     logout();
     navigate("/login");
   };

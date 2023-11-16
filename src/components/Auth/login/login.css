@@ -97,6 +97,9 @@ body {
     padding: 10px;
     font-size: 16px;
   }
+  .container form input {
+    padding-left: 45px;
+  }
 }
 
 .container form .sign-button {
@@ -135,8 +138,8 @@ body {
 }
 
 .forgot-password {
-  color: red;
-  margin-bottom: 80px;
+  color: var(--orange);
+  margin-bottom: 60px;
   margin-top: -10px;
   cursor: pointer;
 }
@@ -152,6 +155,7 @@ body {
   cursor: pointer;
   left: 15px;
   color: var(--orange);
+  padding: 0 5px;
 }
 
 .icon {
@@ -159,4 +163,10 @@ body {
   left: 12px;
   top: 14px;
   color: var(--dark-blue);
+}
+
+@media (max-width: 767px) {
+  .icon {
+    top: 10px;
+  }
 }

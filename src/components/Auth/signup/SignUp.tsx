@@ -4,6 +4,9 @@ import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
 import "./signup.css";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 type prop = {
   isActive: boolean;
@@ -14,35 +17,38 @@ export const SignUp = ({ isActive }: prop) => {
   const [email, setEmail] = useState(``);
   const [password, setPassword] = useState(``);
   const [passwordAgain, setPasswordAgain] = useState(``);
+  const [grade, setGrade] = useState(`SG`);
   const [validation, setValidation] = useState({
     validUsername: true,
     validEmail: true,
     validPassword: true,
     samePasswords: true,
-    sendData: true,
   });
+
+  const navigate = useNavigate();
+
+  const [authMessage, setAuthMessage] = useState(``);
 
   const { setHasAnAccount } = useContext(ActiveContext);
 
   const checkUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserName(e.target.value);
-    console.log(/\d+/.test(e.target.value));
     if (/\d+/.test(e.target.value)) {
       setValidation((prev) => {
         return {
           ...prev,
           validUsername: false,
-          sendData: true,
         };
       });
+      setAuthMessage(``);
     } else {
       setValidation((prev) => {
         return {
           ...prev,
           validUsername: true,
-          sendData: true,
         };
       });
+      setAuthMessage(``);
     }
   };
 
@@ -53,17 +59,17 @@ export const SignUp = ({ isActive }: prop) => {
         return {
           ...prev,
           validEmail: true,
-          sendData: true,
         };
       });
+      setAuthMessage(``);
     } else {
       setValidation((prev) => {
         return {
           ...prev,
           validEmail: false,
-          sendData: true,
         };
       });
+      setAuthMessage(``);
     }
   };
 
@@ -74,18 +80,18 @@ export const SignUp = ({ isActive }: prop) => {
         return {
           ...prev,
           samePasswords: true,
-          sendData: true,
         };
       });
+      setAuthMessage(``);
     } else {
       if (passwordAgain !== ``) {
         setValidation((prev) => {
           return {
             ...prev,
             samePasswords: false,
-            sendData: true,
           };
         });
+        setAuthMessage(``);
       }
     }
     if (
@@ -96,17 +102,17 @@ export const SignUp = ({ isActive }: prop) => {
         return {
           ...prev,
           validPassword: true,
-          sendData: true,
         };
       });
+      setAuthMessage(``);
     } else {
       setValidation((prev) => {
         return {
           ...prev,
           validPassword: false,
-          sendData: true,
         };
       });
+      setAuthMessage(``);
     }
   };
 
@@ -117,40 +123,54 @@ export const SignUp = ({ isActive }: prop) => {
         return {
           ...prev,
           samePasswords: true,
-          sendData: true,
         };
       });
+      setAuthMessage(``);
     } else {
       setValidation((prev) => {
         return {
           ...prev,
           samePasswords: false,
-          sendData: true,
         };
       });
+      setAuthMessage(``);
     }
   };
 
   const confirmData = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (
       userName === `` ||
       email === `` ||
       password === `` ||
       passwordAgain === ``
     ) {
-      e.preventDefault();
-      setValidation((prev) => {
-        return {
-          ...prev,
-          sendData: false,
-        };
-      });
+      setAuthMessage(`*All fields are required!`);
     } else {
       const values = Object.values(validation);
-      if (values.slice(0, values.length - 1).includes(false)) {
-        e.preventDefault();
+      if (values.slice(0, values.length - 2).includes(false)) {
+        setAuthMessage(`*Please enter the information correctly!`);
       } else {
         // post data
+        axios
+          .post(`http://localhost/Ma-rifah/Add_account.php`, {
+            userName,
+            email,
+            password,
+            grade,
+          })
+          .then((response) => {
+            const serverResponse: { code: number; message: string } =
+              response.data;
+            if (serverResponse.code === 409) {
+              setAuthMessage(serverResponse.message);
+            } else {
+              // In case all entered data are valid, the server will return the student id as a message.
+              // The id will be used for all subsequent pages, so it's important to store it in a global place.
+              Cookies.set(`id`, `${serverResponse.message}`);
+              navigate(`/CoursesProgress`);
+            }
+          });
       }
     }
   };
@@ -173,7 +193,9 @@ export const SignUp = ({ isActive }: prop) => {
         />
       </div>
       <div className="inp">
-        {!validation.validEmail && <span className="error">*Ivalid email</span>}
+        {!validation.validEmail && (
+          <span className="error">*Invalid email</span>
+        )}
         <EmailIcon className="icon" />
         <input
           type="email"
@@ -185,7 +207,7 @@ export const SignUp = ({ isActive }: prop) => {
       <div className="inp">
         {!validation.validPassword && (
           <span className="error">
-            *field must contain numbers and capital letters
+            *This field must contain numbers and capital letters
           </span>
         )}
         <LockIcon className="icon" />
@@ -221,17 +243,21 @@ export const SignUp = ({ isActive }: prop) => {
         )}
       </div>
       <div className="inp">
-        {!validation.sendData && (
-          <span className="error signup-error">*All fields are required</span>
-        )}
+        {<span className="error signup-error">{authMessage}</span>}
       </div>
       <label htmlFor="class" className="class">
         Which grade are you in?
       </label>
-      <select name="" className="choose-class" id="class">
-        <option value="grade-7">Grade 7</option>
-        <option value="grade-8">Grade 8</option>
-        <option value="grade-9">Grade 9</option>
+      <select
+        name=""
+        className="choose-class"
+        id="class"
+        value={grade}
+        onChange={(e) => setGrade(e.target.value)}
+      >
+        <option value="SG">Grade - 12 (SG)</option>
+        <option value="SV">Grade - 12 (SV)</option>
+        <option value="SE">Grade - 12 (SE)</option>
       </select>
       <button className="sign-button">Sign up</button>
       <p className="signup-button">

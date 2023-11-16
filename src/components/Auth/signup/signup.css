@@ -23,6 +23,7 @@
   font-size: 18px;
   color: var(--orange);
   cursor: pointer;
+  padding: 0 5px;
 }
 
 .container form .class {

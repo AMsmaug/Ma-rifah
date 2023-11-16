@@ -1,6 +1,6 @@
 import "./pickingClassDiscussion.css";
 import { Stack, Box, Typography } from "@mui/material";
-import { Header } from "../Header/Header";
+import { Header } from "../LandingHeader/Header";
 import Footer from "../Footer/Footer";
 import { useNavigate } from "react-router-dom";
 
