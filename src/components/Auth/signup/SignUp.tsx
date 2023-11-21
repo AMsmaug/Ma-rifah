@@ -1,4 +1,4 @@
-import React, { FormEvent, useState, useContext } from "react";
+import React, { FormEvent, useState, useContext, useEffect } from "react";
 import { ActiveContext } from "../SharedData.tsx";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
@@ -7,17 +7,26 @@ import "./signup.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import {
+  Box,
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+} from "@mui/material";
 
 type prop = {
   isActive: boolean;
 };
 
 export const SignUp = ({ isActive }: prop) => {
+  const [availableGrades, setAvailableGrades] = useState([]);
   const [userName, setUserName] = useState(``);
   const [email, setEmail] = useState(``);
   const [password, setPassword] = useState(``);
   const [passwordAgain, setPasswordAgain] = useState(``);
-  const [grade, setGrade] = useState(`SG`);
+  const [grade, setGrade] = useState(1);
+  const [gender, setGender] = useState(`male`);
   const [validation, setValidation] = useState({
     validUsername: true,
     validEmail: true,
@@ -29,7 +38,13 @@ export const SignUp = ({ isActive }: prop) => {
 
   const [authMessage, setAuthMessage] = useState(``);
 
-  const { setHasAnAccount } = useContext(ActiveContext);
+  const { setHasAnAccount, login } = useContext(ActiveContext);
+
+  useEffect(() => {
+    axios.get(`http://localhost/Ma-rifah/get_grades.php`).then((response) => {
+      setAvailableGrades(response.data);
+    });
+  }, []);
 
   const checkUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserName(e.target.value);
@@ -95,7 +110,7 @@ export const SignUp = ({ isActive }: prop) => {
       }
     }
     if (
-      /^(?=.*[A-Z])(?=.*\d).+$/.test(e.target.value) ||
+      /^(?=.*[A-Z])(?=.*\d).{8,}$/.test(e.target.value) ||
       e.target.value === ``
     ) {
       setValidation((prev) => {
@@ -152,22 +167,33 @@ export const SignUp = ({ isActive }: prop) => {
         setAuthMessage(`*Please enter the information correctly!`);
       } else {
         // post data
+        let path;
+        if (gender === `male`) {
+          const imgNumber = Math.floor(Math.random() * 5);
+          path = `../../../public/images/av${imgNumber}.png`;
+        } else {
+          const imgNumber = Math.round(Math.random() * (7 - 5) + 5);
+          path = `../../../public/images/av${imgNumber}.png`;
+        }
         axios
           .post(`http://localhost/Ma-rifah/Add_account.php`, {
             userName,
             email,
             password,
+            gender,
             grade,
+            path,
           })
           .then((response) => {
             const serverResponse: { code: number; message: string } =
               response.data;
-            if (serverResponse.code === 409) {
+            if (serverResponse.code === 409 || serverResponse.code === 500) {
               setAuthMessage(serverResponse.message);
             } else {
-              // In case all entered data are valid, the server will return the student id as a message.
+              // In case all the entered data are valid, the server will return the student id as a message.
               // The id will be used for all subsequent pages, so it's important to store it in a global place.
               Cookies.set(`id`, `${serverResponse.message}`);
+              login();
               navigate(`/CoursesProgress`);
             }
           });
@@ -186,6 +212,7 @@ export const SignUp = ({ isActive }: prop) => {
         )}
         <PersonIcon className="icon" />
         <input
+          className="user-data"
           type="text"
           placeholder="Username"
           value={userName}
@@ -198,6 +225,7 @@ export const SignUp = ({ isActive }: prop) => {
         )}
         <EmailIcon className="icon" />
         <input
+          className="user-data"
           type="email"
           placeholder="Email"
           value={email}
@@ -205,13 +233,18 @@ export const SignUp = ({ isActive }: prop) => {
         />
       </div>
       <div className="inp">
-        {!validation.validPassword && (
+        {!validation.validPassword && password.length < 8 ? (
+          <span className="error">*Too short password!</span>
+        ) : !validation.validPassword ? (
           <span className="error">
             *This field must contain numbers and capital letters
           </span>
+        ) : (
+          ``
         )}
         <LockIcon className="icon" />
         <input
+          className="user-data"
           type="password"
           placeholder="Password"
           value={password}
@@ -225,7 +258,7 @@ export const SignUp = ({ isActive }: prop) => {
         <LockIcon className="icon" />
         {validation.validPassword && password !== `` ? (
           <input
-            className="password-again"
+            className="password-again user-data"
             type="password"
             placeholder="Password Again"
             value={passwordAgain}
@@ -233,7 +266,7 @@ export const SignUp = ({ isActive }: prop) => {
           />
         ) : (
           <input
-            className="password-again"
+            className="password-again user-data"
             type="password"
             placeholder="Password Again"
             value={passwordAgain}
@@ -241,9 +274,6 @@ export const SignUp = ({ isActive }: prop) => {
             disabled
           />
         )}
-      </div>
-      <div className="inp">
-        {<span className="error signup-error">{authMessage}</span>}
       </div>
       <label htmlFor="class" className="class">
         Which grade are you in?
@@ -253,12 +283,47 @@ export const SignUp = ({ isActive }: prop) => {
         className="choose-class"
         id="class"
         value={grade}
-        onChange={(e) => setGrade(e.target.value)}
+        onChange={(e) => setGrade(+e.target.value)}
       >
-        <option value="SG">Grade - 12 (SG)</option>
-        <option value="SV">Grade - 12 (SV)</option>
-        <option value="SE">Grade - 12 (SE)</option>
+        {availableGrades.map(
+          (grade: { grade_id: number; grade_name: string }) => (
+            <option value={grade.grade_id} key={grade.grade_id}>
+              {grade.grade_name.replace(`Grade `, `Grade - `)}
+            </option>
+          )
+        )}
       </select>
+      <div className="inp">
+        {<span className="error signup-error">{authMessage}</span>} {/*bla */}
+      </div>
+      <label htmlFor="class" className="class gender">
+        Choose your gender
+      </label>
+      <Box sx={{ display: `flex`, justifyContent: `center` }}>
+        <FormControl>
+          <RadioGroup
+            name="genders"
+            aria-labelledby="genders-label"
+            value={gender}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setGender(e.target.value)
+            }
+            row
+            sx={{ display: `flex`, gap: `20px` }}
+          >
+            <FormControlLabel
+              control={<Radio size="small" color="primary" />}
+              value={`male`}
+              label="Male"
+            />
+            <FormControlLabel
+              control={<Radio size="small" color="primary" />}
+              value={`female`}
+              label="Female"
+            />
+          </RadioGroup>
+        </FormControl>
+      </Box>
       <button className="sign-button">Sign up</button>
       <p className="signup-button">
         Already have an account?

@@ -1,104 +1,25 @@
 import "./coursesprogress.css";
-import { Box, Stack, Typography, Toolbar, List, ListItem } from "@mui/material";
-import { useState, useContext } from "react";
+import { Box, Stack, Typography, List, ListItem } from "@mui/material";
+import { useContext, useEffect } from "react";
 import Footer from "../Footer/Footer";
-import { ActiveContext } from "../Auth/SharedData";
 import { useNavigate } from "react-router-dom";
+import { CoursesContext } from "./CoursesContext";
+import axios from "axios";
 import Cookies from "js-cookie";
 
-const c = [
-  {
-    courseName: "math",
-    courseStatus: "In Progress",
-    courseGrade: "10 / 120",
-  },
-  {
-    courseName: "physics",
-    courseStatus: "Passed",
-    courseGrade: "10 / 120",
-  },
-  {
-    courseName: "biology",
-    courseStatus: "In Progress",
-    courseGrade: "20 / 120",
-  },
-  {
-    courseName: "chemistry",
-    courseStatus: "In Progress",
-    courseGrade: "40 / 120",
-  },
-  {
-    courseName: "geography",
-    courseStatus: "Failed",
-    courseGrade: "50 / 120",
-  },
-  {
-    courseName: "arabic",
-    courseStatus: "Passed",
-    courseGrade: "100 / 120",
-  },
-];
-
 const CoursesProgress = () => {
-  const [courses] = useState(c);
+  const { studentInfo, setStudentInfo } = useContext(CoursesContext);
 
-  const { logout } = useContext(ActiveContext);
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    Cookies.remove(`isLoggedIn`);
-    Cookies.remove(`id`);
-    logout();
-    navigate("/login");
-  };
+  useEffect(() => {
+    axios
+      .post(`http://localhost/Ma-rifah/get_student_info.php`, Cookies.get(`id`))
+      .then((response) => {
+        setStudentInfo(response.data);
+      });
+  }, [setStudentInfo]);
 
   return (
     <Box className="materials">
-      <Toolbar
-        sx={{
-          position: "fixed",
-          left: "0",
-          top: "0",
-          width: "100%",
-          bgcolor: "secondary.main",
-          color: "white",
-          zIndex: "1300",
-          justifyContent: "space-between",
-          fontSize: {
-            xs: "15px",
-            sm: "18px",
-            md: "20px",
-          },
-        }}
-      >
-        <Box fontSize={{ md: "25px" }} fontWeight="bold">
-          Ma'Rifah
-        </Box>
-        <Stack
-          direction="row"
-          gap={{
-            xs: "7px",
-            md: "30px",
-          }}
-          fontSize={{
-            xs: "13px",
-            sm: "17px",
-            md: "20px",
-          }}
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Box color="primary.main">
-            <span style={{ fontWeight: "bold" }}>Grade:</span> 200/600
-          </Box>
-          <Box color="primary.main">
-            <span style={{ fontWeight: "bold" }}>Average:</span> 12/20
-          </Box>
-        </Stack>
-        <Box sx={{ cursor: "pointer" }} onClick={handleClick}>
-          Logout
-        </Box>
-      </Toolbar>
       <Box className="container" marginTop="100px">
         <Typography
           className="main-title"
@@ -151,15 +72,16 @@ const CoursesProgress = () => {
           </List>
         </Box>
         <Stack spacing={2} mt={3} mb={{ xs: 5, md: 8 }}>
-          {courses &&
-            courses.map((c, i) => (
-              <CourseProgress
-                key={i}
-                courseName={c.courseName}
-                courseStatus={c.courseStatus}
-                courseGrade={c.courseGrade}
-              />
-            ))}
+          {studentInfo.map((course) => (
+            <CourseProgress
+              key={course.courseId}
+              courseId={course.courseId}
+              courseName={course.courseName}
+              courseStatus={course.courseStatus}
+              studentGrade={course.studentGrade}
+              fullMark={course.fullMark}
+            />
+          ))}
         </Stack>
       </Box>
       <Footer />
@@ -170,22 +92,32 @@ const CoursesProgress = () => {
 export default CoursesProgress;
 
 type courseProgress = {
+  courseId: number;
   courseName: string;
   courseStatus: string;
-  courseGrade: string;
+  studentGrade: number;
+  fullMark: number;
 };
 
 const CourseProgress = ({
+  courseId,
   courseName,
   courseStatus,
-  courseGrade,
+  studentGrade,
+  fullMark,
 }: courseProgress) => {
+  const { setCurrentCourseId } = useContext(CoursesContext);
+  const navigate = useNavigate();
   return (
     <Stack
       className="course-progress"
       direction="row"
       justifyContent="space-between"
       alignItems="center"
+      onClick={() => {
+        setCurrentCourseId(courseId);
+        navigate(`${courseName}`);
+      }}
       p={{
         xs: 1.5,
         sm: 2,
@@ -223,17 +155,21 @@ const CourseProgress = ({
           md: "150px",
         }}
         color={
-          courseStatus === "Failed"
+          courseStatus === "failed"
             ? "error.main"
-            : courseStatus === "In Progress"
+            : courseStatus === "in_progress"
             ? "primary.main"
             : "success.main"
         }
         textAlign="center"
       >
-        {courseStatus}
+        {courseStatus
+          .replace(`_`, ` `)
+          .replace(courseStatus[0], courseStatus[0].toUpperCase())}
       </Box>
-      <Box fontWeight="bold">{courseGrade}</Box>
+      <Box fontWeight="bold">
+        {studentGrade} / {fullMark}
+      </Box>
     </Stack>
   );
 };

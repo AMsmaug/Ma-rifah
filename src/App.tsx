@@ -7,7 +7,9 @@ import { QuestionsAndAnswers } from "./pages/Q&A/QuestionsAndAnswers";
 import { SharedData } from "./components/Auth/SharedData";
 import { createTheme, ThemeProvider } from "@mui/material";
 import PickingClassDiscussions from "./components/Picking class discussions/PickingClassDiscussions";
-import CoursesProgress from "./components/Courses progress/CoursesProgress";
+import { RequireAuth } from "./components/Auth/RequireAuth";
+import { Material } from "./components/Material/Material";
+import { Courses } from "./components/Courses progress/Courses";
 
 const theme = createTheme({
   palette: {
@@ -30,17 +32,25 @@ function App() {
       <ThemeProvider theme={theme}>
         <Routes>
           <Route element={<Landing />} path="/" />
-          <Route
-            element={
-              <SharedData>
-                <Auth />
-              </SharedData>
-            }
-            path="/login"
-          />
+          <Route element={<Auth />} path="/login" />
           <Route element={<PickingClassDiscussions />} path="/hey" />
           <Route element={<QuestionsAndAnswers />} path="/Q&A" />
-          <Route element={<CoursesProgress />} path="/CoursesProgress" />
+          <Route
+            element={
+              <RequireAuth>
+                <Courses />
+              </RequireAuth>
+            }
+            path="/CoursesProgress"
+          />
+          <Route
+            element={
+              <RequireAuth>
+                <Material />
+              </RequireAuth>
+            }
+            path="/CoursesProgress/:courseName"
+          />
         </Routes>
       </ThemeProvider>
     </SharedData>

@@ -22,7 +22,8 @@ export const Login = ({ isActive }: prop) => {
 
   const navigate = useNavigate();
 
-  const { setHasAnAccount } = useContext(ActiveContext);
+  const { setHasAnAccount, login, setUserName, setProfileUrl } =
+    useContext(ActiveContext);
 
   if (Cookies.get(`isLoggedIn`)) {
     return <Navigate to={`/CoursesProgress`} replace={true} />;
@@ -61,16 +62,17 @@ export const Login = ({ isActive }: prop) => {
               password,
             })
             .then((response) => {
-              const responseData: { code: number; message: string } =
-                response.data;
-              if (responseData.code === 404 || responseData.code === 401) {
+              const responseData: {
+                code: number;
+                message: { id: number; name: string; profile: string };
+              } = response.data;
+              if (responseData.code === 401) {
                 // [404 => Not found]: There is no such account
                 // [401 => Unauthorized]: Wrong password, lacks valid authentication credentials
                 setAuthMessage(`*${responseData.message}`);
               } else {
                 // The student account have been verified
                 if (isLoggedIn) {
-                  console.log(isLoggedIn);
                   // In case he has checked the remember device box
                   const expirationDate = new Date();
                   expirationDate.setMonth(expirationDate.getMonth() + 1);
@@ -79,14 +81,17 @@ export const Login = ({ isActive }: prop) => {
                     path: "/",
                   });
                   // The id will be used for all subsequent pages, so it's important to store it in a global place.
-                  Cookies.set(`id`, `${responseData.message}`, {
+                  Cookies.set(`id`, `${responseData.message.id}`, {
                     expires: expirationDate,
                     path: "/",
                   });
                 } else {
                   // In case he want to log in without checking the remember device box, the id will be carried by the cookies only for the current session.
-                  Cookies.set(`id`, `${responseData.message}`);
+                  Cookies.set(`id`, `${responseData.message.id}`);
                 }
+                login();
+                setUserName(responseData.message.name);
+                setProfileUrl(responseData.message.profile);
                 navigate(`/CoursesProgress`, { replace: true });
               }
             });
@@ -102,6 +107,7 @@ export const Login = ({ isActive }: prop) => {
         <div className="inp">
           {!validEmail && <span className="error">*Invalid email</span>}
           <input
+            className="user-data"
             type="text"
             placeholder="Email"
             value={email}
@@ -113,6 +119,7 @@ export const Login = ({ isActive }: prop) => {
           <LockIcon className="icon" />
           <input
             type="password"
+            className="user-data"
             placeholder="Password"
             value={password}
             onInput={handlePassword}

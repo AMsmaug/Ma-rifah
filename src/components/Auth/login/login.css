@@ -76,7 +76,7 @@ body {
   color: red;
 }
 
-.container form input {
+.container form .user-data {
   width: 100%;
   font-size: 18px;
   padding: 15px 15px 15px 45px;
@@ -110,7 +110,7 @@ body {
   border: none;
   background-color: var(--dark-blue);
   color: white;
-  margin-bottom: 30px;
+  margin: 15px 0;
 }
 
 .container form .sign-button:hover {
@@ -140,7 +140,6 @@ body {
 .forgot-password {
   color: var(--orange);
   margin-bottom: 60px;
-  margin-top: -10px;
   cursor: pointer;
 }
 

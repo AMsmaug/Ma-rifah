@@ -30,6 +30,7 @@
   display: block;
   padding-left: 5px;
   margin-bottom: 5px;
+  margin-top: 15px;
   color: var(--dark-blue);
   font-weight: bold;
 }
@@ -42,7 +43,6 @@
   font-weight: bold;
   border-radius: 12px;
   padding: 10px;
-  margin-bottom: 40px;
   cursor: pointer;
   transition: 0.3s;
 }
@@ -61,9 +61,10 @@
 }
 
 .container form .password-again {
-  margin-bottom: 30px;
+  margin-bottom: 15px;
 }
 
 .container form .inp .error.signup-error {
-  top: 85px;
+  top: 155px;
+  font-size: 18px;
 }
