@@ -1,14 +1,14 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import Cookies from "js-cookie";
-import { Box, Toolbar } from "@mui/material";
-import { Stack } from "@mui/material";
+import { Box, Toolbar, IconButton, Stack, Drawer } from "@mui/material";
+import ReorderIcon from "@mui/icons-material/Reorder";
 import { useNavigate } from "react-router-dom";
-import { ActiveContext } from "../Auth/SharedData";
 import { CoursesContext } from "./CoursesContext";
+import { DrawerContent } from "../Material/DrawerContent";
 
 export const CoursesHeader = () => {
-  const { logout } = useContext(ActiveContext);
   const { studentInfo } = useContext(CoursesContext);
+  const [openDrawer, setOpenDrawer] = useState(false);
   const navigate = useNavigate();
 
   console.log(studentInfo);
@@ -19,8 +19,11 @@ export const CoursesHeader = () => {
   const handleClick = () => {
     Cookies.remove(`isLoggedIn`);
     Cookies.remove(`id`);
-    logout();
     navigate("/login");
+  };
+
+  const handleLogoClick = () => {
+    navigate(`/`);
   };
 
   studentInfo.forEach((student) => {
@@ -30,7 +33,7 @@ export const CoursesHeader = () => {
   return (
     <Toolbar
       sx={{
-        position: "fixed",
+        position: "sticky",
         left: "0",
         top: "0",
         width: "100%",
@@ -45,8 +48,42 @@ export const CoursesHeader = () => {
         },
       }}
     >
-      <Box fontSize={{ md: "25px" }} fontWeight="bold">
+      <Box
+        fontSize={{ md: "25px", cursor: `pointer` }}
+        fontWeight="bold"
+        onClick={handleLogoClick}
+      >
         Ma'Rifah
+      </Box>
+      <Box
+        position={`absolute`}
+        top={`50%`}
+        sx={{
+          transform: `translateY(-50%)`,
+          left: { xs: `82px`, sm: `105px` },
+          display: {
+            xs: `block`,
+            sm: `block`,
+            md: `none`,
+            lg: `none`,
+          },
+        }}
+      >
+        <IconButton
+          aria-label="send"
+          sx={{ color: `white` }}
+          size="small"
+          onClick={() => setOpenDrawer(true)}
+        >
+          <ReorderIcon
+            sx={{
+              fontSize: {
+                xs: `22px`,
+                sm: `26px`,
+              },
+            }}
+          />
+        </IconButton>
       </Box>
       <Stack
         direction="row"
@@ -55,7 +92,7 @@ export const CoursesHeader = () => {
           md: "30px",
         }}
         fontSize={{
-          xs: "13px",
+          xs: "14px",
           sm: "17px",
           md: "20px",
         }}
@@ -74,6 +111,30 @@ export const CoursesHeader = () => {
       <Box sx={{ cursor: "pointer" }} onClick={handleClick}>
         Logout
       </Box>
+      <Drawer
+        anchor="left"
+        open={openDrawer}
+        onClose={() => setOpenDrawer(false)}
+        sx={{
+          display: {
+            sm: `block`,
+            md: `none`,
+          },
+        }}
+      >
+        <Box
+          sx={{
+            width: {
+              xs: `250px`,
+              sm: `300px`,
+            },
+          }}
+          textAlign={`center`}
+          role="presentation"
+        >
+          <DrawerContent />
+        </Box>
+      </Drawer>
     </Toolbar>
   );
 };

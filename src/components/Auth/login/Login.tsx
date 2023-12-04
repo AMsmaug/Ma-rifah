@@ -1,4 +1,4 @@
-import { ActiveContext } from "../SharedData.tsx";
+import { ActiveContext } from "../UserInfo.tsx";
 import React, { FormEvent, useState, useContext } from "react";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
@@ -22,7 +22,7 @@ export const Login = ({ isActive }: prop) => {
 
   const navigate = useNavigate();
 
-  const { setHasAnAccount, login, setUserName, setProfileUrl } =
+  const { setHasAnAccount, setUserName, setProfileUrl } =
     useContext(ActiveContext);
 
   if (Cookies.get(`isLoggedIn`)) {
@@ -74,6 +74,7 @@ export const Login = ({ isActive }: prop) => {
                 // The student account have been verified
                 if (isLoggedIn) {
                   // In case he has checked the remember device box
+                  console.log(`login, at 77`);
                   const expirationDate = new Date();
                   expirationDate.setMonth(expirationDate.getMonth() + 1);
                   Cookies.set(`isLoggedIn`, `true`, {
@@ -81,15 +82,18 @@ export const Login = ({ isActive }: prop) => {
                     path: "/",
                   });
                   // The id will be used for all subsequent pages, so it's important to store it in a global place.
+                  console.log(`login, at 85`);
                   Cookies.set(`id`, `${responseData.message.id}`, {
                     expires: expirationDate,
                     path: "/",
                   });
                 } else {
+                  console.log(`login, at 91`);
                   // In case he want to log in without checking the remember device box, the id will be carried by the cookies only for the current session.
-                  Cookies.set(`id`, `${responseData.message.id}`);
+                  Cookies.set(`id`, `${responseData.message.id}`, {
+                    path: `/`,
+                  });
                 }
-                login();
                 setUserName(responseData.message.name);
                 setProfileUrl(responseData.message.profile);
                 navigate(`/CoursesProgress`, { replace: true });

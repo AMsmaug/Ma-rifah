@@ -3,26 +3,34 @@ import { Box, Stack, Typography, List, ListItem } from "@mui/material";
 import { useContext, useEffect } from "react";
 import Footer from "../Footer/Footer";
 import { useNavigate } from "react-router-dom";
-import { CoursesContext } from "./CoursesContext";
+import { CoursesContext, studentInfoType } from "./CoursesContext";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { CoursesListContext } from "../../App";
 
 const CoursesProgress = () => {
   const { studentInfo, setStudentInfo } = useContext(CoursesContext);
 
   console.log(Cookies.get("id"));
 
+  const { setCourses } = useContext(CoursesListContext);
+
   useEffect(() => {
     axios
       .post(`http://localhost/Ma-rifah/get_student_info.php`, Cookies.get(`id`))
       .then((response) => {
         setStudentInfo(response.data);
+        setCourses(
+          response.data.map((element: studentInfoType) => {
+            return element["courseName"];
+          })
+        );
       });
-  }, [setStudentInfo]);
+  }, [setCourses, setStudentInfo]);
 
   return (
     <Box className="materials">
-      <Box className="container" marginTop="100px">
+      <Box className="container" marginTop="50px">
         <Typography
           className="main-title"
           variant="h3"
@@ -46,7 +54,7 @@ const CoursesProgress = () => {
         </Typography>
         <Box mt="40px">
           <Typography variant="h6" mb={1}>
-            Your Grade will be calculated in the following way.
+            Your Grade will be calculated in the following way:
           </Typography>
           <List
             sx={{

@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Login } from "../components/Auth/login/Login.tsx";
 import { SignUp } from "../components/Auth/signup/SignUp.tsx";
-import { ActiveContext } from "../components/Auth/SharedData.tsx";
+import { ActiveContext } from "../components/Auth/UserInfo.tsx";
 
 export const Auth = () => {
   const { hasAnAccount } = useContext(ActiveContext);
