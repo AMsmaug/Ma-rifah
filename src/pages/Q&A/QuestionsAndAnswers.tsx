@@ -11,7 +11,7 @@ import "./q&a.css";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Button, Divider, Paper, Rating } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import { ActiveContext } from "../../components/Auth/SharedData";
+import { ActiveContext } from "../../components/Auth/UserInfo";
 import {
   Dialog,
   DialogTitle,

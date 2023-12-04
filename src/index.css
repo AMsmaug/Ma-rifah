@@ -100,7 +100,7 @@ html {
   bottom: -25px;
   left: 50%;
   transform: translateX(-50%);
-  width: 105px;
+  width: 100%;
 }
 .main-title:after {
   content: "";

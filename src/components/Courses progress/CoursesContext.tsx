@@ -13,6 +13,12 @@ type contextType = {
   setStudentInfo: React.Dispatch<React.SetStateAction<studentInfoType[]>>;
   currentCourseId: number;
   setCurrentCourseId: React.Dispatch<React.SetStateAction<number>>;
+  currentChapterId: number;
+  setCurrentChapterId: React.Dispatch<React.SetStateAction<number>>;
+  lastCompletedAssignment: number;
+  setLastCompletedAssignment: React.Dispatch<React.SetStateAction<number>>;
+  lastCompletedQuiz: number;
+  setLastCompletedQuiz: React.Dispatch<React.SetStateAction<number>>;
 };
 
 export const CoursesContext = createContext({} as contextType);
@@ -20,6 +26,9 @@ export const CoursesContext = createContext({} as contextType);
 export const CoursesData = ({ children }: { children: React.ReactNode }) => {
   const [studentInfo, setStudentInfo] = useState<studentInfoType[]>([]);
   const [currentCourseId, setCurrentCourseId] = useState(0);
+  const [currentChapterId, setCurrentChapterId] = useState(0);
+  const [lastCompletedAssignment, setLastCompletedAssignment] = useState(0);
+  const [lastCompletedQuiz, setLastCompletedQuiz] = useState(0);
 
   return (
     <CoursesContext.Provider
@@ -28,6 +37,12 @@ export const CoursesData = ({ children }: { children: React.ReactNode }) => {
         setStudentInfo,
         currentCourseId,
         setCurrentCourseId,
+        currentChapterId,
+        setCurrentChapterId,
+        lastCompletedAssignment,
+        setLastCompletedAssignment,
+        lastCompletedQuiz,
+        setLastCompletedQuiz,
       }}
     >
       {children}

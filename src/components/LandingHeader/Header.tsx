@@ -13,6 +13,7 @@ export const Header = () => {
   const handleClose = () => {
     setanchorEl(null);
   };
+
   return (
     <>
       <div className="container header">
@@ -38,7 +39,6 @@ export const Header = () => {
               <a href="/#Contact-us">Contact us</a>
             </li>
           </div>
-
           <li>
             <a href="/login">Start learning</a>
           </li>

@@ -1,5 +1,5 @@
 import React, { FormEvent, useState, useContext, useEffect } from "react";
-import { ActiveContext } from "../SharedData.tsx";
+import { ActiveContext } from "../UserInfo.tsx";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
@@ -38,7 +38,7 @@ export const SignUp = ({ isActive }: prop) => {
 
   const [authMessage, setAuthMessage] = useState(``);
 
-  const { setHasAnAccount, login } = useContext(ActiveContext);
+  const { setHasAnAccount } = useContext(ActiveContext);
 
   useEffect(() => {
     axios.get(`http://localhost/Ma-rifah/get_grades.php`).then((response) => {
@@ -193,7 +193,6 @@ export const SignUp = ({ isActive }: prop) => {
               // In case all the entered data are valid, the server will return the student id as a message.
               // The id will be used for all subsequent pages, so it's important to store it in a global place.
               Cookies.set(`id`, `${serverResponse.message}`);
-              login();
               navigate(`/CoursesProgress`);
             }
           });
