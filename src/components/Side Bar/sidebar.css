@@ -1,4 +1,9 @@
 .side-bar .chapter {
   font-weight: 600;
+}
+.side-bar .chapter.active {
+  color: var(--orange);
+}
+.side-bar .chapter span {
   margin-right: 5px;
 }

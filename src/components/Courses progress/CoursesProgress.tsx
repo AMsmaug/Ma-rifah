@@ -10,6 +10,8 @@ import Cookies from "js-cookie";
 const CoursesProgress = () => {
   const { studentInfo, setStudentInfo } = useContext(CoursesContext);
 
+  console.log(Cookies.get("id"));
+
   useEffect(() => {
     axios
       .post(`http://localhost/Ma-rifah/get_student_info.php`, Cookies.get(`id`))

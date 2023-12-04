@@ -11,6 +11,8 @@ export const CoursesHeader = () => {
   const { studentInfo } = useContext(CoursesContext);
   const navigate = useNavigate();
 
+  console.log(studentInfo);
+
   let totalGrade = 0;
   let totalMarks = 0;
 

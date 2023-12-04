@@ -6,7 +6,7 @@ import { List, ListItem, ListItemButton } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./sidebar.css";
 import Skeleton from "@mui/material/Skeleton";
 
@@ -16,33 +16,46 @@ const drawerWidthMedium = 250;
 
 const drawerWidthLarge = 320;
 
+type chapterType = {
+  chapterId: number;
+  chapterName: string;
+};
+
+type coursesType = {
+  courseId: number;
+  courseName: string;
+  courseChapters: chapterType[];
+}[];
+
+type activeChapterType = {
+  courseId: number;
+  courseName: string;
+  chapterId: number;
+  chapterNumber: number;
+  chapterName: string;
+} | null;
+
 type Props = {
   mobileOpen: boolean;
   handleDrawerToggle: () => void;
+  isLoading: boolean;
+  courses: coursesType;
+  activeChapter: activeChapterType;
+  changeActiveChapter: (props: activeChapterType) => void;
 };
 
-const SideBar = ({ mobileOpen, handleDrawerToggle }: Props) => {
+const SideBar = ({
+  mobileOpen,
+  handleDrawerToggle,
+  isLoading,
+  courses,
+  activeChapter,
+  changeActiveChapter,
+}: Props) => {
+  // This state is to manage expanding accordions to ensure that only one accordion can be expanded
   const [expandedAccordion, setexpandedAccordion] = useState<number | null>(
     null
   );
-
-  const [isLoading, setisLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setisLoading(false);
-    }, 1500);
-  }, []);
-
-  const courses = [
-    "Math",
-    "Physics",
-    "English",
-    "Chemistery",
-    "Geography",
-    "History",
-    "French",
-  ];
 
   const handleChange = (isExpanded: boolean, panel: number) => {
     setexpandedAccordion(isExpanded ? panel : null);
@@ -59,10 +72,14 @@ const SideBar = ({ mobileOpen, handleDrawerToggle }: Props) => {
           {courses.map((c, i) => (
             <CoursesListItem
               key={i}
-              courseName={c}
+              courseName={c.courseName}
               courseNumber={i}
+              courseId={c.courseId}
+              chaptersList={c.courseChapters}
               expanded={expandedAccordion === i}
               handleChange={handleChange}
+              activeChapter={activeChapter}
+              changeActiveChapter={changeActiveChapter}
             />
           ))}
         </Box>
@@ -129,15 +146,23 @@ export default SideBar;
 type courseProps = {
   courseName: string;
   courseNumber: number;
+  courseId: number;
+  chaptersList: chapterType[];
   expanded: boolean;
   handleChange: (isExpanded: boolean, panel: number) => void;
+  activeChapter: activeChapterType;
+  changeActiveChapter: (props: activeChapterType) => void;
 };
 
 const CoursesListItem = ({
   courseName,
   courseNumber,
+  courseId,
   expanded,
   handleChange,
+  chaptersList,
+  activeChapter,
+  changeActiveChapter,
 }: courseProps) => {
   const accordionSummaryId = `panel${courseNumber}-header`;
   const accordionSummaryAriaControls = `panel${courseNumber}-content`;
@@ -175,21 +200,36 @@ const CoursesListItem = ({
       </AccordionSummary>
       <AccordionDetails>
         <List sx={{ paddingRight: "0px" }}>
-          <ListItem disablePadding>
-            <ListItemButton disableGutters>
-              <span className="chapter">Chapter 1: </span> Functions
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton disableGutters>
-              <span className="chapter"> Chapter 2: </span> Trigo
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton disableGutters>
-              <span className="chapter"> Chapter 3: </span> Trigo
-            </ListItemButton>
-          </ListItem>
+          {chaptersList.map((ch, i) => {
+            return (
+              <ListItem
+                disablePadding
+                key={i}
+                className={
+                  activeChapter?.courseId === courseId &&
+                  activeChapter.chapterId === ch.chapterId
+                    ? "chapter active"
+                    : "chapter"
+                }
+              >
+                <ListItemButton
+                  disableGutters
+                  onClick={() =>
+                    changeActiveChapter({
+                      courseId,
+                      courseName,
+                      chapterId: ch.chapterId,
+                      chapterNumber: i + 1,
+                      chapterName: ch.chapterName,
+                    })
+                  }
+                >
+                  <span>Chapter {i + 1}:</span>
+                  {ch.chapterName}
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
         </List>
       </AccordionDetails>
     </Accordion>
