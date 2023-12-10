@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, forwardRef } from "react";
+import { useState, useRef, useEffect, forwardRef, useContext } from "react";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography";
 import SideBar from "../../components/Side Bar/SideBar";
 import SearchIcon from "@mui/icons-material/Search";
 import "./q&a.css";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Avatar,
@@ -32,7 +33,6 @@ import PublishIcon from "@mui/icons-material/Publish";
 import CancelIcon from "@mui/icons-material/Cancel";
 
 import { LoadingButton } from "@mui/lab";
-
 
 import { ActiveContext } from "../../components/Auth/UserInfo";
 
@@ -116,19 +116,34 @@ type question = {
 type questions = question[];
 
 type questionType = question & {
+  questionFrom: "search" | "normal"; // This prop to specify if the displayed question from the search result or the page
+  // in order when the user edit the question or remove it i should remove it from the search result or from the page
   editQuestion: (props: {
     questionId: number;
     questionContent: string;
     imageURL: string;
+    whereToEditQuestion: "search" | "normal";
   }) => void;
-  removeQuestion: (questionId: number) => void;
-  addAnswer: (props: question) => void;
+  removeQuestion: (props: {
+    questionId: number;
+    whereToRemoveQuestion: "search" | "normal";
+  }) => void;
+  addAnswer: (props: {
+    questionId: number;
+    questionAnswers: answersType;
+    whereToAddAnswer: "search" | "normal";
+  }) => void;
   updateAnswer: (props: {
     questionId: number;
     answerId: number;
     answerContent: string;
+    whereToUpdateAnswer: "search" | "normal";
   }) => void;
-  removeAnswer: (props: { questionId: number; answerId: number }) => void;
+  removeAnswer: (props: {
+    questionId: number;
+    answerId: number;
+    whereToRemoveAnswer: "search" | "normal";
+  }) => void;
   setisSnackbarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setsnackbarContent: React.Dispatch<React.SetStateAction<serverResponseType>>;
   openMustLoginPopup: () => void;
@@ -151,22 +166,30 @@ type answerType = {
 type answersType = answerType[];
 
 type answerProps = answerType & {
+  questionFrom: "search" | "normal";
   changeRating: (props: {
     answerId: number;
     myRate: number;
     answerSumRating: number;
     numberOfRaters: number;
+    whereToUpdateRating: "search" | "normal";
   }) => void;
   updateAnswer: (props: {
     questionId: number;
     answerId: number;
     answerContent: string;
+    whereToUpdateAnswer: "search" | "normal";
   }) => void;
-  removeAnswer: (props: { questionId: number; answerId: number }) => void;
+  removeAnswer: (props: {
+    questionId: number;
+    answerId: number;
+    whereToRemoveAnswer: "search" | "normal";
+  }) => void;
   openMustLoginPopup: () => void;
 };
 
 type handleChangeRatingPropsType = {
+  whereToUpdateRating: "search" | "normal";
   questionId: number;
   answerId: number;
   myRate: number;
@@ -192,6 +215,8 @@ export const QuestionsAndAnswers = () => {
 
   const [questions, setquestions] = useState<questions>([]);
 
+  const [hasMoreQuestions, sethasMoreQuestions] = useState<boolean>(true);
+
   const [isAskQuestionOpen, setisAskQuestionOpen] = useState<boolean>(false);
 
   const [isSnackbarOpen, setisSnackbarOpen] = useState<boolean>(false);
@@ -201,8 +226,24 @@ export const QuestionsAndAnswers = () => {
     message: "",
   });
 
+  const [searchedQuestionsResult, setsearchedQuestionsResult] =
+    useState<questions>([]);
+
+  const [searchedQuestions, setsearchedQuestions] = useState<questions>([]);
+
+  const [searchPopUpOpen, setsearchPopUpOpen] = useState<boolean>(false);
+
+  const [searchNoContentFound, setsearchNoContentFound] =
+    useState<boolean>(false);
+
+  const [isSearchQuestionsLoading, setisSearchQuestionsLoading] =
+    useState<boolean>(false);
+
   const [isMustLoginPopupOpen, setisMustLoginPopupOpen] =
     useState<boolean>(false);
+
+  const searchPopUpRef = useRef<HTMLDivElement>(null!);
+  const searchInputRef = useRef<HTMLInputElement>(null!);
 
   console.log(questions);
 
@@ -270,6 +311,30 @@ export const QuestionsAndAnswers = () => {
     fetchQuestionsAndAnswers();
   }, [activeChapter]);
 
+  const getMoreQuestions = async () => {
+    const fetchQuestionsAndAnswers = async () => {
+      let studentId;
+
+      if (Cookies.get("id") == undefined) studentId = null;
+      else studentId = Number(Cookies.get("id"));
+
+      const res = await axios.post(
+        "http://localhost/Ma-rifah/get_more_questions.php",
+        {
+          start: questions.length,
+          limit: 5,
+          studentId,
+          chapterId: activeChapter?.chapterId,
+        } // Adjust these values based on your requirements
+      );
+
+      if (res.data.length > 0) setquestions([...questions, ...res.data]);
+      else sethasMoreQuestions(false);
+    };
+
+    fetchQuestionsAndAnswers();
+  };
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -282,24 +347,12 @@ export const QuestionsAndAnswers = () => {
     navigate("/login");
   };
 
-  // Searching for a question
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === "") {
-      setisLoading(false);
-      setnoContentFound(false);
-      return;
-    }
-    setisLoading(true);
-    setTimeout(() => {
-      setnoContentFound(true);
-      setisLoading(false);
-    }, 2000);
-  };
-
   // When the user wants to display questions about another another course or chapter.
   const changeActiveChapter = (props: activeChapterType) => {
-    if (activeChapter?.chapterId === props?.chapterId) return;
+    // if (activeChapter?.chapterId === props?.chapterId) return;
     setactiveChapter(props);
+    sethasMoreQuestions(true);
+    setsearchedQuestions([]);
   };
 
   const handleAskQuestion = () => {
@@ -311,15 +364,22 @@ export const QuestionsAndAnswers = () => {
     const qu = Array.from(questions);
     qu.unshift(newQuestion);
     setquestions(qu);
+    setnoContentFound(false);
   };
 
   const editQuestion = (props: {
     questionId: number;
     questionContent: string;
     imageURL: string;
+    whereToEditQuestion: "search" | "normal";
   }) => {
-    const { questionId, questionContent, imageURL } = props;
-    const qu = Array.from(questions);
+    const { questionId, questionContent, imageURL, whereToEditQuestion } =
+      props;
+    const qu =
+      whereToEditQuestion === "search"
+        ? Array.from(searchedQuestions)
+        : Array.from(questions);
+
     qu.forEach((q) => {
       if (q.questionId == questionId) {
         q.questionContent = questionContent;
@@ -327,36 +387,151 @@ export const QuestionsAndAnswers = () => {
         return;
       }
     });
-    console.log(qu);
-    // setquestions(qu);
+
+    whereToEditQuestion === "search"
+      ? setsearchedQuestions(qu)
+      : setquestions(qu);
   };
 
-  const removeQuestion = (questionId: number) => {
-    const oldQuestions = Array.from(questions);
+  const removeQuestion = (props: {
+    questionId: number;
+    whereToRemoveQuestion: "search" | "normal";
+  }) => {
+    const { questionId, whereToRemoveQuestion } = props;
+
+    const oldQuestions =
+      whereToRemoveQuestion === "search"
+        ? Array.from(searchedQuestions)
+        : Array.from(questions);
+
     const newQuestions = oldQuestions.filter((q) => q.questionId != questionId);
-    setquestions(newQuestions);
+
+    whereToRemoveQuestion === "search"
+      ? setsearchedQuestions(newQuestions)
+      : setquestions(newQuestions);
+
+    if (newQuestions.length === 0 && whereToRemoveQuestion === "normal")
+      setnoContentFound(true);
+
+    if (whereToRemoveQuestion === "search") {
+      const oldSearchedQuestionsResult = Array.from(searchedQuestionsResult);
+      const newSearchedQuestionsResult = oldSearchedQuestionsResult.filter(
+        (q) => q.questionId !== questionId
+      );
+      setsearchedQuestionsResult(newSearchedQuestionsResult);
+      if (newSearchedQuestionsResult.length === 0) {
+        setsearchNoContentFound(true);
+        setsearchedQuestionsResult([]);
+      }
+    }
   };
 
-  const addAnswer = (question: question) => {
-    const qu = Array.from(questions);
+  const handleSearch = async () => {
+    const enteredString = searchInputRef.current.value;
+
+    setisSearchQuestionsLoading(true);
+
+    const stdId = Cookies.get("id");
+
+    let inputs;
+
+    console.log(class_id);
+
+    if (stdId === null || stdId === undefined) {
+      inputs = {
+        enteredString,
+        classId: class_id === null ? 1 : class_id,
+        studentId: null,
+      };
+    } else {
+      inputs = {
+        enteredString,
+        classId: class_id === null ? 1 : class_id,
+        studentId: stdId,
+      };
+    }
+
+    const res = await axios.post(
+      "http://localhost/Ma-rifah/search_question.php",
+      inputs
+    );
+
+    setisSearchQuestionsLoading(false);
+
+    console.log(res.data);
+
+    if (res.data.length === 0) {
+      setsearchedQuestionsResult([]);
+      setsearchNoContentFound(true);
+    } else {
+      setsearchedQuestionsResult(res.data);
+      setsearchNoContentFound(false);
+    }
+  };
+
+  const handleSelectSearchQuestion = (question: question) => {
+    // In this method we need to get the selected search question in the begining
+
+    const qu = Array.from(searchedQuestionsResult);
+
+    const qu2 = qu.filter((q) => q.questionId !== question.questionId);
+
+    qu2.unshift(question);
+
+    setsearchedQuestions(qu2);
+
+    setsearchPopUpOpen(false);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  const handleOpenSearchPopUp = () => {
+    setsearchPopUpOpen(true);
+  };
+
+  const handleCloseSearchPopUp = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    setsearchPopUpOpen(false);
+  };
+
+  const addAnswer = (props: {
+    questionId: number;
+    questionAnswers: answersType;
+    whereToAddAnswer: "search" | "normal";
+  }) => {
+    const { questionId, questionAnswers, whereToAddAnswer } = props;
+
+    const qu =
+      whereToAddAnswer === "search"
+        ? Array.from(searchedQuestions)
+        : Array.from(questions);
+
     let indexOfQuestion = 0;
     qu.forEach((q, i) => {
-      if (q.questionId === question.questionId) {
+      if (q.questionId === questionId) {
         indexOfQuestion = i;
+        return;
       }
     });
-    qu[indexOfQuestion] = question;
-    setquestions(qu);
+    qu[indexOfQuestion].questionAnswers = questionAnswers;
+    whereToAddAnswer === "search" ? setsearchedQuestions(qu) : setquestions(qu);
   };
 
   const updateAnswer = (props: {
     questionId: number;
     answerId: number;
     answerContent: string;
+    whereToUpdateAnswer: "search" | "normal";
   }) => {
-    const { questionId, answerId, answerContent } = props;
+    const { questionId, answerId, answerContent, whereToUpdateAnswer } = props;
 
-    const qu = Array.from(questions);
+    const qu =
+      whereToUpdateAnswer === "search"
+        ? Array.from(searchedQuestions)
+        : Array.from(questions);
 
     qu.forEach((q) => {
       if (q.questionId == questionId) {
@@ -368,24 +543,34 @@ export const QuestionsAndAnswers = () => {
       }
     });
 
-    setquestions(qu);
+    whereToUpdateAnswer === "search"
+      ? setsearchedQuestions(qu)
+      : setquestions(qu);
   };
 
-  const removeAnswer = (props: { questionId: number; answerId: number }) => {
-    const { questionId, answerId } = props;
+  const removeAnswer = (props: {
+    questionId: number;
+    answerId: number;
+    whereToRemoveAnswer: "search" | "normal";
+  }) => {
+    const { questionId, answerId, whereToRemoveAnswer } = props;
 
-    const qu = Array.from(questions);
+    const qu =
+      whereToRemoveAnswer === "search"
+        ? Array.from(searchedQuestions)
+        : Array.from(questions);
     let newAnswers = [];
 
     qu.forEach((q) => {
       if (q.questionId == questionId) {
-        console.log("Im here");
         newAnswers = q.questionAnswers.filter((a) => a.answerId != answerId);
         q.questionAnswers = newAnswers;
       }
     });
 
-    setquestions(qu);
+    whereToRemoveAnswer === "search"
+      ? setsearchedQuestions(qu)
+      : setquestions(qu);
   };
 
   // Close snackbar
@@ -409,24 +594,38 @@ export const QuestionsAndAnswers = () => {
 
   // When the student wants to add / remove / update rating of an answer.
   const handleChangeRating = (props: handleChangeRatingPropsType) => {
-    const h = Array.from(questions);
+    const {
+      questionId,
+      answerId,
+      myRate,
+      answerSumRating,
+      numberOfRaters,
+      whereToUpdateRating,
+    } = props;
+
+    const h =
+      whereToUpdateRating === "search"
+        ? Array.from(searchedQuestions)
+        : Array.from(questions);
 
     h.forEach((q, k) => {
-      if (q.questionId == props.questionId) {
+      if (q.questionId == questionId) {
         q.questionAnswers.forEach((a, i) => {
-          if (a.answerId == props.answerId) {
+          if (a.answerId == answerId) {
             h[k].questionAnswers[i] = {
               ...a,
-              myRate: props.myRate,
-              answerSumRating: props.answerSumRating,
-              numberOfRaters: props.numberOfRaters,
+              myRate: myRate,
+              answerSumRating: answerSumRating,
+              numberOfRaters: numberOfRaters,
             };
           }
         });
       }
     });
 
-    setquestions(h);
+    whereToUpdateRating === "search"
+      ? setsearchedQuestions(h)
+      : setquestions(h);
   };
 
   const handleLogout = () => {
@@ -437,6 +636,227 @@ export const QuestionsAndAnswers = () => {
 
   return (
     <Box sx={{ display: "flex" }} className="questions-page">
+      {/* start Search Pop up  */}
+      {searchPopUpOpen && (
+        <>
+          <Box
+            sx={{
+              position: "fixed",
+              zIndex: "1350",
+              right: "0",
+              bottom: "0",
+              top: "0",
+              left: "0",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Box
+              sx={{
+                position: "fixed",
+                right: "0",
+                bottom: "0",
+                top: "0",
+                left: "0",
+                backgroundColor: "#00000070",
+                zIndex: "-1",
+                backdropFilter: "blur(1.5px)",
+              }}
+            />
+            <Stack
+              sx={{
+                backgroundColor: "#fff",
+                color: "rgba(0, 0, 0, 0.87)",
+                borderRadius: "5px",
+                margin: {
+                  xs: "0",
+                  sm: "32px",
+                },
+                padding: "10px 15px ",
+                position: "relative",
+                boxShadow:
+                  "0px 11px 15px -7px rgba(0,0,0,0.2), 0px 24px 38px 3px rgba(0,0,0,0.14), 0px 9px 46px 8px rgba(0,0,0,0.12)",
+                width: {
+                  xs: "100%",
+                  sm: "500px",
+                  md: "700px",
+                  lg: "900px",
+                },
+                height: {
+                  xs: "100%",
+                  sm: "600px",
+                },
+              }}
+              ref={searchPopUpRef}
+            >
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: "10px",
+                  right: "10px",
+                  cursor: "pointer",
+                  fontSize: "20px",
+                }}
+                onClick={handleCloseSearchPopUp}
+              >
+                <CancelIcon />
+              </Box>
+              <Stack
+                direction="row"
+                alignItems="center"
+                spacing={1}
+                px={1}
+                py={2}
+                className="search-bar"
+                borderBottom="1px solid #ccc"
+                onClick={() => searchInputRef.current.focus()}
+              >
+                <SearchIcon
+                  sx={{
+                    margin: "0 !important",
+                    fontSize: "30px",
+                    color: "var(--dark-blue)",
+                  }}
+                />
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  style={{ flex: "1", fontSize: "17px" }}
+                  ref={searchInputRef}
+                  autoFocus={true}
+                />
+              </Stack>
+              <Stack flex={1} p={1} sx={{ overflowY: "auto" }}>
+                {searchedQuestionsResult.length > 0 ? (
+                  searchedQuestionsResult.map((s, i) => (
+                    <Box
+                      key={i}
+                      sx={{
+                        padding: "15px 5px 5px 5px ",
+                        borderBottom: "1px solid #ccc",
+                        transition: ".3s",
+                        cursor: "pointer",
+                        borderRadius: "6px",
+                        "&:hover": {
+                          border: "1px solid var(--orange)",
+                          paddingLeft: "12px",
+                          backgroundColor: "#FCA21159",
+                          color: "var(--dark-blue)",
+                          fontWeight: "500",
+                        },
+                      }}
+                      onClick={() => handleSelectSearchQuestion(s)}
+                    >
+                      <Typography variant="subtitle1" fontWeight="500">
+                        {s.questionContent}
+                      </Typography>
+                      <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                        px={1}
+                        mt={2}
+                      >
+                        <Stack direction="row" spacing={1}>
+                          <Typography
+                            variant="subtitle2"
+                            sx={{
+                              color: "white",
+                              backgroundColor: "grey",
+                              padding: "0px 2px",
+                              borderRadius: "6px",
+                            }}
+                          >
+                            {s.courseName}
+                          </Typography>
+                          <Typography
+                            variant="subtitle2"
+                            sx={{
+                              color: "white",
+                              backgroundColor: "grey",
+                              padding: "0px 2px",
+                              borderRadius: "6px",
+                            }}
+                          >
+                            {s.chapterName}
+                          </Typography>
+                          <Typography
+                            variant="subtitle2"
+                            sx={{
+                              color: "white",
+                              backgroundColor: "grey",
+                              padding: "0px 2px",
+                              borderRadius: "6px",
+                            }}
+                          >
+                            Answers: {s.questionAnswers.length}
+                          </Typography>
+                        </Stack>
+
+                        <Stack direction="row" alignItems="center">
+                          <img src={s.studentAvatar} width="20px" />
+                          <Typography
+                            variant="subtitle2"
+                            sx={{ color: "grey" }}
+                            pl={1}
+                          >
+                            {s.studentName}
+                          </Typography>
+                          <Typography
+                            variant="subtitle2"
+                            sx={{ color: "grey" }}
+                            pl={2}
+                          >
+                            {s.questionDate}
+                          </Typography>
+                        </Stack>
+                      </Stack>
+                    </Box>
+                  ))
+                ) : (
+                  <Stack
+                    justifyContent="center"
+                    alignItems="center"
+                    height="100%"
+                  >
+                    {searchNoContentFound ? (
+                      <NoContentFound iconFontSize={130} textFontSize={20} />
+                    ) : isSearchQuestionsLoading ? (
+                      <LoadingIndicator />
+                    ) : (
+                      <>
+                        <SearchIcon sx={{ fontSize: "70px", color: "grey" }} />
+                        <Typography variant="subtitle1" color="grey">
+                          Search For A Question
+                        </Typography>
+                      </>
+                    )}
+                  </Stack>
+                )}
+              </Stack>
+              <Box pt={1} textAlign="center" borderTop="1px solid #ccc">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "15px",
+                    color: "white",
+                    width: "40%",
+                    display: "block",
+                    margin: "0 auto",
+                  }}
+                  onClick={handleSearch}
+                >
+                  Search
+                </Button>
+              </Box>
+            </Stack>
+          </Box>
+        </>
+      )}
+      {/* End Search Pop up */}
+
       <Toolbar
         sx={{
           position: "fixed",
@@ -463,21 +883,49 @@ export const QuestionsAndAnswers = () => {
         </Typography>
         <Box
           width={{
-            sm: "220px",
-            md: "500px",
-            lg: "700px",
+            sm: "230px",
+            md: "350px",
           }}
           display={{ xs: "none", sm: "block" }}
+          overflow="hidden"
         >
-          <SearchBar handleChange={handleChange} />
+          <SearchBar handleClick={handleOpenSearchPopUp} />
         </Box>
-        <Stack direction="row" spacing={2} className="links">
+        <Stack
+          direction="row"
+          spacing={{
+            xs: 1,
+            sm: 2,
+            md: 4,
+          }}
+          className="links"
+          alignItems="center"
+        >
+          <Box
+            onClick={handleOpenSearchPopUp}
+            sx={{
+              cursor: "pointer",
+              display: {
+                xs: "block",
+                sm: "none",
+              },
+            }}
+          >
+            <SearchIcon sx={{ margin: "0 !important" }} />
+          </Box>
           <Box
             fontWeight="bold"
             onClick={navigateHome}
             sx={{ cursor: "pointer", "&:hover": { color: "primary.main" } }}
           >
             Home
+          </Box>
+          <Box
+            fontWeight="bold"
+            onClick={navigateHome}
+            sx={{ cursor: "pointer", "&:hover": { color: "primary.main" } }}
+          >
+            FAQ
           </Box>
           <Box
             fontWeight="bold"
@@ -527,28 +975,67 @@ export const QuestionsAndAnswers = () => {
         className="questions-content"
       >
         <Toolbar />
-        <Box mb={2} display={{ xs: "block", sm: "none" }}>
-          <SearchBar handleChange={handleChange} />
-        </Box>
-        {isFetching ? (
+
+        {searchedQuestions.length > 0 ? (
+          <Box>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography variant="h4" color="primary">
+                Search Results:
+              </Typography>
+              <Button
+                variant="contained"
+                sx={{ color: "white" }}
+                onClick={() => setsearchedQuestions([])}
+              >
+                Clear Results
+              </Button>
+            </Stack>
+
+            <Stack className="questions-wrapper" mt={2} spacing={2}>
+              {searchedQuestions.map((q) => (
+                <Question
+                  key={`question_${q.questionId}`}
+                  questionFrom="search"
+                  questionId={q.questionId}
+                  questionContent={q.questionContent}
+                  questionDate={q.questionDate}
+                  studentId={q.studentId}
+                  studentName={q.studentName}
+                  studentAvatar={q.studentAvatar}
+                  imageURL={q.imageURL}
+                  questionAnswers={q.questionAnswers}
+                  editQuestion={editQuestion}
+                  removeQuestion={removeQuestion}
+                  addAnswer={addAnswer}
+                  updateAnswer={updateAnswer}
+                  removeAnswer={removeAnswer}
+                  setisSnackbarOpen={setisSnackbarOpen}
+                  setsnackbarContent={setsnackbarContent}
+                  openMustLoginPopup={openMustLoginPopup}
+                  handleChangeRating={handleChangeRating}
+                />
+              ))}
+            </Stack>
+          </Box>
+        ) : isFetching ? (
           <LoadingComponent />
         ) : (
           <Box>
-            {isAskQuestionOpen && (
-              <AddQuestionComponent
-                chapterId={activeChapter?.chapterId}
-                operation="add question"
-                addQuestion={addQuestion}
-                onClose={() => setisAskQuestionOpen(false)}
-                setisSnackbarOpen={setisSnackbarOpen}
-                setsnackbarContent={setsnackbarContent}
-              ></AddQuestionComponent>
-            )}
             <Typography
               variant="h2"
               color="secondary.main"
               className="main-title"
-              sx={{ margin: "10px auto 40px" }}
+              sx={{
+                margin: "10px auto 40px",
+                fontSize: {
+                  xs: "40px",
+                  sm: "60px",
+                },
+              }}
             >
               {activeChapter?.courseName}
             </Typography>
@@ -557,7 +1044,17 @@ export const QuestionsAndAnswers = () => {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Typography variant="h4" color="primary.main" fontWeight="bold">
+              <Typography
+                variant="h4"
+                color="primary.main"
+                fontWeight="bold"
+                sx={{
+                  fontSize: {
+                    xs: "22px",
+                    sm: "30px",
+                  },
+                }}
+              >
                 <span style={{ marginRight: "5px" }}>
                   Chapter {activeChapter?.chapterNumber}:
                 </span>
@@ -566,7 +1063,13 @@ export const QuestionsAndAnswers = () => {
               <Button
                 onClick={handleAskQuestion}
                 variant="contained"
-                sx={{ color: "white" }}
+                sx={{
+                  color: "white",
+                  fontSize: {
+                    xs: "12px",
+                    sm: "13px",
+                  },
+                }}
               >
                 Ask Question
               </Button>
@@ -576,37 +1079,64 @@ export const QuestionsAndAnswers = () => {
               {isLoading ? (
                 <LoadingIndicator />
               ) : noContentFound ? (
-                <NoContentFound />
+                <NoContentFound iconFontSize={200} textFontSize={30} />
               ) : (
-                questions.map((q, i) => {
-                  return (
-                    <Question
-                      key={i}
-                      questionId={q.questionId}
-                      questionContent={q.questionContent}
-                      questionDate={q.questionDate}
-                      studentId={q.studentId}
-                      studentName={q.studentName}
-                      studentAvatar={q.studentAvatar}
-                      imageURL={q.imageURL}
-                      questionAnswers={q.questionAnswers}
-                      editQuestion={editQuestion}
-                      removeQuestion={removeQuestion}
-                      addAnswer={addAnswer}
-                      updateAnswer={updateAnswer}
-                      removeAnswer={removeAnswer}
-                      setisSnackbarOpen={setisSnackbarOpen}
-                      setsnackbarContent={setsnackbarContent}
-                      openMustLoginPopup={openMustLoginPopup}
-                      handleChangeRating={handleChangeRating}
-                    />
-                  );
-                })
+                <InfiniteScroll
+                  dataLength={questions.length}
+                  next={getMoreQuestions}
+                  hasMore={hasMoreQuestions}
+                  loader={
+                    <Box overflow="hidden">
+                      <LoadingIndicator />
+                    </Box>
+                  }
+                  endMessage={
+                    <p style={{ textAlign: "center", padding: "10px" }}>
+                      No Questions Left
+                    </p>
+                  }
+                >
+                  {questions.map((q) => {
+                    return (
+                      <Question
+                        key={`question_${q.questionId}`}
+                        questionFrom="normal"
+                        questionId={q.questionId}
+                        questionContent={q.questionContent}
+                        questionDate={q.questionDate}
+                        studentId={q.studentId}
+                        studentName={q.studentName}
+                        studentAvatar={q.studentAvatar}
+                        imageURL={q.imageURL}
+                        questionAnswers={q.questionAnswers}
+                        editQuestion={editQuestion}
+                        removeQuestion={removeQuestion}
+                        addAnswer={addAnswer}
+                        updateAnswer={updateAnswer}
+                        removeAnswer={removeAnswer}
+                        setisSnackbarOpen={setisSnackbarOpen}
+                        setsnackbarContent={setsnackbarContent}
+                        openMustLoginPopup={openMustLoginPopup}
+                        handleChangeRating={handleChangeRating}
+                      />
+                    );
+                  })}
+                </InfiniteScroll>
               )}
             </Stack>
           </Box>
         )}
       </Box>
+      {isAskQuestionOpen && (
+        <AddQuestionComponent
+          chapterId={activeChapter?.chapterId}
+          operation="add question"
+          addQuestion={addQuestion}
+          onClose={() => setisAskQuestionOpen(false)}
+          setisSnackbarOpen={setisSnackbarOpen}
+          setsnackbarContent={setsnackbarContent}
+        ></AddQuestionComponent>
+      )}
       {isSnackbarOpen && (
         <Snackbar
           open={isSnackbarOpen}
@@ -683,15 +1213,8 @@ export const QuestionsAndAnswers = () => {
 
 export default QuestionsAndAnswers;
 
-type SearchBarProps = {
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-};
-
-const SearchBar = ({ handleChange }: SearchBarProps) => {
-  const inputRef = useRef<HTMLInputElement>(null!);
-  const handleClick = () => {
-    inputRef.current.focus();
-  };
+const SearchBar = (props: { handleClick: () => void }) => {
+  const { handleClick } = props;
   return (
     <Stack
       direction="row"
@@ -703,25 +1226,24 @@ const SearchBar = ({ handleChange }: SearchBarProps) => {
         color: "black",
         borderRadius: "25px",
         cursor: "text",
-        overflow: "hidden",
+        position: "relative",
+        overflow: "visible",
       }}
       className="search-bar"
       onClick={handleClick}
     >
-      <SearchIcon />
+      <SearchIcon sx={{ margin: "0 !important" }} />
       <input
-        ref={inputRef}
         type="text"
         placeholder="Search for a question"
         style={{ flex: "1" }}
-        onChange={handleChange}
       />
     </Stack>
   );
 };
 
 const Question = (props: questionType) => {
-  // const { isLoggedIn } = useContext(ActiveContext);
+  const { userName, profileUrl } = useContext(ActiveContext);
 
   const [editQuestionOpen, seteditQuestionOpen] = useState<boolean>(false);
 
@@ -752,6 +1274,7 @@ const Question = (props: questionType) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null!);
 
   const {
+    questionFrom,
     questionId,
     questionContent,
     questionDate,
@@ -772,10 +1295,12 @@ const Question = (props: questionType) => {
   } = props;
 
   // Add answer.
-  const handleClick = () => {
+  const handleClick = async () => {
     if (Cookies.get("id") === undefined) {
       openMustLoginPopup();
     } else {
+      if (textAreaRef.current.value === "") return;
+
       const id = Cookies.get("id");
 
       const currentDate = new Date();
@@ -794,14 +1319,38 @@ const Question = (props: questionType) => {
 
       const inputs = {
         answerContent: textAreaRef.current.value,
-        answerDate: formattedDatetime,
         studentId: id,
         questionId,
       };
 
       axios
         .post("http://localhost/Ma-rifah/add_answer.php", inputs)
-        .then((res) => {
+        .then(async (res) => {
+          let stdName, stdAvatar;
+
+          if (
+            userName === undefined ||
+            userName === "" ||
+            profileUrl === undefined ||
+            profileUrl === ""
+          ) {
+            const stdId = Cookies.get("id");
+            const response = await axios.post(
+              "http://localhost/Ma-rifah/get_main_student_info.php",
+              stdId
+            );
+            console.log(response.data);
+            if (response.data.status === "success") {
+              stdName = response.data.message.studentName;
+              stdAvatar = response.data.message.avatar;
+            } else {
+              return;
+            }
+          } else {
+            stdName = userName;
+            stdAvatar = profileUrl;
+          }
+
           const newAnswer = {
             questionId,
             answerId: res.data.message,
@@ -811,8 +1360,8 @@ const Question = (props: questionType) => {
             numberOfRaters: 0,
             myRate: 0,
             studentId: Number(Cookies.get("id")),
-            studentName: "Abdallah Al-Korhani",
-            studentAvatar: "../../../public/images/av6.png",
+            studentName: stdName,
+            studentAvatar: stdAvatar,
           };
 
           const answers = Array.from(questionAnswers);
@@ -820,14 +1369,10 @@ const Question = (props: questionType) => {
 
           addAnswer({
             questionId,
-            questionContent,
-            questionDate: formattedDatetime,
-            studentId: Number(Cookies.get("id")),
-            imageURL,
-            studentName,
-            studentAvatar,
             questionAnswers: answers,
+            whereToAddAnswer: questionFrom,
           });
+
           textAreaRef.current.value = "";
         })
         .catch((error) => console.log(error));
@@ -894,11 +1439,22 @@ const Question = (props: questionType) => {
     );
 
     if (res.data.status === "success") {
-      removeQuestion(questionId);
+      removeQuestion({ questionId, whereToRemoveQuestion: questionFrom });
       setisSnackbarOpen(true);
       setsnackbarContent({ status: "success", message: res.data.message });
       setanchorEl(null);
       setloading2(false);
+
+      if (imageURL) {
+        // Make an API call to remove the previous image
+        try {
+          axios.post("http://localhost:/Ma-rifah/remove_image.php", {
+            imageURL: imageURL,
+          });
+        } catch (error) {
+          console.error("Error removing previous image", error);
+        }
+      }
     } else {
       setupdateQuestionDisabled(false);
       setisSnackbarOpen(true);
@@ -937,6 +1493,7 @@ const Question = (props: questionType) => {
       answerSumRating: props.answerSumRating,
       numberOfRaters: props.numberOfRaters,
       questionId,
+      whereToUpdateRating: questionFrom,
     });
   };
 
@@ -1004,6 +1561,7 @@ const Question = (props: questionType) => {
         <AddQuestionComponent
           operation="edit question"
           editQuestion={editQuestion}
+          questionFrom={questionFrom}
           onClose={onClose}
           questionId={questionId}
           questionContent={questionContent}
@@ -1015,6 +1573,7 @@ const Question = (props: questionType) => {
       <Paper
         className="question"
         sx={{
+          marginBottom: "15px",
           padding: {
             xs: "15px",
             sm: "8px",
@@ -1053,7 +1612,7 @@ const Question = (props: questionType) => {
           <Typography variant="subtitle1" fontSize={20}>
             {questionContent}
           </Typography>
-          {imageURL !== null && (
+          {imageURL !== null && imageURL !== "" && (
             <Box
               height="300px"
               textAlign={{
@@ -1087,10 +1646,11 @@ const Question = (props: questionType) => {
               className="answers-wrapper"
               divider={<Divider />}
             >
-              {displayedAnswers.map((a, i) => {
+              {displayedAnswers.map((a) => {
                 return (
                   <Answer
-                    key={i}
+                    key={`answer_${a.answerId}`}
+                    questionFrom={questionFrom}
                     questionId={questionId}
                     answerId={a.answerId}
                     answerContent={a.answerContent}
@@ -1228,6 +1788,7 @@ const Question = (props: questionType) => {
 
 const Answer = (props: answerProps) => {
   const {
+    questionFrom,
     questionId,
     answerId,
     answerContent,
@@ -1283,8 +1844,6 @@ const Answer = (props: answerProps) => {
       if (value !== null && newValue === null) {
         // It means that eh wants to remove his rate
 
-        console.log("Removing my rate!");
-
         let newNbOfRaters = nbRaters;
         newNbOfRaters--;
 
@@ -1292,16 +1851,12 @@ const Answer = (props: answerProps) => {
 
         const newAverageRating = newSumRating / newNbOfRaters;
 
-        console.log(`my rate: ${value} => ${newValue}`);
-        console.log(`sum rating: ${sumRating} => ${newSumRating} `);
-        console.log(`average rating: ${avg} => ${newAverageRating} `);
-        console.log(`number of raters: ${nbRaters} => ${newNbOfRaters} `);
-
         changeRating({
           answerId,
           myRate: 0,
           numberOfRaters: newNbOfRaters,
           answerSumRating: newSumRating,
+          whereToUpdateRating: questionFrom,
         });
 
         const props = {
@@ -1326,16 +1881,12 @@ const Answer = (props: answerProps) => {
 
         const newAverageRating = Number(newAvg.toFixed(1));
 
-        console.log(`my rate: ${value} => ${newValue}`);
-        console.log(`sum rating: ${sumRating} => ${newSumRating} `);
-        console.log(`average rating: ${avg} => ${newAverageRating} `);
-        console.log(`number of raters: ${nbRaters}`);
-
         changeRating({
           answerId,
           myRate: newValue,
           numberOfRaters: nbRaters,
           answerSumRating: newSumRating,
+          whereToUpdateRating: questionFrom,
         });
 
         const inputs = {
@@ -1369,12 +1920,8 @@ const Answer = (props: answerProps) => {
             myRate: newValue | 0,
             numberOfRaters: newNbOfRaters,
             answerSumRating: newSumRating,
+            whereToUpdateRating: questionFrom,
           });
-
-          console.log(`my rate: ${value} => ${newValue}`);
-          console.log(`sum rating: ${sumRating} => ${newSumRating} `);
-          console.log(`average rating: ${avg} => ${newAverageRating} `);
-          console.log(`number of raters: ${nbRaters} => ${newNbOfRaters} `);
 
           const props = {
             ratingValue: newValue,
@@ -1410,7 +1957,11 @@ const Answer = (props: answerProps) => {
         console.log(res.data);
         answerRef.current?.classList.add("hidden");
         setanchorEl(null);
-        removeAnswer({ questionId, answerId });
+        removeAnswer({
+          questionId,
+          answerId,
+          whereToRemoveAnswer: questionFrom,
+        });
         setloadingDeletingAnswer(false);
       })
       .catch((error) => console.log(error));
@@ -1455,6 +2006,7 @@ const Answer = (props: answerProps) => {
         >
           <DialogContent>
             <CustomTextInput
+              questionFrom={questionFrom}
               questionId={questionId}
               answerId={answerId}
               text={answerContent}
@@ -1675,6 +2227,7 @@ const SnackbarAlert = forwardRef<HTMLDivElement, AlertProps>(
 );
 
 const CustomTextInput = (props: {
+  questionFrom: "search" | "normal";
   questionId: number;
   answerId: number;
   text: string;
@@ -1684,9 +2237,11 @@ const CustomTextInput = (props: {
     questionId: number;
     answerId: number;
     answerContent: string;
+    whereToUpdateAnswer: "search" | "normal";
   }) => void;
 }) => {
   const {
+    questionFrom,
     questionId,
     text,
     onClose,
@@ -1711,7 +2266,12 @@ const CustomTextInput = (props: {
       })
       .then((res) => {
         console.log(res.data);
-        updateAnswer({ questionId, answerId, answerContent: input });
+        updateAnswer({
+          questionId,
+          answerId,
+          answerContent: input,
+          whereToUpdateAnswer: questionFrom,
+        });
         setloadingUpdatingAnswer(false);
       })
       .catch((error) => console.log(error));
@@ -1774,7 +2334,9 @@ const AddQuestionComponent = (props: {
     questionId: number;
     questionContent: string;
     imageURL: string;
+    whereToEditQuestion: "search" | "normal";
   }) => void;
+  questionFrom: "search" | "normal";
   questionId?: number;
   questionContent?: string;
   imageURL?: string | null;
@@ -1787,6 +2349,7 @@ const AddQuestionComponent = (props: {
     operation,
     addQuestion,
     editQuestion,
+    questionFrom,
     questionId,
     questionContent,
     imageURL,
@@ -1809,8 +2372,21 @@ const AddQuestionComponent = (props: {
   const textFieldRef = useRef<HTMLTextAreaElement>(null!);
   const inputRef = useRef<HTMLInputElement>(null!);
 
+  const { userName, profileUrl } = useContext(ActiveContext);
+
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target?.files;
+
+    if (imageURL) {
+      // Make an API call to remove the previous image
+      try {
+        axios.post("http://localhost:/Ma-rifah/remove_image.php", {
+          imageURL: imageURL,
+        });
+      } catch (error) {
+        console.error("Error removing previous image", error);
+      }
+    }
 
     if (files && files.length > 0) {
       const file = files[0];
@@ -1878,92 +2454,6 @@ const AddQuestionComponent = (props: {
   };
 
   const handlePostQuestion = async () => {
-    // if (selectedFile) {
-    //   const response = await uploadFile(selectedFile);
-    //   setloadingPostingQuestion(true);
-
-    //   if (response?.data.status === "success") {
-    //     const imageURL = response?.data.filePath;
-
-    //     console.log(imageURL);
-
-    //     const inputs = {
-    //       chapterId,
-    //       questionContent: textFieldRef.current.value,
-    //       imageURL,
-    //       studentId: Number(Cookies.get("id")),
-    //     };
-
-    //     try {
-    //       const res = await axios.post(
-    //         "http://localhost:/Ma-rifah/add_question.php",
-    //         inputs
-    //       );
-    //       if (res.data.status === "success") {
-    //         const currentDate = new Date();
-
-    //         const year = currentDate.getFullYear();
-    //         const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-    //         const day = String(currentDate.getDate()).padStart(2, "0");
-
-    //         const hours = String(currentDate.getHours()).padStart(2, "0");
-    //         const minutes = String(currentDate.getMinutes()).padStart(2, "0");
-    //         const seconds = String(currentDate.getSeconds()).padStart(2, "0");
-
-    //         const formattedDatetime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
-    //         const newQuestion = {
-    //           questionId: res.data.questionId,
-    //           questionContent: textFieldRef.current.value,
-    //           questionDate: formattedDatetime,
-    //           imageURL,
-    //           studentId: Number(Cookies.get("id")),
-    //           studentName: "Abdallah Al-Korhani",
-    //           studentAvatar: "../../../public/images/av1.png",
-    //           questionAnswers: [],
-    //         };
-
-    //         if (addQuestion !== undefined) addQuestion(newQuestion);
-
-    //         setdroppedImage(null);
-    //         setSelectedFile(null);
-    //         textFieldRef.current.value = "";
-    //         setloadingPostingQuestion(false);
-    //         onClose();
-
-    //         setisSnackbarOpen(true);
-    //         setsnackbarContent({
-    //           status: "success",
-    //           message: "Question has been added successfully!",
-    //         });
-    //       } else {
-    //         setisSnackbarOpen(true);
-    //         setsnackbarContent({
-    //           status: "error",
-    //           message: "Error during adding question!",
-    //         });
-    //         setloadingPostingQuestion(false);
-    //       }
-    //     } catch (error) {
-    //       console.log("Error during adding question!");
-    //       setisSnackbarOpen(true);
-    //       setsnackbarContent({
-    //         status: "error",
-    //         message: "Error during adding question!",
-    //       });
-    //       setloadingPostingQuestion(false);
-    //     }
-    //   } else {
-    //     console.error("Failed to upload file.");
-    //     setisSnackbarOpen(true);
-    //     setsnackbarContent({
-    //       status: "error",
-    //       message: "Error during file upload",
-    //     });
-    //     setloadingPostingQuestion(false);
-    //   }
-    // }
-
     setloadingPostingQuestion(true);
 
     const inputs = {
@@ -1977,9 +2467,6 @@ const AddQuestionComponent = (props: {
       const response = await uploadFile(selectedFile);
       if (response?.data.status === "success") {
         const imageURL = response?.data.filePath;
-
-        console.log(imageURL);
-
         inputs.imageURL = imageURL;
       } else {
         console.error("Failed to upload file.");
@@ -2012,14 +2499,39 @@ const AddQuestionComponent = (props: {
 
         const formattedDatetime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
+        let stdName, stdAvatar;
+
+        if (
+          userName === undefined ||
+          userName === "" ||
+          profileUrl === undefined ||
+          profileUrl === ""
+        ) {
+          const stdId = Cookies.get("id");
+          const response = await axios.post(
+            "http://localhost/Ma-rifah/get_main_student_info.php",
+            stdId
+          );
+          console.log(response.data);
+          if (response.data.status === "success") {
+            stdName = response.data.message.studentName;
+            stdAvatar = response.data.message.avatar;
+          } else {
+            return;
+          }
+        } else {
+          stdName = userName;
+          stdAvatar = profileUrl;
+        }
+
         const newQuestion = {
           questionId: res.data.questionId,
           questionContent: textFieldRef.current.value,
           questionDate: formattedDatetime,
           imageURL: inputs.imageURL,
           studentId: Number(Cookies.get("id")),
-          studentName: "Abdallah Al-Korhani",
-          studentAvatar: "../../../public/images/av1.png",
+          studentName: stdName,
+          studentAvatar: stdAvatar,
           questionAnswers: [],
         };
 
@@ -2045,7 +2557,6 @@ const AddQuestionComponent = (props: {
         setloadingPostingQuestion(false);
       }
     } catch (error) {
-      console.log("Error during adding question!");
       setisSnackbarOpen(true);
       setsnackbarContent({
         status: "error",
@@ -2094,6 +2605,7 @@ const AddQuestionComponent = (props: {
                   questionId,
                   questionContent: value,
                   imageURL,
+                  whereToEditQuestion: questionFrom,
                 });
 
                 setsnackbarContent({
@@ -2143,12 +2655,68 @@ const AddQuestionComponent = (props: {
           });
           setloadingUpdatingQuestion(false);
         }
+      } else {
+        const inputs = {
+          questionId,
+          questionContent: value,
+
+          imageURL: imageURL || null,
+        };
+
+        setloadingUpdatingQuestion(true);
+
+        try {
+          const res = await axios.post(
+            "http://localhost:/Ma-rifah/update_question.php",
+            inputs
+          );
+
+          if (res.data.status === "success") {
+            editQuestion({
+              questionId,
+              questionContent: value,
+              imageURL: inputs.imageURL,
+              whereToEditQuestion: questionFrom,
+            });
+
+            setsnackbarContent({
+              status: "success",
+              message: "Question has been edited successfully!",
+            });
+            setisSnackbarOpen(true);
+
+            setdroppedImage(null);
+            setSelectedFile(null);
+            textFieldRef.current.value = "";
+
+            setloadingUpdatingQuestion(false);
+
+            onClose();
+          } else {
+            setisSnackbarOpen(true);
+            setsnackbarContent({
+              status: "error",
+              message: "Error during editing question!",
+            });
+            setloadingUpdatingQuestion(false);
+          }
+        } catch (error) {
+          console.log("Error during editing question!");
+          setisSnackbarOpen(true);
+          setsnackbarContent({
+            status: "error",
+            message: "Error during editing question!",
+          });
+          setloadingUpdatingQuestion(false);
+        }
       }
     }
   };
 
   useEffect(() => {
-    if (imageURL !== undefined) setdroppedImage(imageURL);
+    if (imageURL !== undefined) {
+      setdroppedImage(imageURL);
+    }
     if (questionContent !== undefined) setvalue(questionContent);
   }, [imageURL, questionContent]);
 
@@ -2197,8 +2765,14 @@ const AddQuestionComponent = (props: {
         }}
       >
         <Stack
-          direction="row"
-          spacing={4}
+          direction={{
+            xs: "column",
+            md: "row",
+          }}
+          spacing={{
+            xs: 2,
+            md: 4,
+          }}
           sx={{
             "& textarea:focus": {
               outline: "none",
@@ -2206,7 +2780,15 @@ const AddQuestionComponent = (props: {
           }}
           mb={3}
         >
-          <Typography variant="h6" fontWeight="bold" minWidth="180px">
+          <Typography
+            variant="h6"
+            fontWeight="bold"
+            minWidth="180px"
+            textAlign={{
+              xs: "center",
+              md: "start",
+            }}
+          >
             Question Content:
           </Typography>
           <textarea
@@ -2228,8 +2810,26 @@ const AddQuestionComponent = (props: {
           />
         </Stack>
 
-        <Stack direction="row" spacing={4} mb={5}>
-          <Typography variant="h6" fontWeight="bold" minWidth="180px">
+        <Stack
+          direction={{
+            xs: "column",
+            md: "row",
+          }}
+          spacing={{
+            xs: 2,
+            md: 4,
+          }}
+          mb={5}
+        >
+          <Typography
+            variant="h6"
+            fontWeight="bold"
+            minWidth="180px"
+            textAlign={{
+              xs: "center",
+              md: "start",
+            }}
+          >
             Question Image:
           </Typography>
           <Stack
@@ -2295,7 +2895,14 @@ const AddQuestionComponent = (props: {
             </Stack>
           </Stack>
         </Stack>
-        <Stack direction="row" spacing={15} justifyContent="center">
+        <Stack
+          direction="row"
+          spacing={{
+            xs: 3,
+            md: 17,
+          }}
+          justifyContent="center"
+        >
           <Button
             startIcon={<CancelIcon />}
             disabled={loadingPostingQuestion}

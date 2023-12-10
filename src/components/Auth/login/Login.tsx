@@ -26,7 +26,7 @@ export const Login = ({ isActive }: prop) => {
     useContext(ActiveContext);
 
   if (Cookies.get(`isLoggedIn`)) {
-    return <Navigate to={`/CoursesProgress`} replace={true} />;
+    return <Navigate to={`/Q&A`} replace={true} />;
   } else {
     const checkEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
       setEmail(e.target.value);
@@ -96,7 +96,7 @@ export const Login = ({ isActive }: prop) => {
                 }
                 setUserName(responseData.message.name);
                 setProfileUrl(responseData.message.profile);
-                navigate(`/CoursesProgress`, { replace: true });
+                navigate(`/Q&A`, { replace: true });
               }
             });
         }

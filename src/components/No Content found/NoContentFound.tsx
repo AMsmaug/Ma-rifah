@@ -1,12 +1,17 @@
 import { Stack, Box } from "@mui/material";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 
-const NoContentFound = () => {
+const NoContentFound = (props: {
+  iconFontSize: number;
+  textFontSize: number;
+}) => {
+  const { iconFontSize, textFontSize } = props;
+
   return (
     <Stack direction="row" justifyContent="center" alignItems="center">
       <Box textAlign="center">
-        <SentimentVeryDissatisfiedIcon sx={{ fontSize: "200px" }} />
-        <Box fontSize="30px">
+        <SentimentVeryDissatisfiedIcon sx={{ fontSize: iconFontSize }} />
+        <Box fontSize={textFontSize}>
           Sorry <br /> No content found!
         </Box>
       </Box>

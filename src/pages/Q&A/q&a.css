@@ -1,8 +1,8 @@
-.questions-page .search-bar input {
+.search-bar input {
   border: none;
   color: var(--dark-blue);
 }
-.questions-page .search-bar input:focus {
+.search-bar input:focus {
   outline: none;
 }
 .questions-page .question img {
