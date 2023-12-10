@@ -24,6 +24,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-google-login": "^5.2.2",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^6.17.0"
   },
   "devDependencies": {
