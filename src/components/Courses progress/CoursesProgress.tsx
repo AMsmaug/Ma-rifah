@@ -1,4 +1,3 @@
-import "./coursesprogress.css";
 import { Box, Stack, Typography, List, ListItem } from "@mui/material";
 import { useContext, useEffect } from "react";
 import Footer from "../Footer/Footer";
@@ -10,8 +9,6 @@ import { CoursesListContext } from "../../App";
 
 const CoursesProgress = () => {
   const { studentInfo, setStudentInfo } = useContext(CoursesContext);
-
-  console.log(Cookies.get("id"));
 
   const { setCourses } = useContext(CoursesListContext);
 

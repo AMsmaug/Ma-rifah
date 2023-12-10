@@ -76,6 +76,10 @@ body {
   color: red;
 }
 
+.container form .inp .error .password-error {
+  width: 150%;
+}
+
 .container form .user-data {
   width: 100%;
   font-size: 18px;
@@ -110,11 +114,11 @@ body {
   border: none;
   background-color: var(--dark-blue);
   color: white;
-  margin: 15px 0;
+  margin: 15px 0 10px;
 }
 
 .container form .sign-button:hover {
-  background-color: var(--orange);
+  background-color: #06142c;
 }
 
 @media (max-width: 767px) {
@@ -139,12 +143,12 @@ body {
 
 .forgot-password {
   color: var(--orange);
-  margin-bottom: 60px;
   cursor: pointer;
 }
 
 .signup-now {
   text-align: center;
+  margin-bottom: 40px;
 }
 
 .back {

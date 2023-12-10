@@ -7,6 +7,7 @@ import {
   ListItemText,
   Stack,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import CircleIcon from "@mui/icons-material/Circle";
 import React, { useContext, useEffect, useState } from "react";
@@ -40,6 +41,7 @@ export const MaterialContent = () => {
   const [chapterContent, setChapterContent] = useState<chapterContentType[]>(
     []
   );
+  const [isLoading, setIsLoading] = useState(true);
 
   const currentPath = location.pathname;
   const courseName = currentPath.substring(currentPath.lastIndexOf(`/`) + 1);
@@ -64,6 +66,7 @@ export const MaterialContent = () => {
             setChapterDesc(response.data.intro.description);
             setChapterUrl(response.data.intro.videoUrl);
             setChapterContent(response.data.content);
+            setIsLoading(false);
           }
         );
     }
@@ -79,7 +82,18 @@ export const MaterialContent = () => {
     }
   });
 
-  return (
+  return isLoading ? (
+    <Stack
+      flex={1}
+      justifyContent={`center`}
+      alignContent={`center`}
+      direction={`row`}
+      flexBasis={`100px`}
+      paddingTop={`50px`}
+    >
+      <CircularProgress size={`60px`} />
+    </Stack>
+  ) : (
     <Box sx={{ flex: 1, padding: `0 30px` }}>
       <Stack
         sx={{ margin: "15px 10px" }}

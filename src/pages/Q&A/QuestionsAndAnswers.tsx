@@ -33,8 +33,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 
 import { LoadingButton } from "@mui/lab";
 
-
-import { ActiveContext } from "../../components/Auth/UserInfo";
+// import { ActiveContext } from "../../components/Auth/UserInfo";
 
 import {
   Dialog,
@@ -50,7 +49,8 @@ import Skeleton from "@mui/material/Skeleton";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const calculateDate = (d: string) => {
+// eslint-disable-next-line react-refresh/only-export-components
+export const calculateDate = (d: string) => {
   const dateNow = new Date();
   const dateBefore = new Date(d);
   const dateDiff: number = dateNow.getTime() - dateBefore.getTime();
@@ -115,7 +115,7 @@ type question = {
 
 type questions = question[];
 
-type questionType = question & {
+export type questionType = question & {
   editQuestion: (props: {
     questionId: number;
     questionContent: string;
@@ -148,7 +148,7 @@ type answerType = {
   studentAvatar: string | null;
 };
 
-type answersType = answerType[];
+export type answersType = answerType[];
 
 type answerProps = answerType & {
   changeRating: (props: {
@@ -390,7 +390,7 @@ export const QuestionsAndAnswers = () => {
 
   // Close snackbar
   const handleClose = (
-    event?: React.SyntheticEvent | Event,
+    _event?: React.SyntheticEvent | Event,
     reason?: string
   ) => {
     if (reason === "clickaway") {
@@ -811,7 +811,7 @@ const Question = (props: questionType) => {
             numberOfRaters: 0,
             myRate: 0,
             studentId: Number(Cookies.get("id")),
-            studentName: "Abdallah Al-Korhani",
+            studentName: "ammar malass",
             studentAvatar: "../../../public/images/av6.png",
           };
 
@@ -1226,7 +1226,7 @@ const Question = (props: questionType) => {
   );
 };
 
-const Answer = (props: answerProps) => {
+export const Answer = (props: answerProps) => {
   const {
     questionId,
     answerId,
@@ -1272,7 +1272,7 @@ const Answer = (props: answerProps) => {
     setsumRating(answerSumRating);
     if (answerSumRating === null) setavg(0);
     else setavg(Number((answerSumRating / numberOfRaters).toFixed(1)));
-  }, []);
+  }, [answerSumRating, myRate, numberOfRaters]);
 
   // change rating or rate or remove rate
   const handleChange = (
@@ -1817,7 +1817,7 @@ const AddQuestionComponent = (props: {
 
       const reader = new FileReader();
       reader.onload = () => {
-        setdroppedImage(reader.result);
+        setdroppedImage(reader.result as string);
       };
       reader.readAsDataURL(file);
 
@@ -1848,7 +1848,7 @@ const AddQuestionComponent = (props: {
       // Display the dropped image
       const reader = new FileReader();
       reader.onload = () => {
-        setdroppedImage(reader.result);
+        setdroppedImage(reader.result as string);
       };
       reader.readAsDataURL(file);
 
@@ -2018,7 +2018,7 @@ const AddQuestionComponent = (props: {
           questionDate: formattedDatetime,
           imageURL: inputs.imageURL,
           studentId: Number(Cookies.get("id")),
-          studentName: "Abdallah Al-Korhani",
+          studentName: "ammar malass",
           studentAvatar: "../../../public/images/av1.png",
           questionAnswers: [],
         };

@@ -26,7 +26,7 @@ export const SignUp = ({ isActive }: prop) => {
   const [password, setPassword] = useState(``);
   const [passwordAgain, setPasswordAgain] = useState(``);
   const [grade, setGrade] = useState(1);
-  const [gender, setGender] = useState(`male`);
+  const [gender, setGender] = useState(`m`);
   const [validation, setValidation] = useState({
     validUsername: true,
     validEmail: true,
@@ -172,11 +172,11 @@ export const SignUp = ({ isActive }: prop) => {
           const imgNumber = Math.floor(Math.random() * 5);
           path = `../../../public/images/av${imgNumber}.png`;
         } else {
-          const imgNumber = Math.round(Math.random() * (7 - 5) + 5);
+          const imgNumber = Math.round(Math.random() * (7 - 5) + 4);
           path = `../../../public/images/av${imgNumber}.png`;
         }
         axios
-          .post(`http://localhost/Ma-rifah/Add_account.php`, {
+          .post(`http://localhost/Ma-rifah/authentication/Add_account.php`, {
             userName,
             email,
             password,
@@ -235,7 +235,7 @@ export const SignUp = ({ isActive }: prop) => {
         {!validation.validPassword && password.length < 8 ? (
           <span className="error">*Too short password!</span>
         ) : !validation.validPassword ? (
-          <span className="error">
+          <span className="error password-error">
             *This field must contain numbers and capital letters
           </span>
         ) : (
@@ -293,7 +293,7 @@ export const SignUp = ({ isActive }: prop) => {
         )}
       </select>
       <div className="inp">
-        {<span className="error signup-error">{authMessage}</span>} {/*bla */}
+        {<span className="error signup-error">{authMessage}</span>}
       </div>
       <label htmlFor="class" className="class gender">
         Choose your gender
@@ -312,18 +312,21 @@ export const SignUp = ({ isActive }: prop) => {
           >
             <FormControlLabel
               control={<Radio size="small" color="primary" />}
-              value={`male`}
+              value={`m`}
               label="Male"
             />
             <FormControlLabel
               control={<Radio size="small" color="primary" />}
-              value={`female`}
+              value={`f`}
               label="Female"
             />
           </RadioGroup>
         </FormControl>
       </Box>
       <button className="sign-button">Sign up</button>
+
+      {/* bla */}
+      {/* <Box id={`signInWithGoogle`} sx={{ width: `100%` }}></Box> */}
       <p className="signup-button">
         Already have an account?
         <span

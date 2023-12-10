@@ -11,13 +11,10 @@ export const CoursesHeader = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const navigate = useNavigate();
 
-  console.log(studentInfo);
-
   let totalGrade = 0;
   let totalMarks = 0;
 
   const handleClick = () => {
-    Cookies.remove(`isLoggedIn`);
     Cookies.remove(`id`);
     navigate("/login");
   };
@@ -25,6 +22,8 @@ export const CoursesHeader = () => {
   const handleLogoClick = () => {
     navigate(`/`);
   };
+
+  console.log(studentInfo);
 
   studentInfo.forEach((student) => {
     totalGrade += +student.studentGrade;

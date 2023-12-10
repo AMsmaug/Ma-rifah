@@ -339,7 +339,7 @@ export const Question = (props: questionType) => {
           >
             <img
               className="question-image"
-              src={imageURL}
+              src={imageURL as string}
               alt="question"
               width="100%"
               height="300px"
