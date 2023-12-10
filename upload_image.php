@@ -6,7 +6,11 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 
 require("./connection/connection.php");
 
+<<<<<<< HEAD
 $uploadDirectory = 'C:\Users\abdal\OneDrive\Desktop\Ma-rifah\public\images\\';
+=======
+$uploadDirectory = 'C:\Users\ammar\Desktop\Programming\Programming learning\Web programming\Senior project\Ma-rifah\public\images\\';
+>>>>>>> 0423e47fccaf94910f69d335dca6c8df07a235da
 
 if (!file_exists($uploadDirectory)) {
     mkdir($uploadDirectory, 0777, true);

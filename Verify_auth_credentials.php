@@ -1,6 +1,10 @@
 <?php
 
+<<<<<<< HEAD
 header("Access-Control-Allow-Origin: *");
+=======
+header("Access-control-Allow-Origin: *");
+>>>>>>> 0423e47fccaf94910f69d335dca6c8df07a235da
 header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Credentials: true");
 

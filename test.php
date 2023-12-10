@@ -1,5 +1,6 @@
 <?php
 
+<<<<<<< HEAD
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
@@ -22,3 +23,11 @@ if ($result) {
 } else {
     echo json_encode(["error" => "Error Adding Question!"]);
 }
+=======
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: *");
+
+$entered_data = json_decode(file_get_contents("php://input"));
+
+echo "your name is $entered_data->name";
+>>>>>>> 0423e47fccaf94910f69d335dca6c8df07a235da

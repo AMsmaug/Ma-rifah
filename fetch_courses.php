@@ -13,8 +13,12 @@ $class_id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 $query = "SELECT course.course_id, course.course_name, chapter.chapter_id, chapter.chapter_name
 FROM course
 JOIN chapter ON course.course_id = chapter.course_id
+<<<<<<< HEAD
 WHERE course.class_id = $class_id
 ";
+=======
+WHERE course.class_id = $class_id";
+>>>>>>> 0423e47fccaf94910f69d335dca6c8df07a235da
 
 $result = mysqli_query($con, $query);
 
