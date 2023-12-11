@@ -1,5 +1,12 @@
-import { Box, Stack, Typography, List, ListItem } from "@mui/material";
-import { useContext, useEffect } from "react";
+import {
+  Box,
+  Stack,
+  Typography,
+  List,
+  ListItem,
+  Skeleton,
+} from "@mui/material";
+import { useContext, useEffect, useState } from "react";
 import Footer from "../Footer/Footer";
 import { useNavigate } from "react-router-dom";
 import { CoursesContext, studentInfoType } from "./CoursesContext";
@@ -12,6 +19,30 @@ const CoursesProgress = () => {
 
   const { setCourses } = useContext(CoursesListContext);
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  const generateSkeletons = (ngOfSkeletons: number) => {
+    const skelet = [];
+    for (let i = 0; i < ngOfSkeletons; i++) {
+      skelet.push(
+        <Skeleton
+          key={i}
+          animation="wave"
+          sx={{
+            height: {
+              xs: `80px`,
+              sm: `80px`,
+              md: `140px`,
+              lg: `140px`,
+            },
+            borderRadius: `12px`,
+          }}
+        />
+      );
+    }
+    return skelet;
+  };
+
   useEffect(() => {
     axios
       .post(`http://localhost/Ma-rifah/get_student_info.php`, Cookies.get(`id`))
@@ -22,20 +53,41 @@ const CoursesProgress = () => {
             return element["courseName"];
           })
         );
+        setIsLoading(false);
       });
   }, [setCourses, setStudentInfo]);
 
   return (
     <Box className="materials">
-      <Box className="container" marginTop="50px">
+      <Box className="container" marginTop="50px" padding={`0 15px`}>
         <Typography
           className="main-title"
           variant="h3"
-          sx={{ margin: "0 auto 50px" }}
+          sx={{
+            margin: "0 auto 50px",
+            fontSize: {
+              xs: `30px`,
+              sm: `32px`,
+              md: `50px`,
+              lg: `50px`,
+            },
+          }}
         >
           Materials
         </Typography>
-        <Typography variant="h5" textAlign="center">
+        <Typography
+          variant="h5"
+          textAlign="center"
+          sx={{
+            padding: `0 10px`,
+            fontSize: {
+              xs: `20px`,
+              sm: `20px`,
+              md: `32px`,
+              lg: `32px`,
+            },
+          }}
+        >
           Welcome to
           <Box
             ml="8px"
@@ -43,14 +95,32 @@ const CoursesProgress = () => {
             component="span"
             fontWeight="bold"
             color="primary.main"
-            fontSize="30px"
+            sx={{
+              fontSize: {
+                xs: `22px`,
+                sm: `22px`,
+                md: `34px`,
+                lg: `34px`,
+              },
+            }}
           >
             Ma'rifah
           </Box>
           , where learning knows no bounds!
         </Typography>
         <Box mt="40px">
-          <Typography variant="h6" mb={1}>
+          <Typography
+            variant="h6"
+            mb={1}
+            sx={{
+              fontSize: {
+                xs: `18px`,
+                sm: `18px`,
+                md: `26px`,
+                lg: `26px`,
+              },
+            }}
+          >
             Your Grade will be calculated in the following way:
           </Typography>
           <List
@@ -79,16 +149,18 @@ const CoursesProgress = () => {
           </List>
         </Box>
         <Stack spacing={2} mt={3} mb={{ xs: 5, md: 8 }}>
-          {studentInfo.map((course) => (
-            <CourseProgress
-              key={course.courseId}
-              courseId={course.courseId}
-              courseName={course.courseName}
-              courseStatus={course.courseStatus}
-              studentGrade={course.studentGrade}
-              fullMark={course.fullMark}
-            />
-          ))}
+          {isLoading
+            ? generateSkeletons(4)
+            : studentInfo.map((course) => (
+                <CourseProgress
+                  key={course.courseId}
+                  courseId={course.courseId}
+                  courseName={course.courseName}
+                  courseStatus={course.courseStatus}
+                  studentGrade={course.studentGrade}
+                  fullMark={course.fullMark}
+                />
+              ))}
         </Stack>
       </Box>
       <Footer />

@@ -329,6 +329,8 @@ export const QuestionsAndAnswers = () => {
         } // Adjust these values based on your requirements
       );
 
+      console.log(res.data);
+
       if (res.data.length > 0) setquestions([...questions, ...res.data]);
       else sethasMoreQuestions(false);
     };
@@ -345,7 +347,7 @@ export const QuestionsAndAnswers = () => {
   };
 
   const navigateLoginPage = () => {
-    navigate("/login");
+    navigate("/login?src=QA");
   };
 
   // When the user wants to display questions about another another course or chapter.
@@ -630,9 +632,8 @@ export const QuestionsAndAnswers = () => {
   };
 
   const handleLogout = () => {
-    navigate("/");
     Cookies.remove("id");
-    Cookies.remove("isLoggedIn");
+    navigate("/login?src=QA");
   };
 
   return (
@@ -1200,7 +1201,7 @@ export const QuestionsAndAnswers = () => {
             <Button
               variant="contained"
               color="secondary"
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/login?src=QA")}
               sx={{ color: "white" }}
             >
               Log in

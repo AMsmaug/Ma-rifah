@@ -62,7 +62,7 @@ export const Header = () => {
                 if (Cookies.get(`id`)) {
                   navigate("/CoursesProgress");
                 } else {
-                  navigate("/login");
+                  navigate("/login?src=land");
                 }
               }}
             >

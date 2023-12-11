@@ -89,7 +89,7 @@ export const MaterialContent = () => {
       alignContent={`center`}
       direction={`row`}
       flexBasis={`100px`}
-      paddingTop={`50px`}
+      paddingTop={`150px`}
     >
       <CircularProgress size={`60px`} />
     </Stack>

@@ -25,7 +25,7 @@ export const Material = () => {
   }, [studentInfo, setStudentInfo]);
   return (
     <Box>
-      <CoursesHeader />
+      <CoursesHeader showIcon={true} />
       <Stack direction={`row`}>
         <SideBar />
         <MaterialContent />
