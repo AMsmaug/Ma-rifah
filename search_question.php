@@ -22,6 +22,7 @@ if ($student_id != null) {
     q.chapter_id,
     q.date AS question_date,
     q.image_url,
+    q.is_modified AS question_is_modified,
     q.student_id AS question_student_id,
     s_question.student_name AS question_student_name,
     s_question.avatar AS question_student_avatar,
@@ -62,7 +63,6 @@ ORDER BY
 ";
 
 } else {
-
     $query = "SELECT
     cou.course_name,
     c.chapter_name,
@@ -71,6 +71,7 @@ ORDER BY
     q.chapter_id,
     q.date AS question_date,
     q.image_url,
+    q.is_modified AS question_is_modified,
     q.student_id AS question_student_id,
     s_question.student_name AS question_student_name,
     s_question.avatar AS question_student_avatar,
@@ -121,6 +122,7 @@ if ($result) {
         $questionId = $row['question_id'];
         $questionContent = $row['question_content'];
         $questionDate = $row['question_date'];
+        $questionIsModified = $row['question_is_modified'];
         $imageURL = $row['image_url'];
         $studentId = $row['question_student_id'];
         $studentName = $row['question_student_name'];
@@ -155,6 +157,7 @@ if ($result) {
                 'questionId' => $questionId,
                 'questionContent' => $questionContent,
                 'questionDate' => $questionDate,
+                'isModified' => $questionIsModified,
                 'imageURL' => $imageURL,
                 'studentId' => $studentId,
                 'studentName' => $studentName,

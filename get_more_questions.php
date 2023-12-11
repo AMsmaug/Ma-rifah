@@ -35,6 +35,7 @@ if ($student_id != null) {
         rq.chapter_id,
         rq.date AS question_date,
         rq.image_url,
+        rq.is_modified AS question_is_modified,
         rq.student_id AS question_student_id,
         s_question.student_name AS question_student_name,
         s_question.avatar AS question_student_avatar,
@@ -84,6 +85,7 @@ if ($student_id != null) {
         rq.chapter_id,
         rq.date AS question_date,
         rq.image_url,
+        rq.is_modified AS question_is_modified,
         rq.student_id AS question_student_id,
         s_question.student_name AS question_student_name,
         s_question.avatar AS question_student_avatar,
@@ -123,6 +125,7 @@ if ($result) {
         $questionContent = $row['question_content'];
         $questionDate = $row['question_date'];
         $imageURL = $row['image_url'];
+        $questionIdModified = $row['question_is_modified'];
         $studentId = $row['question_student_id'];
         $studentName = $row['question_student_name'];
         $questionStudentAvatar = $row['question_student_avatar'];
@@ -155,6 +158,7 @@ if ($result) {
                 'questionContent' => $questionContent,
                 'questionDate' => $questionDate,
                 'imageURL' => $imageURL,
+                'isModified' => $questionIdModified,
                 'studentId' => $studentId,
                 'studentName' => $studentName,
                 'studentAvatar' => $questionStudentAvatar,
@@ -180,11 +184,10 @@ if ($result) {
 
     }
 
-    $jsonResult = json_encode(array_values($organizedData));
+    echo json_encode(['status' => 'success', 'payload' => array_values($organizedData)]);
 
-    echo $jsonResult;
 } else {
-    echo json_encode(["error" => "Error fetching data!"]);
+    echo json_encode(['status' => "error", "message" => "Error fetching more questions!"]);
 }
 
 mysqli_close($con);
