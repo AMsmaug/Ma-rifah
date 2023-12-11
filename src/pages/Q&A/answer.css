@@ -1,0 +1,16 @@
+@keyframes slideAndHide {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(5000px);
+  }
+  100% {
+    transform: translateX(5000px);
+    display: none;
+  }
+}
+
+.answer.removed {
+  animation: slideAndHide 1s ease-in-out forwards; /* 2s duration, ease-in-out timing function, 1s delay, forwards fill mode */
+}

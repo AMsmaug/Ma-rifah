@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
@@ -9,6 +9,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { LoadingButton } from "@mui/lab";
+import { ActiveContext } from "../../components/Auth/UserInfo";
 import {
   Dialog,
   DialogTitle,
@@ -18,15 +19,41 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import Cookies from "js-cookie";
-import {
-  questionType,
-  answersType,
-  calculateDate,
-  Answer,
-} from "./QuestionsAndAnswers";
+import { Answer } from "./Answer";
+import { questionType, answersType } from "./QuestionsAndAnswers";
+import { AddQuestionComponent } from "./AddQuestionComponent";
+
+const calculateDate = (d: string) => {
+  const dateNow = new Date();
+  const dateBefore = new Date(d);
+  const dateDiff: number = dateNow.getTime() - dateBefore.getTime();
+
+  const minutesDiff = Math.floor(dateDiff / (1000 * 60));
+  const hoursDiff = Math.floor(minutesDiff / 60);
+  const daysDiff = Math.floor(hoursDiff / 24);
+  const monthsDiff = Math.floor(daysDiff / 30);
+  const yearsDiff = Math.floor(monthsDiff / 12);
+
+  if (minutesDiff < 1) {
+    return "just now";
+  } else if (minutesDiff >= 1 && minutesDiff <= 59) {
+    return `${minutesDiff} minute${minutesDiff === 1 ? "" : "s"}`;
+  } else if (hoursDiff >= 1 && hoursDiff <= 23) {
+    return `${hoursDiff} hour${hoursDiff === 1 ? "" : "s"}`;
+  } else if (daysDiff >= 1 && daysDiff <= 29) {
+    return `${daysDiff} day${daysDiff === 1 ? "" : "s"}`;
+  } else if (monthsDiff >= 1 && monthsDiff <= 11) {
+    return `${monthsDiff} month${monthsDiff === 1 ? "" : "s"}`;
+  } else {
+    return `${yearsDiff} year${yearsDiff === 1 ? "" : "s"}`;
+  }
+};
 
 export const Question = (props: questionType) => {
-  // const { isLoggedIn } = useContext(ActiveContext);
+  const { userName, profileUrl } = useContext(ActiveContext);
+
+  const [editQuestionOpen, seteditQuestionOpen] = useState<boolean>(false);
+
   const [displayedAnswers, setdisplayedAnswers] = useState<answersType>([]);
 
   // This state to check if the user expanded all answers to display the view less button
@@ -52,18 +79,23 @@ export const Question = (props: questionType) => {
     useState<boolean>(false);
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null!);
+  const questionRef = useRef<HTMLDivElement>(null!);
 
   const {
+    questionFrom,
     questionId,
     questionContent,
     questionDate,
     imageURL,
+    isModified,
     studentId,
     studentName,
     studentAvatar,
     questionAnswers,
+    editQuestion,
     removeQuestion,
     addAnswer,
+    updateAnswer,
     removeAnswer,
     setisSnackbarOpen,
     setsnackbarContent,
@@ -72,10 +104,12 @@ export const Question = (props: questionType) => {
   } = props;
 
   // Add answer.
-  const handleClick = () => {
+  const handleClick = async () => {
     if (Cookies.get("id") === undefined) {
       openMustLoginPopup();
     } else {
+      if (textAreaRef.current.value === "") return;
+
       const id = Cookies.get("id");
 
       const currentDate = new Date();
@@ -93,14 +127,38 @@ export const Question = (props: questionType) => {
       // This formatted date is in the following format: yyyy-mm-dd to be valid as mysql date
       const inputs = {
         answerContent: textAreaRef.current.value,
-        answerDate: formattedDatetime,
         studentId: id,
         questionId,
       };
 
       axios
         .post("http://localhost/Ma-rifah/add_answer.php", inputs)
-        .then((res) => {
+        .then(async (res) => {
+          let stdName, stdAvatar;
+
+          if (
+            userName === undefined ||
+            userName === "" ||
+            profileUrl === undefined ||
+            profileUrl === ""
+          ) {
+            const stdId = Cookies.get("id");
+            const response = await axios.post(
+              "http://localhost/Ma-rifah/get_main_student_info.php",
+              stdId
+            );
+
+            if (response.data.status === "success") {
+              stdName = response.data.message.studentName;
+              stdAvatar = response.data.message.avatar;
+            } else {
+              return;
+            }
+          } else {
+            stdName = userName;
+            stdAvatar = profileUrl;
+          }
+
           const newAnswer = {
             questionId,
             answerId: res.data.message,
@@ -110,8 +168,8 @@ export const Question = (props: questionType) => {
             numberOfRaters: 0,
             myRate: 0,
             studentId: Number(Cookies.get("id")),
-            studentName: "Abdallah Al-Korhani",
-            studentAvatar: "../../../public/images/av6.png",
+            studentName: stdName,
+            studentAvatar: stdAvatar,
           };
 
           const answers = Array.from(questionAnswers);
@@ -119,14 +177,10 @@ export const Question = (props: questionType) => {
 
           addAnswer({
             questionId,
-            questionContent,
-            questionDate: formattedDatetime,
-            studentId: Number(Cookies.get("id")),
-            imageURL,
-            studentName,
-            studentAvatar,
             questionAnswers: answers,
+            whereToAddAnswer: questionFrom,
           });
+
           textAreaRef.current.value = "";
         })
         .catch((error) => console.log(error));
@@ -135,6 +189,7 @@ export const Question = (props: questionType) => {
 
   // In case this question is for the logged in user. The user can remove it or update it. So an icon button will be displayed
   // and a menu will show up. This menu contains two options update question and remove question.
+
   const handleClick2 = (event: React.MouseEvent<HTMLButtonElement>) => {
     setanchorEl(event.currentTarget);
   };
@@ -178,6 +233,11 @@ export const Question = (props: questionType) => {
     sethasReachedMaxAnswers(false);
   };
 
+  const handleEditQuestion = () => {
+    seteditQuestionOpen(true);
+    setanchorEl(null);
+  };
+
   const deleteQuestion = async () => {
     setloading2(true);
     setupdateQuestionDisabled(true);
@@ -186,10 +246,27 @@ export const Question = (props: questionType) => {
     );
 
     if (res.data.status === "success") {
-      removeQuestion(questionId);
-      setisSnackbarOpen(true);
-      setsnackbarContent({ status: "success", message: res.data.message });
-      setloading2(false);
+      questionRef.current.classList.add("removed");
+      setanchorEl(null);
+
+      setTimeout(() => {
+        removeQuestion({ questionId, whereToRemoveQuestion: questionFrom });
+        setisSnackbarOpen(true);
+        setsnackbarContent({ status: "success", message: res.data.message });
+
+        setloading2(false);
+
+        if (imageURL) {
+          // Make an API call to remove the previous image
+          try {
+            axios.post("http://localhost:/Ma-rifah/remove_image.php", {
+              imageURL: imageURL,
+            });
+          } catch (error) {
+            console.error("Error removing previous image", error);
+          }
+        }
+      }, 500);
     } else {
       setupdateQuestionDisabled(false);
       setisSnackbarOpen(true);
@@ -213,6 +290,7 @@ export const Question = (props: questionType) => {
   // Confirm deleting question
   const confirmDelete = () => {
     deleteQuestion();
+    handleClose3();
   };
 
   const changeRating = (props: {
@@ -227,7 +305,12 @@ export const Question = (props: questionType) => {
       answerSumRating: props.answerSumRating,
       numberOfRaters: props.numberOfRaters,
       questionId,
+      whereToUpdateRating: questionFrom,
     });
+  };
+
+  const onClose = () => {
+    seteditQuestionOpen(false);
   };
 
   return (
@@ -286,15 +369,34 @@ export const Question = (props: questionType) => {
           </DialogActions>
         </Dialog>
       )}
+      {editQuestionOpen && (
+        <AddQuestionComponent
+          operation="edit question"
+          editQuestion={editQuestion}
+          questionFrom={questionFrom}
+          onClose={onClose}
+          questionId={questionId}
+          questionContent={questionContent}
+          imageURL={imageURL}
+          setisSnackbarOpen={setisSnackbarOpen}
+          setsnackbarContent={setsnackbarContent}
+        />
+      )}
       <Paper
         className="question"
         sx={{
+          marginBottom: "15px",
           padding: {
             xs: "15px",
             sm: "8px",
             md: "15px",
           },
+          transition: "1s",
+          "&.removed": {
+            transform: "translateX(5000px)",
+          },
         }}
+        ref={questionRef}
       >
         <Stack spacing={2}>
           <Stack
@@ -313,9 +415,20 @@ export const Question = (props: questionType) => {
                 <Typography variant="h5" fontWeight="bold">
                   {studentName}
                 </Typography>
-                <Typography variant="subtitle1" color="grey">
-                  {calculateDate(questionDate)}
-                </Typography>
+                <Stack spacing={2} direction="row">
+                  <Typography variant="subtitle1" color="grey">
+                    {calculateDate(questionDate) === "just now" ? (
+                      calculateDate(questionDate)
+                    ) : (
+                      <>{calculateDate(questionDate)} ago</>
+                    )}
+                  </Typography>
+                  {Number(isModified) === 1 && (
+                    <Typography variant="subtitle1" color="grey">
+                      modified
+                    </Typography>
+                  )}
+                </Stack>
               </Stack>
             </Stack>
             {studentId == Number(Cookies.get("id")) && (
@@ -327,25 +440,20 @@ export const Question = (props: questionType) => {
           <Typography variant="subtitle1" fontSize={20}>
             {questionContent}
           </Typography>
-          <Box
-            height="300px"
-            textAlign={{
-              xs: "center",
-              md: "start",
-            }}
-            overflow="hidden"
-            width={{ xs: "350px", sm: "300px", md: "500px", lg: "700px" }}
-            alignSelf={{ xs: "center", lg: "start" }}
-          >
-            <img
-              className="question-image"
-              src={imageURL}
-              alt="question"
-              width="100%"
-              height="300px"
-              style={{ objectFit: "contain" }}
-            />
-          </Box>
+          {imageURL !== null && imageURL !== "" && (
+            <Box
+              textAlign={{
+                xs: "center",
+                md: "start",
+              }}
+              overflow="hidden"
+              width={{ xs: "350px", sm: "300px", md: "500px", lg: "700px" }}
+              alignSelf={{ xs: "center", lg: "start" }}
+            >
+              <img className="question-image" src={imageURL} alt="question" />
+            </Box>
+          )}
+
           <Box className="answers" mt={1}>
             <Typography variant="h5" mb={2} color="primary.main">
               <span style={{ marginRight: "5px" }}>
@@ -358,10 +466,11 @@ export const Question = (props: questionType) => {
               className="answers-wrapper"
               divider={<Divider />}
             >
-              {displayedAnswers.map((a, i) => {
+              {displayedAnswers.map((a) => {
                 return (
                   <Answer
-                    key={i}
+                    key={`answer_${a.answerId}`}
+                    questionFrom={questionFrom}
                     questionId={questionId}
                     answerId={a.answerId}
                     answerContent={a.answerContent}
@@ -373,6 +482,7 @@ export const Question = (props: questionType) => {
                     studentName={a.studentName}
                     studentAvatar={a.studentAvatar}
                     changeRating={changeRating}
+                    updateAnswer={updateAnswer}
                     removeAnswer={removeAnswer}
                     openMustLoginPopup={openMustLoginPopup}
                   />
@@ -392,7 +502,7 @@ export const Question = (props: questionType) => {
                     transition: ".6s",
                     width: "45px",
                     height: "45px",
-                    backgroundColor: "#ddd",
+                    backgroundColor: "#0f1f3ebf",
                     "&:hover": {
                       bgcolor: "secondary.main",
                     },
@@ -468,12 +578,15 @@ export const Question = (props: questionType) => {
           <MenuItem>
             <LoadingButton
               variant="text"
-              sx={{ color: "black" }}
+              sx={{
+                color: "black",
+              }}
               loading={loading}
               disabled={updateQuestionDisabled}
               startIcon={<EditIcon />}
+              onClick={handleEditQuestion}
             >
-              Update Question
+              Edit Question
             </LoadingButton>
           </MenuItem>
           <MenuItem>
