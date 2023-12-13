@@ -14,7 +14,7 @@ import {
   CoursesData,
   studentInfoType,
 } from "./components/Courses progress/CoursesContext";
-import { NotFound } from "./components/wrong url/NotFound";
+import { PageNotFound } from "./components/wrong url/PageNotFound";
 import { useState, createContext, useEffect } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
@@ -94,7 +94,7 @@ function App() {
                   ))
                 : null}
 
-              <Route path="*" element={<NotFound />} />
+              <Route path="*" element={<PageNotFound />} />
             </Routes>
           </ThemeProvider>
         </CoursesData>

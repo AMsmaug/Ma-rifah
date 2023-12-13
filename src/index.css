@@ -53,6 +53,10 @@ html {
   position: relative; */
 }
 
+body {
+  overflow-x: hidden;
+}
+
 /* to turn the snap scrolling on, all you need is uncomment the below code */
 /* .section {
   scroll-snap-align: start;

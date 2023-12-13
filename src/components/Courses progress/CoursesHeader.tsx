@@ -25,10 +25,11 @@ export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
 
   console.log(studentInfo);
 
-  studentInfo.forEach((student) => {
-    totalGrade += +student.studentGrade;
-    totalMarks += +student.fullMark;
-  });
+  if (Array.isArray(studentInfo))
+    studentInfo.forEach((student) => {
+      totalGrade += +student.studentGrade;
+      totalMarks += +student.fullMark;
+    });
   return (
     <Toolbar
       sx={{
@@ -106,7 +107,8 @@ export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
         </Box>
         <Box color="primary.main">
           <span style={{ fontWeight: "bold" }}>Average:</span>{" "}
-          {((totalGrade * 20) / totalMarks).toFixed(2)}/{20}
+          {(totalMarks === 0 ? 0 : (totalGrade * 20) / totalMarks).toFixed(2)}/
+          {20}
         </Box>
       </Stack>
       <Box sx={{ cursor: "pointer" }} onClick={handleClick}>
