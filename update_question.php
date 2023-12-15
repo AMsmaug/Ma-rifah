@@ -16,7 +16,7 @@ $imageURL = $question->imageURL;
 $escapedFilePath = mysqli_real_escape_string($con, $imageURL);
 
 
-$query = "UPDATE question SET question_content='$question_content' , image_url='$escapedFilePath'  WHERE question_id='$question_id'";
+$query = "UPDATE question SET question_content='$question_content' , image_url='$escapedFilePath' , is_modified='1'  WHERE question_id='$question_id'";
 
 $result = mysqli_query($con, $query);
 
