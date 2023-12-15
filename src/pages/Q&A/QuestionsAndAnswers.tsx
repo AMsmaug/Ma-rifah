@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, forwardRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
@@ -10,7 +10,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import "./q&a.css";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Button, Paper, Snackbar, Alert, AlertProps } from "@mui/material";
+import { Button, Paper, Snackbar } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -30,6 +30,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { Question } from "./Question";
 import { AddQuestionComponent } from "./AddQuestionComponent";
+import { SnackbarAlert } from "../../components/custom snack bar/SnackbarAlert";
 
 export type chapterType = {
   chapterId: number;
@@ -1312,12 +1313,6 @@ const LoadingComponent = () => {
     </Box>
   );
 };
-
-const SnackbarAlert = forwardRef<HTMLDivElement, AlertProps>(
-  function SnackbarAlert(props, ref) {
-    return <Alert elevation={6} ref={ref} {...props} />;
-  }
-);
 
 export const CustomTextInput = (props: {
   questionFrom: "search" | "normal";

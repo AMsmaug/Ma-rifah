@@ -19,7 +19,7 @@ import QuizIcon from "@mui/icons-material/Quiz";
 import { useContext, useEffect, useState } from "react";
 import { CoursesContext } from "../Courses progress/CoursesContext";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
 type chaptersType = {
@@ -46,6 +46,7 @@ export const SideBar = () => {
   const [openExamWarnDialaog, setOpenExamWarnDialaog] = useState(false);
   const [clickedChapter, setClickedChapter] = useState(0);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!currentCourseId) {
@@ -101,6 +102,10 @@ export const SideBar = () => {
     setLastCompletedAssignment,
     setLastCompletedQuiz,
   ]);
+
+  const goToFinalExam = () => {
+    navigate("/finalExam", { state: { courseId: currentCourseId } });
+  };
 
   return (
     <Box
@@ -446,10 +451,7 @@ export const SideBar = () => {
             No
           </Button>
           <Button
-            onClick={() => {
-              setOpenExamWarnDialaog(false);
-              // take me to the final exam
-            }}
+            onClick={goToFinalExam}
             sx={{
               color: "white",
               backgroundColor: "green",

@@ -11,8 +11,6 @@ import { CoursesListContext } from "../../App";
 const CoursesProgress = () => {
   const { studentInfo, setStudentInfo } = useContext(CoursesContext);
 
-  console.log(Cookies.get("id"));
-
   const { setCourses } = useContext(CoursesListContext);
 
   useEffect(() => {

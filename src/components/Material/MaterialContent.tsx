@@ -57,6 +57,7 @@ export const MaterialContent = () => {
           (response: {
             data: { intro: chapterIntroType; content: chapterContentType[] };
           }) => {
+            console.log(response.data);
             setChapterTitle({
               name: response.data.intro.chapterName,
               number: response.data.intro.chapterNumber,

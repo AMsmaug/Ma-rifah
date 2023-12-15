@@ -18,6 +18,7 @@ import { NotFound } from "./components/wrong url/NotFound";
 import { useState, createContext, useEffect } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
+import FinalExam from "./components/Final Exam/FinalExam";
 
 const theme = createTheme({
   palette: {
@@ -94,6 +95,7 @@ function App() {
                   ))
                 : null}
 
+              <Route path="finalExam" element={<FinalExam />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </ThemeProvider>

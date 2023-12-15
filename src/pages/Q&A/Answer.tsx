@@ -369,7 +369,11 @@ export const Answer = (props: answerProps) => {
               {studentName}
             </Typography>
             <Typography variant="subtitle2" color="grey">
-              {calculateDate(answerDate)} ago
+              {calculateDate(answerDate) === "just now" ? (
+                calculateDate(answerDate)
+              ) : (
+                <>{calculateDate(answerDate)} ago</>
+              )}
             </Typography>
           </Stack>
         </Stack>

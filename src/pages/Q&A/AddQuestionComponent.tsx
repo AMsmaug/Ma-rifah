@@ -142,6 +142,8 @@ export const AddQuestionComponent = (props: propsType) => {
   };
 
   const handlePostQuestion = async () => {
+    if (textFieldRef.current.value === "" && droppedImage === null) return;
+
     setloadingPostingQuestion(true);
 
     const inputs = {
