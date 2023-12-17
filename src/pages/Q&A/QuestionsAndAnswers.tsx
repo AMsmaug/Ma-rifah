@@ -12,8 +12,9 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button, Paper, Snackbar } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-
 import CancelIcon from "@mui/icons-material/Cancel";
+
+import { SnackbarAlert } from "../../components/custom snack bar/SnackbarAlert";
 
 import {
   Dialog,
@@ -30,7 +31,6 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { Question } from "./Question";
 import { AddQuestionComponent } from "./AddQuestionComponent";
-import { SnackbarAlert } from "../../components/custom snack bar/SnackbarAlert";
 
 export type chapterType = {
   chapterId: number;
@@ -252,6 +252,8 @@ export const QuestionsAndAnswers = () => {
       const studentId =
         Cookies.get("id") == undefined ? null : Number(Cookies.get("id"));
 
+      console.log(activeChapter);
+
       const res = await axios.post(
         "http://localhost/Ma-rifah/get_questions_answers.php",
         {
@@ -350,7 +352,11 @@ export const QuestionsAndAnswers = () => {
   };
 
   const navigateLoginPage = () => {
-    navigate("/login");
+    navigate("/login?src=QA");
+  };
+
+  const navigateToMaterials = () => {
+    navigate("/CoursesProgress");
   };
 
   // When the user wants to display questions about another course or chapter.
@@ -576,7 +582,7 @@ export const QuestionsAndAnswers = () => {
 
   // Close snackbar
   const handleClose = (
-    event?: React.SyntheticEvent | Event,
+    _event?: React.SyntheticEvent | Event,
     reason?: string
   ) => {
     if (reason === "clickaway") {
@@ -630,9 +636,8 @@ export const QuestionsAndAnswers = () => {
   };
 
   const handleLogout = () => {
-    navigate("/");
     Cookies.remove("id");
-    Cookies.remove("isLoggedIn");
+    navigate("/login?src=QA");
   };
 
   return (
@@ -923,19 +928,22 @@ export const QuestionsAndAnswers = () => {
           >
             Home
           </Box>
+          {Cookies.get("id") !== undefined && (
+            <Box
+              fontWeight="bold"
+              onClick={navigateToMaterials}
+              sx={{ cursor: "pointer", "&:hover": { color: "primary.main" } }}
+            >
+              Materials
+            </Box>
+          )}
+
           <Box
             fontWeight="bold"
             onClick={navigateHome}
             sx={{ cursor: "pointer", "&:hover": { color: "primary.main" } }}
           >
             FAQ
-          </Box>
-          <Box
-            fontWeight="bold"
-            onClick={() => navigate(-1)}
-            sx={{ cursor: "pointer", "&:hover": { color: "primary.main" } }}
-          >
-            Classes
           </Box>
         </Stack>
         {Cookies.get("id") === undefined ? (
@@ -1213,7 +1221,7 @@ export const QuestionsAndAnswers = () => {
             <Button
               variant="contained"
               color="secondary"
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/login?src=QA")}
               sx={{ color: "white" }}
             >
               Log in

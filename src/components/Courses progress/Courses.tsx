@@ -5,7 +5,7 @@ import CoursesProgress from "./CoursesProgress";
 export const Courses = () => {
   return (
     <Box className="materials">
-      <CoursesHeader />
+      <CoursesHeader showIcon={false} />
       <CoursesProgress />
     </Box>
   );

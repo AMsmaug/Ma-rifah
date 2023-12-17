@@ -6,30 +6,30 @@ import { useNavigate } from "react-router-dom";
 import { CoursesContext } from "./CoursesContext";
 import { DrawerContent } from "../Material/DrawerContent";
 
-export const CoursesHeader = () => {
+export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
   const { studentInfo } = useContext(CoursesContext);
   const [openDrawer, setOpenDrawer] = useState(false);
   const navigate = useNavigate();
-
-  console.log(studentInfo);
 
   let totalGrade = 0;
   let totalMarks = 0;
 
   const handleClick = () => {
-    Cookies.remove(`isLoggedIn`);
     Cookies.remove(`id`);
-    navigate("/login");
+    navigate("/login?src=land");
   };
 
   const handleLogoClick = () => {
     navigate(`/`);
   };
 
-  studentInfo.forEach((student) => {
-    totalGrade += +student.studentGrade;
-    totalMarks += +student.fullMark;
-  });
+  console.log(studentInfo);
+
+  if (Array.isArray(studentInfo))
+    studentInfo.forEach((student) => {
+      totalGrade += +student.studentGrade;
+      totalMarks += +student.fullMark;
+    });
   return (
     <Toolbar
       sx={{
@@ -69,21 +69,23 @@ export const CoursesHeader = () => {
           },
         }}
       >
-        <IconButton
-          aria-label="send"
-          sx={{ color: `white` }}
-          size="small"
-          onClick={() => setOpenDrawer(true)}
-        >
-          <ReorderIcon
-            sx={{
-              fontSize: {
-                xs: `22px`,
-                sm: `26px`,
-              },
-            }}
-          />
-        </IconButton>
+        {showIcon ? (
+          <IconButton
+            aria-label="send"
+            sx={{ color: `white` }}
+            size="small"
+            onClick={() => setOpenDrawer(true)}
+          >
+            <ReorderIcon
+              sx={{
+                fontSize: {
+                  xs: `22px`,
+                  sm: `26px`,
+                },
+              }}
+            />
+          </IconButton>
+        ) : null}
       </Box>
       <Stack
         direction="row"
@@ -105,36 +107,39 @@ export const CoursesHeader = () => {
         </Box>
         <Box color="primary.main">
           <span style={{ fontWeight: "bold" }}>Average:</span>{" "}
-          {((totalGrade * 20) / totalMarks).toFixed(2)}/{20}
+          {(totalMarks === 0 ? 0 : (totalGrade * 20) / totalMarks).toFixed(2)}/
+          {20}
         </Box>
       </Stack>
       <Box sx={{ cursor: "pointer" }} onClick={handleClick}>
         Logout
       </Box>
-      <Drawer
-        anchor="left"
-        open={openDrawer}
-        onClose={() => setOpenDrawer(false)}
-        sx={{
-          display: {
-            sm: `block`,
-            md: `none`,
-          },
-        }}
-      >
-        <Box
+      {showIcon ? (
+        <Drawer
+          anchor="left"
+          open={openDrawer}
+          onClose={() => setOpenDrawer(false)}
           sx={{
-            width: {
-              xs: `250px`,
-              sm: `300px`,
+            display: {
+              sm: `block`,
+              md: `none`,
             },
           }}
-          textAlign={`center`}
-          role="presentation"
         >
-          <DrawerContent />
-        </Box>
-      </Drawer>
+          <Box
+            sx={{
+              width: {
+                xs: `250px`,
+                sm: `300px`,
+              },
+            }}
+            textAlign={`center`}
+            role="presentation"
+          >
+            <DrawerContent />
+          </Box>
+        </Drawer>
+      ) : null}
     </Toolbar>
   );
 };

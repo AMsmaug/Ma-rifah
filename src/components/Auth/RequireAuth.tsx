@@ -7,7 +7,6 @@ type propsType = {
 
 export const RequireAuth = ({ children }: propsType) => {
   if (!Cookies.get(`id`)) {
-    // rejected approach, fix it later
     return <Navigate to={`/login`} />;
   } else {
     return children;

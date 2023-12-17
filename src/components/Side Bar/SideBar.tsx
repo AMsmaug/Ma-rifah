@@ -224,8 +224,9 @@ const CoursesListItem = ({
                     })
                   }
                 >
-                  <span>Chapter {i + 1}:</span>
-                  {ch.chapterName}
+                  <span>
+                    Chapter {i + 1}: {ch.chapterName}
+                  </span>
                 </ListItemButton>
               </ListItem>
             );

@@ -13,6 +13,7 @@ import {
   ListItemIcon,
   ListItemText,
   Button,
+  Skeleton,
 } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import QuizIcon from "@mui/icons-material/Quiz";
@@ -32,6 +33,7 @@ export const SideBar = () => {
   const {
     currentCourseId,
     setCurrentCourseId,
+    currentChapterId,
     setCurrentChapterId,
     lastCompletedAssignment,
     setLastCompletedAssignment,
@@ -45,6 +47,7 @@ export const SideBar = () => {
   const [openExamDialaog, setOpenExamDialaog] = useState(false);
   const [openExamWarnDialaog, setOpenExamWarnDialaog] = useState(false);
   const [clickedChapter, setClickedChapter] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -81,7 +84,7 @@ export const SideBar = () => {
             )
             .then((response: { data: number }) => {
               setLastCompletedAssignment(response.data);
-              // setLastCompletedAssignment(1);
+              // setLastCompletedAssignment(3);
             });
           axios
             .post(
@@ -90,8 +93,9 @@ export const SideBar = () => {
             )
             .then((response: { data: number }) => {
               setLastCompletedQuiz(response.data);
-              // setLastCompletedQuiz(0);
+              // setLastCompletedQuiz(1);
             });
+          setIsLoading(false);
         });
     }
   }, [
@@ -102,6 +106,23 @@ export const SideBar = () => {
     setLastCompletedAssignment,
     setLastCompletedQuiz,
   ]);
+
+  const loadingBoxes = (nbOfBoxes: number) => {
+    const boxes = [];
+    for (let i = 0; i < nbOfBoxes; i++) {
+      boxes.push(
+        <Skeleton
+          key={i}
+          variant="rectangular"
+          width={"calc(100% - 20px)"}
+          height={`50px`}
+          animation="wave"
+          sx={{ margin: "0 10px 15px 10px", borderRadius: `12px` }}
+        />
+      );
+    }
+    return boxes;
+  };
 
   const goToFinalExam = () => {
     navigate("/finalExam", { state: { courseId: currentCourseId } });
@@ -125,10 +146,21 @@ export const SideBar = () => {
       }}
     >
       <List sx={{ paddingTop: `20px` }}>
-        {chapters
+        {isLoading
+          ? loadingBoxes(4)
+          : chapters
           ? chapters.map((chapter) => {
               return (
-                <ListItem disablePadding key={chapter.chapterId}>
+                <ListItem
+                  disablePadding
+                  key={chapter.chapterId}
+                  color="primary"
+                  sx={{
+                    backgroundColor:
+                      currentChapterId === chapter.chapterId ? "#0000000a" : "",
+                    marginBottom: "10px",
+                  }}
+                >
                   <ListItemButton
                     onClick={() => {
                       if (
@@ -167,10 +199,12 @@ export const SideBar = () => {
         height={2}
         bgcolor={`#777`}
         width={`90%`}
-        margin={`30px auto 15px`}
+        margin={`15px auto 15px`}
       />
       <List>
-        {chapters
+        {isLoading
+          ? loadingBoxes(3)
+          : chapters
           ? chapters.map((chapter) => {
               return (
                 <ListItem disablePadding key={chapter.chapterId}>

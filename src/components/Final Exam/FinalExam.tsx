@@ -27,6 +27,11 @@ import { SnackbarAlert } from "../custom snack bar/SnackbarAlert";
 import Snackbar from "@mui/material/Snackbar";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import {
+  SubmittedFinalExam,
+  submittedExamInformationType,
+} from "./SubmittedFinalExam";
+
 type problemType = {
   problemId: number;
   problemContent: string;
@@ -62,6 +67,8 @@ type snacBarContentType = {
 type examInformationType = {
   examId: number;
   courseName: string;
+  examDuration: number;
+  nbOfProblems: number;
 };
 
 type problemsToBeSentToServer = {
@@ -72,6 +79,12 @@ type problemsToBeSentToServer = {
 const FinalExam = () => {
   const [loadingFetchingProblems, setloadingFetchingProblems] =
     useState<boolean>(true);
+
+  const [isexamRulesPopUpOpen, setisexamRulesPopUpOpen] =
+    useState<boolean>(false);
+
+  const [submittedExamInformation, setsubmittedExamInformation] =
+    useState<submittedExamInformationType | null>(null);
 
   const [isExamStarted, setisExamStarted] = useState<boolean>(false);
 
@@ -122,6 +135,24 @@ const FinalExam = () => {
 
   // console.log(problems);
 
+  // confirm leaving the site without submitting the final
+
+  useEffect(() => {
+    if (submittedExamInformation !== null) return;
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      const message =
+        "Are you sure you want to leave? Your progress may be lost.";
+      event.returnValue = message;
+      return message;
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [submittedExamInformation]);
+
   useEffect(() => {
     function checkInternetConnection() {
       if (navigator.onLine) {
@@ -166,60 +197,100 @@ const FinalExam = () => {
     if (courseId === undefined || courseId === null)
       navigate("/CoursesProgress");
     else {
-      const fetchProblems = async () => {
-        const studentId = Cookies.get("id");
-
+      const f = async () => {
         const inputs = {
-          studentId: studentId,
+          studentId: Cookies.get("id"),
           courseId,
         };
 
-        try {
-          setloadingFetchingProblems(true);
+        const res = await axios.post(
+          "http://localhost/Ma-rifah/getLastFinalExam.php",
+          inputs
+        );
 
-          const res = await axios.post(
-            "http://localhost/Ma-rifah/start_final_exam.php",
-            inputs
-          );
+        if (res.data.status === "success") {
+          if (res.data.message === "No submitted final exam") {
+            const fetchProblems = async () => {
+              const studentId = Cookies.get("id");
 
-          console.log(res);
+              const inputs = {
+                studentId: studentId,
+                courseId,
+              };
 
-          if (res.data.status === "success") {
-            const { examId, courseName, finalExamDuration, examProblems } =
-              res.data.payload;
+              try {
+                setloadingFetchingProblems(true);
 
-            setexamInformation({ examId, courseName });
-            setproblems(examProblems);
-            settimeLeft(60 * Number(finalExamDuration));
+                const res = await axios.post(
+                  "http://localhost/Ma-rifah/start_final_exam.php",
+                  inputs
+                );
 
-            setsnackBarContent(null);
-            setisExamStarted(true);
+                if (res.data.status === "success") {
+                  const {
+                    examId,
+                    courseName,
+                    finalExamDuration,
+                    examProblems,
+                  } = res.data.payload;
+
+                  const examDuration = 60 * Number(finalExamDuration);
+                  const nbOfProblems = examProblems.length;
+
+                  setexamInformation({
+                    examId,
+                    courseName,
+                    examDuration,
+                    nbOfProblems,
+                  });
+                  setproblems(examProblems);
+                  settimeLeft(examDuration);
+
+                  setsnackBarContent(null);
+
+                  setisexamRulesPopUpOpen(true);
+
+                  setloadingFetchingProblems(false);
+
+                  seterrorStartingExam(false);
+                } else if (res.data.status === "error") {
+                  setexamInformation(null);
+                  setproblems([]);
+                  setsnackBarContent({
+                    status: "error",
+                    message: res.data.message,
+                  });
+                  seterrorStartingExam(true);
+                  setloadingFetchingProblems(false);
+                }
+
+                setloadingFetchingProblems(false);
+
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              } catch (error: any) {
+                setsnackBarContent({
+                  status: "error",
+                  message: error.message,
+                });
+                setloadingFetchingProblems(false);
+              }
+            };
+
+            fetchProblems();
+          } else if (res.data.message === "submitted final exam exists") {
+            setsubmittedExamInformation(res.data.payload);
             setloadingFetchingProblems(false);
-            seterrorStartingExam(false);
-          } else if (res.data.status === "error") {
-            setexamInformation(null);
-            setproblems([]);
+            console.log(res.data);
+          } else {
             setsnackBarContent({
               status: "error",
-              message: res.data.message,
+              message: "Unexpected Error",
             });
-            seterrorStartingExam(true);
-            setloadingFetchingProblems(false);
           }
-
-          setloadingFetchingProblems(false);
-
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-          setsnackBarContent({
-            status: "error",
-            message: error.message,
-          });
-          setloadingFetchingProblems(false);
         }
       };
 
-      fetchProblems();
+      f();
     }
   }, [courseId, navigate]);
 
@@ -262,25 +333,6 @@ const FinalExam = () => {
 
   const handleCloseAlert = () => {
     setsnackBarContent(null);
-  };
-
-  const formatTime = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
-
-    if (hours > 0) {
-      return `${String(hours).padStart(2, "0")} h:${String(minutes).padStart(
-        2,
-        "0"
-      )}`;
-    } else if (minutes > 0) {
-      return `${String(minutes).padStart(2, "0")}:${String(
-        remainingSeconds
-      ).padStart(2, "0")}`;
-    } else {
-      return `${remainingSeconds}s`;
-    }
   };
 
   const scrollLeft = () => {
@@ -407,7 +459,7 @@ const FinalExam = () => {
             } else {
               audio2Ref.current.play();
             }
-          }, 700);
+          }, 200);
         } else {
           setsnackBarContent({
             status: "error",
@@ -437,6 +489,15 @@ const FinalExam = () => {
 
   const hanldeGoToMaterials = () => {
     navigate("/CoursesProgress/");
+  };
+
+  const handleCloseExamRules = () => {
+    setisExamStarted(true);
+    setisexamRulesPopUpOpen(false);
+  };
+
+  const calculateExamDurationInMinutes = (time: number) => {
+    return time / 60;
   };
 
   return (
@@ -704,7 +765,10 @@ const FinalExam = () => {
       <Box
         className="container"
         sx={{
-          height: "110vh",
+          height: {
+            xs: "140vh",
+            md: "115vh",
+          },
           paddingTop: "15px",
         }}
       >
@@ -713,44 +777,93 @@ const FinalExam = () => {
             backgroundColor: "#FFFFFFE4",
             borderRadius: "16px",
             overflow: "hidden",
-            height: "calc(110vh - 30px)",
-            padding: "25px 25px 10px 25px",
+            height: {
+              xs: "140vh",
+              md: "calc(115vh - 30px)",
+            },
+            padding: {
+              xs: "5px",
+              md: "25px 25px 10px 25px",
+            },
             marginBottom: "15px",
           }}
         >
           {loadingFetchingProblems ? (
             <LoadingComponent />
+          ) : submittedExamInformation !== null ? (
+            <SubmittedFinalExam
+              examId={submittedExamInformation?.examId}
+              grade={submittedExamInformation?.grade}
+              courseName={submittedExamInformation?.courseName}
+              problems={submittedExamInformation?.problems}
+            />
+          ) : isexamRulesPopUpOpen ? (
+            <Dialog
+              aria-labelledby="dialog-title"
+              aria-describedby="dialog-description"
+              open={isexamRulesPopUpOpen}
+            >
+              <DialogTitle
+                id="dialog-title"
+                sx={{
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  fontSize: "30px",
+                  marginBottom: "20px",
+                }}
+              >
+                Exam Rules
+              </DialogTitle>
+              <DialogContent sx={{ marginBottom: "20px" }}>
+                <DialogContentText
+                  id="dialog-description"
+                  sx={{
+                    fontSize: "18px",
+                  }}
+                >
+                  <span></span>
+                  Be careful , if you haven't submit the exam before time is
+                  finished the exam will not be considered done. <br /> <br />
+                  Exam duration:{" "}
+                  <span>
+                    {examInformation?.examDuration !== undefined &&
+                      calculateExamDurationInMinutes(
+                        examInformation?.examDuration
+                      )}{" "}
+                  </span>
+                  minutes
+                  <br />
+                  Number Of Problems: {examInformation?.nbOfProblems}
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: "20px",
+                  marginBottom: "10px",
+                }}
+              >
+                <Button
+                  autoFocus
+                  variant="contained"
+                  sx={{
+                    color: "white",
+                  }}
+                  onClick={handleCloseExamRules}
+                >
+                  Ok
+                </Button>
+              </DialogActions>
+            </Dialog>
           ) : (
             <>
-              <Box className="final-header">
-                <Typography
-                  variant="h4"
-                  mb={2}
-                  textAlign="center"
-                  fontWeight="bold"
-                >
-                  {examInformation?.courseName} Final Exam
-                </Typography>
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  px={2}
-                >
-                  <Typography>
-                    Total Number Of Questions:
-                    <Typography component="span" ml={1} fontWeight="bold">
-                      {problems?.length}
-                    </Typography>
-                  </Typography>
-                  <Typography textAlign="end">
-                    Time Left:
-                    <Typography component="span" ml={1} fontWeight="bold">
-                      {formatTime(timeLeft)}
-                    </Typography>
-                  </Typography>
-                </Stack>
-              </Box>
+              <FinalHeader
+                courseName={examInformation?.courseName}
+                timeLeft={timeLeft}
+                nbOfProblems={problems?.length}
+              />
               <Stack
                 flex="1"
                 sx={{ flexWrap: "wrap", overflow: "hidden" }}
@@ -763,7 +876,7 @@ const FinalExam = () => {
                     <Box
                       key={`final-problem-${i}`}
                       px={2}
-                      flex={1}
+                      flex={0.3}
                       width="100%"
                       ref={scrollContent}
                     >
@@ -885,7 +998,12 @@ const Possibilities = (props: possibilitiesComponentType) => {
     <RadioGroup onChange={handleChange} name={`problem-${problemId}`}>
       <Grid container spacing={1}>
         {problemPossibilities.map((p) => (
-          <Grid key={`possibility-id-${p.possibilityId}`} item xs={check()}>
+          <Grid
+            key={`possibility-id-${p.possibilityId}`}
+            item
+            xs={12}
+            sm={check()}
+          >
             <Possibility
               possibilityId={p.possibilityId}
               possibilityContent={p.possibilityContent}
@@ -894,6 +1012,62 @@ const Possibilities = (props: possibilitiesComponentType) => {
         ))}
       </Grid>
     </RadioGroup>
+  );
+};
+
+type finalHeaderType = {
+  courseName: string | undefined;
+  nbOfProblems: number;
+  timeLeft: number;
+};
+
+const FinalHeader = (props: finalHeaderType) => {
+  const { courseName, nbOfProblems, timeLeft } = props;
+
+  const formatTime = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+
+    if (hours > 0) {
+      return `${String(hours).padStart(2, "0")} h:${String(minutes).padStart(
+        2,
+        "0"
+      )}`;
+    } else if (minutes > 0) {
+      return `${String(minutes).padStart(2, "0")}:${String(
+        remainingSeconds
+      ).padStart(2, "0")}`;
+    } else {
+      return `${remainingSeconds}s`;
+    }
+  };
+
+  return (
+    <Box className="final-header">
+      <Typography variant="h4" mb={2} textAlign="center" fontWeight="bold">
+        {courseName} Final Exam
+      </Typography>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        px={2}
+      >
+        <Typography>
+          Total Number Of Questions:
+          <Typography component="span" ml={1} fontWeight="bold">
+            {nbOfProblems}
+          </Typography>
+        </Typography>
+        <Typography textAlign="end">
+          Time Left:
+          <Typography component="span" ml={1} fontWeight="bold">
+            {formatTime(timeLeft)}
+          </Typography>
+        </Typography>
+      </Stack>
+    </Box>
   );
 };
 

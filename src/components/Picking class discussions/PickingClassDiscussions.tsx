@@ -60,6 +60,8 @@ const PickingClassDiscussions = () => {
     fetchClasses();
   }, []);
 
+  console.log(classes);
+
   return (
     <Box className="class-discussion-picker">
       <Header />

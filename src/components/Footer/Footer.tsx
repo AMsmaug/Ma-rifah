@@ -1,5 +1,5 @@
 import "./footer.css";
-import { Box, Stack, IconButton } from "@mui/material";
+import { Box, Stack, IconButton, Typography } from "@mui/material";
 
 const Footer = () => {
   const getCurrentYear = () => {
@@ -8,60 +8,105 @@ const Footer = () => {
   };
   return (
     <Box className="footer section" pt={4} bgcolor="gray.main">
-      <Stack
-        className="container"
-        direction={{ md: "row" }}
-        justifyContent="space-between"
-        spacing={4}
-        pb={4}
-      >
+      <Stack className="container" direction={`row`} spacing={4} pb={4}>
         <Stack
-          alignItems={{
-            xs: "center",
-            md: "start",
-          }}
+          // alignItems={{
+          //   sm: `center`,
+          //   md: "start",
+          //   lg: `start`,
+          // }}
+          justifyContent={`space-between`}
           flex={1}
+          padding={`0 15px`}
         >
-          <Box mb={3} fontSize="20px">
-            <span
-              style={{
+          <Stack
+            mb={3}
+            fontSize="20px"
+            direction={`row`}
+            gap={{ xs: 2, sm: 8, md: 10 }}
+          >
+            <Typography
+              sx={{
                 minWidth: "200px",
                 fontWeight: "bold",
                 display: "inline-block",
+                fontSize: {
+                  xs: `16px`,
+                  sm: `18px`,
+                  md: `24px`,
+                  lg: `24px`,
+                },
               }}
             >
               Email:
-            </span>
-            <span> marrifa-aaa@gmail.com</span>
-          </Box>
-          <Stack mb={3} fontSize="20px" direction="row">
-            <span
-              style={{
+            </Typography>
+            <Typography
+              fontSize={{ xs: `16px`, sm: `18px`, md: `22px`, lg: `22px` }}
+            >
+              marrifa-aaa@gmail.com
+            </Typography>
+          </Stack>
+          <Stack
+            fontSize="20px"
+            direction={`row`}
+            gap={{ xs: 2, sm: 8, md: 10 }}
+          >
+            <Typography
+              sx={{
                 minWidth: "200px",
                 fontWeight: "bold",
                 display: "inline-block",
+                fontSize: {
+                  xs: `16px`,
+                  sm: `18px`,
+                  md: `24px`,
+                  lg: `24px`,
+                },
               }}
             >
               Phone Numbers:
-            </span>
+            </Typography>
             <ul
               className="phone-numbers"
               style={{ display: "inline-block", marginLeft: "20px" }}
             >
-              <li>(+961) 81-328-073</li>
-              <li>(+961) 81-290-191</li>
-              <li>(+961) 70-439-510</li>
+              <li>
+                <Typography
+                  fontSize={{ xs: `16px`, sm: `18px`, md: `20px`, lg: `22px` }}
+                >
+                  (+961) 81-328-073
+                </Typography>
+              </li>
+              <li>
+                <Typography
+                  fontSize={{ xs: `16px`, sm: `18px`, md: `20px`, lg: `22px` }}
+                >
+                  (+961) 81-290-191
+                </Typography>
+              </li>
+              <li>
+                <Typography
+                  fontSize={{ xs: `16px`, sm: `18px`, md: `20px`, lg: `22px` }}
+                >
+                  (+961) 70-439-510
+                </Typography>
+              </li>
             </ul>
           </Stack>
         </Stack>
         <Box
           className="logo"
           sx={{
+            display: {
+              xs: `none`,
+              sm: `none`,
+              md: `flex`,
+              lg: `flex`,
+            },
             margin: "15px auto",
             width: "150px",
             height: "150px",
             borderRadius: "50%",
-            display: "flex",
             alignItems: "center",
             justifyContent: "center",
             bgcolor: "secondary.main",
@@ -85,7 +130,7 @@ const Footer = () => {
         textAlign="center"
         pt={3}
         pb={3}
-        fontSize="22px"
+        fontSize={{ xs: `20px`, sm: `20px`, md: "22px", lg: "22px" }}
         color="white"
         fontWeight="bold"
         bgcolor="secondary.main"

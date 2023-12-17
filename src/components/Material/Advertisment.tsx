@@ -1,6 +1,13 @@
-import { Box } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
+import { useState, useEffect } from "react";
 
 export const Advertisment = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
+
   return (
     <Box
       width={`400px`}
@@ -15,31 +22,54 @@ export const Advertisment = () => {
       }}
       // flexShrink={2}
     >
-      <Box
-        width={`100%`}
-        height={`200px`}
-        bgcolor={`#ccc`}
-        display={`flex`}
-        justifyContent={`center`}
-        alignItems={`center`}
-        fontSize={`20px`}
-        fontWeight={`bold`}
-      >
-        Ads
-      </Box>
-      <Box
-        mt={`60px`}
-        width={`100%`}
-        height={`400px`}
-        bgcolor={`#ccc`}
-        display={`flex`}
-        justifyContent={`center`}
-        alignItems={`center`}
-        fontSize={`20px`}
-        fontWeight={`bold`}
-      >
-        Ads
-      </Box>
+      {isLoading ? (
+        <Skeleton
+          variant="rectangular"
+          animation="wave"
+          sx={{
+            width: `100%`,
+            height: `200px`,
+          }}
+        />
+      ) : (
+        <Box
+          width={`100%`}
+          height={`200px`}
+          bgcolor={`#ccc`}
+          display={`flex`}
+          justifyContent={`center`}
+          alignItems={`center`}
+          fontSize={`20px`}
+          fontWeight={`bold`}
+        >
+          Ads
+        </Box>
+      )}
+      {isLoading ? (
+        <Skeleton
+          variant="rectangular"
+          animation="wave"
+          sx={{
+            marginTop: `60px`,
+            width: `100%`,
+            height: `400px`,
+          }}
+        />
+      ) : (
+        <Box
+          mt={`60px`}
+          width={`100%`}
+          height={`400px`}
+          bgcolor={`#ccc`}
+          display={`flex`}
+          justifyContent={`center`}
+          alignItems={`center`}
+          fontSize={`20px`}
+          fontWeight={`bold`}
+        >
+          Ads
+        </Box>
+      )}
     </Box>
   );
 };

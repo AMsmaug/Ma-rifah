@@ -37,7 +37,7 @@
 .header .navbar .sections-list {
   display: none;
 }
-.header .navbar a {
+.header .navbar .option {
   display: block;
   text-align: center;
   padding: 25px 20px;
@@ -46,21 +46,22 @@
   text-decoration: none;
   transition: 0.3s;
   position: relative;
+  cursor: pointer;
 }
 
-.header .navbar li:first-of-type a {
+.header .navbar li:first-of-type .option {
   padding-left: 40px;
 }
 
-.header .navbar li:last-of-type a {
+.header .navbar li:last-of-type .option {
   padding-right: 40px;
 }
 
-.header .navbar a:hover {
+.header .navbar .option:hover {
   color: var(--orange);
 }
 
-.header .navbar a:before {
+.header .navbar .option:before {
   content: "";
   width: 0;
   background-color: var(--orange);
@@ -72,7 +73,7 @@
   transition: 0.3s;
 }
 
-.header .navbar a:hover:before {
+.header .navbar .option:hover:before {
   width: 100%;
 }
 .sections ul {
