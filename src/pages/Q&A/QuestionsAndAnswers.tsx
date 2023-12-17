@@ -351,6 +351,10 @@ export const QuestionsAndAnswers = () => {
     navigate("/");
   };
 
+  const navigateFAQ = () => {
+    navigate("/FAQ");
+  };
+
   const navigateLoginPage = () => {
     navigate("/login?src=QA");
   };
@@ -940,7 +944,7 @@ export const QuestionsAndAnswers = () => {
 
           <Box
             fontWeight="bold"
-            onClick={navigateHome}
+            onClick={navigateFAQ}
             sx={{ cursor: "pointer", "&:hover": { color: "primary.main" } }}
           >
             FAQ

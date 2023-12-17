@@ -1,0 +1,22 @@
+.FAQ .faq-question {
+  position: relative;
+  padding-left: 40px;
+}
+
+.FAQ .faq-question::before {
+  content: "?";
+  position: absolute;
+  left: 0px;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  background-color: #2b4efd;
+  font-weight: bold;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  outline: #2b4efd3b solid 5px;
+}

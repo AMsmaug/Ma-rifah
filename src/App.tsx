@@ -19,6 +19,7 @@ import { useState, createContext, useEffect } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
 import FinalExam from "./components/Final Exam/FinalExam";
+import Faq from "./pages/FAQ/FAQ";
 
 const theme = createTheme({
   palette: {
@@ -96,7 +97,7 @@ function App() {
                 : null}
 
               <Route element={<FinalExam />} path="finalExam" />
-
+              <Route element={<Faq />} path="FAQ" />
               <Route path="*" element={<PageNotFound />} />
             </Routes>
           </ThemeProvider>
