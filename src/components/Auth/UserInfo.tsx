@@ -34,24 +34,12 @@ export const UserInfo = ({ children }: haveAccountProps) => {
   const [profileUrl, setProfileUrl] = useState(``);
   // ---------------------------------
 
-  // const login = () => {
-  //   setisLoggedIn(true);
-  // };
-
-  // const logout = () => {
-  //   setisLoggedIn(false);
-  // };
-
   return (
     <ActiveContext.Provider
       value={{
         // For authentication process
         hasAnAccount,
         setHasAnAccount,
-        // isLoggedIn,
-        // login,
-        // logout,
-        // ---------------------------------
         // For Question and answers feature
         userName,
         setUserName,

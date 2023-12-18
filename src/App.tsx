@@ -3,21 +3,24 @@ import "./App.css";
 import "./normalize.css";
 import { Auth } from "./pages/Auth";
 import { Landing } from "./pages/Landing";
-import { QuestionsAndAnswers } from "./pages/Q&A/QuestionsAndAnswers";
+import { QuestionsAndAnswers } from "./pages/QuestionsAndAnswers";
 import { UserInfo } from "./components/Auth/UserInfo";
-import { createTheme, ThemeProvider } from "@mui/material";
-import PickingClassDiscussions from "./components/Picking class discussions/PickingClassDiscussions";
+import { Box, createTheme, ThemeProvider } from "@mui/material";
+import PickingClassDiscussions from "./pages/PickingClassDiscussions";
 import { RequireAuth } from "./components/Auth/RequireAuth";
-import { Material } from "./components/Material/Material";
-import { Courses } from "./components/Courses progress/Courses";
+import { Material } from "./pages/Material";
+import { Courses } from "./pages/Courses";
 import {
   CoursesData,
   studentInfoType,
 } from "./components/Courses progress/CoursesContext";
-import { PageNotFound } from "./components/wrong url/PageNotFound";
 import { useState, createContext, useEffect } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
+import NoContentFound from "./components/No Content found/NoContentFound";
+import { Assignment } from "./pages/Assignment";
+import React from "react";
+import { Quiz } from "./pages/Quiz";
 
 const theme = createTheme({
   palette: {
@@ -78,23 +81,44 @@ function App() {
                     <Courses />
                   </RequireAuth>
                 }
-                path="CoursesProgress"
+                path="Courses"
               />
               {courses
                 ? courses.map((course) => (
-                    <Route
-                      key={course}
-                      element={
-                        <RequireAuth>
-                          <Material />
-                        </RequireAuth>
-                      }
-                      path={`CoursesProgress/${course}`}
-                    />
+                    <React.Fragment key={course}>
+                      <Route
+                        element={
+                          <RequireAuth>
+                            <Material />
+                          </RequireAuth>
+                        }
+                        path={`Courses/${course}`}
+                      />
+                      <Route
+                        path={`Courses/${course}/Assignment`}
+                        element={<Assignment />}
+                      />
+                      <Route
+                        path={`Courses/${course}/Quiz`}
+                        element={<Quiz />}
+                      />
+                    </React.Fragment>
                   ))
                 : null}
 
-              <Route path="*" element={<PageNotFound />} />
+              <Route
+                path="*"
+                element={
+                  <Box mt={3}>
+                    <NoContentFound
+                      iconFontSize={120}
+                      iconColor="primary.main"
+                      textFontSize={26}
+                      seperateString={false}
+                    />
+                  </Box>
+                }
+              />
             </Routes>
           </ThemeProvider>
         </CoursesData>

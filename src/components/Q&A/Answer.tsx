@@ -12,7 +12,7 @@ import { LoadingButton } from "@mui/lab";
 import { Dialog, DialogContent } from "@mui/material";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { answerProps, CustomTextInput } from "./QuestionsAndAnswers";
+import { answerProps, CustomTextInput } from "../../pages/QuestionsAndAnswers";
 import "./answer.css";
 
 const calculateDate = (d: string) => {

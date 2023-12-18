@@ -5,9 +5,9 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import SideBar from "../../components/Side Bar/SideBar";
+import SideBar from "../components/Q&A/Side Bar/SideBar";
 import SearchIcon from "@mui/icons-material/Search";
-import "./q&a.css";
+import "../components/Q&A/q&a.css";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
@@ -33,13 +33,13 @@ import {
   DialogActions,
 } from "@mui/material";
 
-import NoContentFound from "../../components/No Content found/NoContentFound";
-import LoadingIndicator from "../../components/Loading Indicator/LoadingIndicator";
+import NoContentFound from "../components/No Content found/NoContentFound";
+import LoadingIndicator from "../components/Q&A/Loading Indicator/LoadingIndicator";
 import Skeleton from "@mui/material/Skeleton";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { Question } from "./Question";
-import { AddQuestionComponent } from "./AddQuestionComponent";
+import { Question } from "../components/Q&A/Question";
+import { AddQuestionComponent } from "../components/Q&A/AddQuestionComponent";
 import { LoadingButton } from "@mui/lab";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditIcon from "@mui/icons-material/Edit";
@@ -863,7 +863,11 @@ export const QuestionsAndAnswers = () => {
                     height="100%"
                   >
                     {searchNoContentFound ? (
-                      <NoContentFound iconFontSize={130} textFontSize={20} />
+                      <NoContentFound
+                        iconFontSize={130}
+                        textFontSize={20}
+                        seperateString={true}
+                      />
                     ) : isSearchQuestionsLoading ? (
                       <LoadingIndicator />
                     ) : (
@@ -1132,7 +1136,11 @@ export const QuestionsAndAnswers = () => {
               {isLoading ? (
                 <LoadingIndicator />
               ) : noContentFound ? (
-                <NoContentFound iconFontSize={200} textFontSize={30} />
+                <NoContentFound
+                  iconFontSize={200}
+                  textFontSize={30}
+                  seperateString={true}
+                />
               ) : (
                 <InfiniteScroll
                   dataLength={questions.length}

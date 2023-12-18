@@ -60,7 +60,7 @@ export const Header = () => {
               className="option"
               onClick={() => {
                 if (Cookies.get(`id`)) {
-                  navigate("/CoursesProgress");
+                  navigate("/Courses");
                 } else {
                   navigate("/login?src=land");
                 }

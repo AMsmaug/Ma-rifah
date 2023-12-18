@@ -1,13 +1,13 @@
 import { Box } from "@mui/material";
-import { CoursesHeader } from "../Courses progress/CoursesHeader";
-import { SideBar } from "./SideBar";
+import { CoursesHeader } from "../components/Courses progress/CoursesHeader";
+import { SideBar } from "../components/Material/SideBar";
 import { useContext, useEffect } from "react";
 import axios from "axios";
-import { CoursesContext } from "../Courses progress/CoursesContext";
+import { CoursesContext } from "../components/Courses progress/CoursesContext";
 import Cookies from "js-cookie";
 import { Stack } from "@mui/material";
-import { MaterialContent } from "./MaterialContent";
-import { Advertisment } from "./Advertisment";
+import { MaterialContent } from "../components/Material/MaterialContent";
+import { Advertisment } from "../components/Material/Advertisment";
 
 export const Material = () => {
   const { studentInfo, setStudentInfo } = useContext(CoursesContext);

@@ -13,7 +13,7 @@ import CircleIcon from "@mui/icons-material/Circle";
 import React, { useContext, useEffect, useState } from "react";
 import { CoursesContext } from "../Courses progress/CoursesContext";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type chapterIntroType = {
   chapterName: string;
@@ -33,6 +33,7 @@ export const MaterialContent = () => {
   const location = useLocation();
   const { currentCourseId, currentChapterId, studentInfo } =
     useContext(CoursesContext);
+  const navigate = useNavigate();
   const [chapterTitle, setChapterTitle] = useState(
     {} as { name: string; number: number }
   );
@@ -47,6 +48,10 @@ export const MaterialContent = () => {
   const courseName = currentPath.substring(currentPath.lastIndexOf(`/`) + 1);
 
   const isMobile = window.innerWidth <= 960;
+
+  const handleStartAssignment = () => {
+    navigate(`Assignment`, { state: chapterTitle });
+  };
 
   useEffect(() => {
     if (currentChapterId) {
@@ -233,6 +238,7 @@ export const MaterialContent = () => {
             backgroundColor: `primary.dark`,
           },
         }}
+        onClick={handleStartAssignment}
       >
         Start Assignments
       </Button>

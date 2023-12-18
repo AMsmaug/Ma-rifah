@@ -20,7 +20,7 @@ import QuizIcon from "@mui/icons-material/Quiz";
 import { useContext, useEffect, useState } from "react";
 import { CoursesContext } from "../Courses progress/CoursesContext";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
 type chaptersType = {
@@ -47,8 +47,11 @@ export const SideBar = () => {
   const [openExamDialaog, setOpenExamDialaog] = useState(false);
   const [openExamWarnDialaog, setOpenExamWarnDialaog] = useState(false);
   const [clickedChapter, setClickedChapter] = useState(0);
+  const [chapterIdFromQuiz, setChapterIdFromQuiz] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!currentCourseId) {
@@ -76,23 +79,30 @@ export const SideBar = () => {
         .then((response: { data: chaptersType[] }) => {
           setChapters(response.data);
           setCurrentChapterId(response.data[0].chapterId);
+          const chapterIds: number[] = [];
+          response.data.forEach((element) => {
+            chapterIds.push(element.chapterId);
+          });
+          console.log(chapterIds);
           axios
             .post(
               `http://localhost/Ma-rifah/courses_content/check_assignment_work.php`,
-              response.data
+              { chapterIds, studentId: Cookies.get(`id`) }
             )
             .then((response: { data: number }) => {
+              console.log(response.data);
               setLastCompletedAssignment(response.data);
-              // setLastCompletedAssignment(3);
+              // setLastCompletedAssignment(1);
             });
           axios
             .post(
               `http://localhost/Ma-rifah/courses_content/check_quiz_work.php`,
-              response.data
+              { chapterIds, studentId: Cookies.get(`id`) }
             )
             .then((response: { data: number }) => {
               setLastCompletedQuiz(response.data);
-              // setLastCompletedQuiz(1);
+              console.log(response.data);
+              // setLastCompletedQuiz(0);
             });
           setIsLoading(false);
         });
@@ -213,10 +223,17 @@ export const SideBar = () => {
                         setClickedChapter(+chapter.chapterNumber);
                       } else {
                         if (+chapter.chapterNumber > lastCompletedQuiz) {
+                          setChapterIdFromQuiz(chapter.chapterId);
                           setOpenQuizWarnDialaog(true);
                         } else {
                           // the quiz is already done
-                          // perform the specific action
+                          setCurrentChapterId(chapter.chapterId);
+                          navigate(`Quiz`, {
+                            state: {
+                              number: chapter.chapterNumber,
+                              name: chapter.chapterName,
+                            },
+                          });
                         }
                       }
                     }}
@@ -347,7 +364,8 @@ export const SideBar = () => {
             sx={{ color: "secondary.dark", fontSize: 17, lineHeight: 1.8 }}
           >
             Once you started a quiz, a timer will start counting down and you
-            cannot leave it without completing it, otherwise you will get 0.
+            cannot leave it without completing it, otherwise your response won't
+            be submitted.
           </DialogContentText>
           <DialogContentText
             id="dialog-description"
@@ -378,8 +396,23 @@ export const SideBar = () => {
           </Button>
           <Button
             onClick={() => {
-              setOpenQuizWarnDialaog(false);
               // take me to the quiz
+              setOpenQuizWarnDialaog(false);
+              console.log(`chapterIdFromQuiz :`, chapterIdFromQuiz);
+              setCurrentChapterId(chapterIdFromQuiz);
+              const currenctChapter = chapters.filter(
+                (chapter) => chapter.chapterId === chapterIdFromQuiz
+              )[0];
+              console.log(
+                `current chapter Id from sideBar: `,
+                currenctChapter.chapterId
+              );
+              navigate(`Quiz`, {
+                state: {
+                  number: currenctChapter.chapterNumber,
+                  name: currenctChapter.chapterName,
+                },
+              });
             }}
             sx={{
               color: "white",

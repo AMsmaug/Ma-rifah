@@ -1,7 +1,7 @@
-import "./pickingClassDiscussion.css";
+import "../components/Picking class discussions/pickingClassDiscussion.css";
 import { Stack, Box, Typography } from "@mui/material";
-import { Header } from "../LandingHeader/Header";
-import Footer from "../Footer/Footer";
+import { Header } from "../components/LandingHeader/Header";
+import Footer from "../components/Footer/Footer";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
