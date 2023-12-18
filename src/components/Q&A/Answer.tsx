@@ -12,8 +12,10 @@ import { LoadingButton } from "@mui/lab";
 import { Dialog, DialogContent } from "@mui/material";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { answerProps, CustomTextInput } from "../../pages/QuestionsAndAnswers";
+import { answerProps } from "../../pages/QuestionsAndAnswers";
 import "./answer.css";
+
+import SendIcon from "@mui/icons-material/Send";
 
 const calculateDate = (d: string) => {
   const dateNow = new Date();
@@ -369,7 +371,11 @@ export const Answer = (props: answerProps) => {
               {studentName}
             </Typography>
             <Typography variant="subtitle2" color="grey">
-              {calculateDate(answerDate)} ago
+              {calculateDate(answerDate) === "just now" ? (
+                calculateDate(answerDate)
+              ) : (
+                <>{calculateDate(answerDate)} ago</>
+              )}
             </Typography>
           </Stack>
         </Stack>
@@ -407,6 +413,105 @@ export const Answer = (props: answerProps) => {
           />
         </Stack>
       </Stack>
+    </Stack>
+  );
+};
+
+const CustomTextInput = (props: {
+  questionFrom: "search" | "normal";
+  questionId: number;
+  answerId: number;
+  text: string;
+  setloadingUpdatingAnswer: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose: () => void;
+  updateAnswer: (props: {
+    questionId: number;
+    answerId: number;
+    answerContent: string;
+    whereToUpdateAnswer: "search" | "normal";
+  }) => void;
+}) => {
+  const {
+    questionFrom,
+    questionId,
+    text,
+    onClose,
+    answerId,
+    setloadingUpdatingAnswer,
+    updateAnswer,
+  } = props;
+
+  const [input, setinput] = useState<string>(text);
+
+  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setinput(event.target.value);
+  };
+
+  const handleClick = () => {
+    onClose();
+    setloadingUpdatingAnswer(true);
+    axios
+      .post("http://localhost:/Ma-rifah/update_answer.php", {
+        answerId,
+        answerContent: input,
+      })
+      .then(() => {
+        updateAnswer({
+          questionId,
+          answerId,
+          answerContent: input,
+          whereToUpdateAnswer: questionFrom,
+        });
+        setloadingUpdatingAnswer(false);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  return (
+    <Stack
+      direction="row"
+      alignItems="center"
+      spacing={1}
+      sx={{
+        width: "100%",
+        flex: "1",
+        "& textarea:focus": {
+          outline: "none",
+        },
+      }}
+    >
+      <textarea
+        placeholder="Add an answer..."
+        className="add-answer-input"
+        rows={4}
+        value={input}
+        style={{
+          border: "1px solid #ccc",
+          borderRadius: "6px",
+          padding: "10px 20px",
+          fontWeight: "600",
+          color: "var(--dark-blue)",
+          resize: "none",
+          flex: "1",
+        }}
+        onChange={handleChange}
+      />
+      <IconButton
+        sx={{
+          color: "primary.main",
+          fontWeight: "bold",
+          transition: ".6s",
+          width: "45px",
+          height: "45px",
+          backgroundColor: "#0f1f3ebf",
+          "&:hover": {
+            bgcolor: "secondary.main",
+          },
+        }}
+        onClick={handleClick}
+      >
+        <SendIcon sx={{ fontSize: "25px", fontWeight: "bold" }} />
+      </IconButton>
     </Stack>
   );
 };

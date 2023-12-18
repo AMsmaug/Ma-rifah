@@ -184,6 +184,7 @@ export const Login = ({ isActive }: prop) => {
         { ...googleInfo, grade }
       )
       .then((response: { data: number }) => {
+        console.log(response.data);
         const studentId = response.data;
         afterLogin(studentId, googleInfo.username, googleInfo.picture);
       });

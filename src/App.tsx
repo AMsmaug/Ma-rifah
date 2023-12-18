@@ -21,6 +21,8 @@ import NoContentFound from "./components/No Content found/NoContentFound";
 import { Assignment } from "./pages/Assignment";
 import React from "react";
 import { Quiz } from "./pages/Quiz";
+import FinalExam from "./components/Final Exam/FinalExam";
+import Faq from "./pages/FAQ/FAQ";
 
 const theme = createTheme({
   palette: {
@@ -119,6 +121,8 @@ function App() {
                   </Box>
                 }
               />
+              <Route element={<FinalExam />} path="finalExam" />
+              <Route element={<Faq />} path="FAQ" />
             </Routes>
           </ThemeProvider>
         </CoursesData>

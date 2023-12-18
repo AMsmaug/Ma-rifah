@@ -1,77 +1,34 @@
-import { useState, useRef, useEffect, forwardRef } from "react";
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import SideBar from "../components/Q&A/Side Bar/SideBar";
-import SearchIcon from "@mui/icons-material/Search";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
+import axios from "axios";
+import Cookies from "js-cookie";
+
 import "../components/Q&A/q&a.css";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { useNavigate, useLocation } from "react-router-dom";
+
 import {
+  Box,
+  Stack,
+  Typography,
+  Toolbar,
   Button,
   Paper,
   Snackbar,
-  Alert,
-  AlertProps,
-  MenuItem,
-  Menu,
-  Avatar,
-  Rating,
-} from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
-
-import CancelIcon from "@mui/icons-material/Cancel";
-
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
+  Skeleton,
 } from "@mui/material";
 
-import NoContentFound from "../components/No Content found/NoContentFound";
-import LoadingIndicator from "../components/Q&A/Loading Indicator/LoadingIndicator";
-import Skeleton from "@mui/material/Skeleton";
-import axios from "axios";
-import Cookies from "js-cookie";
 import { Question } from "../components/Q&A/Question";
 import { AddQuestionComponent } from "../components/Q&A/AddQuestionComponent";
-import { LoadingButton } from "@mui/lab";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ReportIcon from "@mui/icons-material/Report";
+import { QuestionsAndAnswersHeader } from "../components/Q&A/QuestionsAndAnswersHeader";
+import SideBar from "../components/Q&A/Side Bar/SideBar";
+import { SnackbarAlert } from "../components/custom snack bar/SnackbarAlert";
+import NoContentFound from "../components/No Content found/NoContentFound";
+import LoadingIndicator from "../components/Loading Indicator/LoadingIndicator";
+import { MustLoginPopup } from "./MustLoginPopup";
+import { SearchQuestionPopup } from "../components/Q&A/SearchQuestionPopup";
+import "../components/Loading Indicator/loadingIndicator.css";
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const calculateDate = (d: string) => {
-  const dateNow = new Date();
-  const dateBefore = new Date(d);
-  const dateDiff: number = dateNow.getTime() - dateBefore.getTime();
-
-  const minutesDiff = Math.floor(dateDiff / (1000 * 60));
-  const hoursDiff = Math.floor(minutesDiff / 60);
-  const daysDiff = Math.floor(hoursDiff / 24);
-  const monthsDiff = Math.floor(daysDiff / 30);
-  const yearsDiff = Math.floor(monthsDiff / 12);
-
-  if (minutesDiff < 1) {
-    return "just now";
-  } else if (minutesDiff >= 1 && minutesDiff <= 59) {
-    return `${minutesDiff} minute${minutesDiff === 1 ? "" : "s"}`;
-  } else if (hoursDiff >= 1 && hoursDiff <= 23) {
-    return `${hoursDiff} hour${hoursDiff === 1 ? "" : "s"}`;
-  } else if (daysDiff >= 1 && daysDiff <= 29) {
-    return `${daysDiff} day${daysDiff === 1 ? "" : "s"}`;
-  } else if (monthsDiff >= 1 && monthsDiff <= 11) {
-    return `${monthsDiff} month${monthsDiff === 1 ? "" : "s"}`;
-  } else {
-    return `${yearsDiff} year${yearsDiff === 1 ? "" : "s"}`;
-  }
-};
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export type chapterType = {
   chapterId: number;
@@ -147,12 +104,12 @@ export type questionType = question & {
   handleChangeRating: (props: handleChangeRatingPropsType) => void;
 };
 
-type searchedQuestion = question & {
+export type searchedQuestion = question & {
   courseName: string;
   chapterName: string;
 };
 
-type searchedQuestions = searchedQuestion[];
+export type searchedQuestions = searchedQuestion[];
 
 export type answerType = {
   questionId: number;
@@ -237,24 +194,14 @@ export const QuestionsAndAnswers = () => {
 
   const [searchPopUpOpen, setsearchPopUpOpen] = useState<boolean>(false);
 
-  const [searchNoContentFound, setsearchNoContentFound] =
-    useState<boolean>(false);
-
-  const [isSearchQuestionsLoading, setisSearchQuestionsLoading] =
-    useState<boolean>(false);
-
   const [isMustLoginPopupOpen, setisMustLoginPopupOpen] =
     useState<boolean>(false);
-
-  const searchPopUpRef = useRef<HTMLDivElement>(null!);
-  const searchInputRef = useRef<HTMLInputElement>(null!);
 
   console.log(questions);
 
   // I am using location here to extract the id of the class to fetch its data. if id is null (default classId: 1)
 
   const location = useLocation();
-  const navigate = useNavigate();
 
   // The class_id might be null in case the user head to the link of Q&A directly (I'm getting the class id from the route of choosing the class.) so I'm defining a default class id which is 1
 
@@ -292,6 +239,8 @@ export const QuestionsAndAnswers = () => {
 
       const studentId =
         Cookies.get("id") == undefined ? null : Number(Cookies.get("id"));
+
+      console.log(activeChapter);
 
       const res = await axios.post(
         "http://localhost/Ma-rifah/get_questions_answers.php",
@@ -386,14 +335,6 @@ export const QuestionsAndAnswers = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const navigateHome = () => {
-    navigate("/");
-  };
-
-  const navigateLoginPage = () => {
-    navigate("/login?src=QA");
-  };
-
   // When the user wants to display questions about another course or chapter.
   const changeActiveChapter = (props: activeChapterType) => {
     if (activeChapter?.chapterId === props?.chapterId) return;
@@ -466,48 +407,8 @@ export const QuestionsAndAnswers = () => {
       );
       setsearchedQuestionsResult(newSearchedQuestionsResult);
       if (newSearchedQuestionsResult.length === 0) {
-        setsearchNoContentFound(true);
         setsearchedQuestionsResult([]);
       }
-    }
-  };
-
-  const handleSearch = async () => {
-    const enteredString = searchInputRef.current.value;
-
-    setisSearchQuestionsLoading(true);
-
-    const stdId = Cookies.get("id");
-
-    let inputs;
-
-    if (stdId === null || stdId === undefined) {
-      inputs = {
-        enteredString,
-        classId: class_id === null ? 1 : class_id,
-        studentId: null,
-      };
-    } else {
-      inputs = {
-        enteredString,
-        classId: class_id === null ? 1 : class_id,
-        studentId: stdId,
-      };
-    }
-
-    const res = await axios.post(
-      "http://localhost/Ma-rifah/search_question.php",
-      inputs
-    );
-
-    setisSearchQuestionsLoading(false);
-
-    if (res.data.length === 0) {
-      setsearchedQuestionsResult([]);
-      setsearchNoContentFound(true);
-    } else {
-      setsearchedQuestionsResult(res.data);
-      setsearchNoContentFound(false);
     }
   };
 
@@ -630,10 +531,6 @@ export const QuestionsAndAnswers = () => {
     setisMustLoginPopupOpen(true);
   };
 
-  const closeMustLoginPopup = () => {
-    setisMustLoginPopupOpen(false);
-  };
-
   // When the student wants to add / remove / update rating of an answer.
   const handleChangeRating = (props: handleChangeRatingPropsType) => {
     const {
@@ -670,338 +567,12 @@ export const QuestionsAndAnswers = () => {
       : setquestions(h);
   };
 
-  const handleLogout = () => {
-    Cookies.remove("id");
-    navigate("/login?src=QA");
-  };
-
   return (
     <Box sx={{ display: "flex" }} className="questions-page">
-      {/* start Search Pop up  */}
-      {searchPopUpOpen && (
-        <>
-          <Box
-            sx={{
-              position: "fixed",
-              zIndex: "1350",
-              right: "0",
-              bottom: "0",
-              top: "0",
-              left: "0",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Box
-              sx={{
-                position: "fixed",
-                right: "0",
-                bottom: "0",
-                top: "0",
-                left: "0",
-                backgroundColor: "#00000070",
-                zIndex: "-1",
-                backdropFilter: "blur(1.5px)",
-              }}
-            />
-            <Stack
-              sx={{
-                backgroundColor: "#fff",
-                color: "rgba(0, 0, 0, 0.87)",
-                borderRadius: "5px",
-                margin: {
-                  xs: "0",
-                  sm: "32px",
-                },
-                padding: "10px 15px ",
-                position: "relative",
-                boxShadow:
-                  "0px 11px 15px -7px rgba(0,0,0,0.2), 0px 24px 38px 3px rgba(0,0,0,0.14), 0px 9px 46px 8px rgba(0,0,0,0.12)",
-                width: {
-                  xs: "100%",
-                  sm: "500px",
-                  md: "700px",
-                  lg: "900px",
-                },
-                height: {
-                  xs: "100%",
-                  sm: "600px",
-                },
-              }}
-              ref={searchPopUpRef}
-            >
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: "10px",
-                  right: "10px",
-                  cursor: "pointer",
-                  fontSize: "20px",
-                }}
-                onClick={handleCloseSearchPopUp}
-              >
-                <CancelIcon />
-              </Box>
-              <Stack
-                direction="row"
-                alignItems="center"
-                spacing={1}
-                px={1}
-                py={2}
-                className="search-bar"
-                borderBottom="1px solid #ccc"
-                onClick={() => searchInputRef.current.focus()}
-              >
-                <SearchIcon
-                  sx={{
-                    margin: "0 !important",
-                    fontSize: "30px",
-                    color: "var(--dark-blue)",
-                  }}
-                />
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  style={{ flex: "1", fontSize: "17px" }}
-                  ref={searchInputRef}
-                  autoFocus={true}
-                />
-              </Stack>
-              <Stack flex={1} p={1} sx={{ overflowY: "auto" }}>
-                {searchedQuestionsResult.length > 0 ? (
-                  searchedQuestionsResult.map((s, i) => (
-                    <Box
-                      key={i}
-                      sx={{
-                        padding: "15px 5px 5px 5px ",
-                        borderBottom: "1px solid #ccc",
-                        transition: ".3s",
-                        cursor: "pointer",
-                        borderRadius: "6px",
-                        "&:hover": {
-                          border: "1px solid var(--orange)",
-                          paddingLeft: "12px",
-                          backgroundColor: "#FCA21159",
-                          color: "var(--dark-blue)",
-                          fontWeight: "500",
-                        },
-                      }}
-                      onClick={() => handleSelectSearchQuestion(s)}
-                    >
-                      <Typography variant="subtitle1" fontWeight="500">
-                        {s.questionContent}
-                      </Typography>
-                      <Stack
-                        direction="row"
-                        justifyContent="space-between"
-                        px={1}
-                        mt={2}
-                      >
-                        <Stack direction="row" spacing={1}>
-                          <Typography
-                            variant="subtitle2"
-                            sx={{
-                              color: "white",
-                              backgroundColor: "grey",
-                              padding: "0px 2px",
-                              borderRadius: "6px",
-                            }}
-                          >
-                            {s.courseName}
-                          </Typography>
-                          <Typography
-                            variant="subtitle2"
-                            sx={{
-                              color: "white",
-                              backgroundColor: "grey",
-                              padding: "0px 2px",
-                              borderRadius: "6px",
-                            }}
-                          >
-                            {s.chapterName}
-                          </Typography>
-                          <Typography
-                            variant="subtitle2"
-                            sx={{
-                              color: "white",
-                              backgroundColor: "grey",
-                              padding: "0px 2px",
-                              borderRadius: "6px",
-                            }}
-                          >
-                            Answers: {s.questionAnswers.length}
-                          </Typography>
-                        </Stack>
-
-                        <Stack direction="row" alignItems="center">
-                          {s.studentAvatar !== null && (
-                            <img src={s.studentAvatar} width="20px" />
-                          )}
-                          <Typography
-                            variant="subtitle2"
-                            sx={{ color: "grey" }}
-                            pl={1}
-                          >
-                            {s.studentName}
-                          </Typography>
-                          <Typography
-                            variant="subtitle2"
-                            sx={{ color: "grey" }}
-                            pl={2}
-                          >
-                            {s.questionDate}
-                          </Typography>
-                        </Stack>
-                      </Stack>
-                    </Box>
-                  ))
-                ) : (
-                  <Stack
-                    justifyContent="center"
-                    alignItems="center"
-                    height="100%"
-                  >
-                    {searchNoContentFound ? (
-                      <NoContentFound
-                        iconFontSize={130}
-                        textFontSize={20}
-                        seperateString={true}
-                      />
-                    ) : isSearchQuestionsLoading ? (
-                      <LoadingIndicator />
-                    ) : (
-                      <>
-                        <SearchIcon sx={{ fontSize: "70px", color: "grey" }} />
-                        <Typography variant="subtitle1" color="grey">
-                          Search For A Question
-                        </Typography>
-                      </>
-                    )}
-                  </Stack>
-                )}
-              </Stack>
-              <Box pt={1} textAlign="center" borderTop="1px solid #ccc">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "15px",
-                    color: "white",
-                    width: "40%",
-                    display: "block",
-                    margin: "0 auto",
-                  }}
-                  onClick={handleSearch}
-                >
-                  Search
-                </Button>
-              </Box>
-            </Stack>
-          </Box>
-        </>
-      )}
-      {/* End Search Pop up */}
-
-      <Toolbar
-        sx={{
-          position: "fixed",
-          left: "0",
-          top: "0",
-          width: "100%",
-          bgcolor: "secondary.main",
-          color: "white",
-          zIndex: "1300",
-          justifyContent: "space-between",
-        }}
-      >
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          edge="start"
-          onClick={handleDrawerToggle}
-          sx={{ mr: 2, display: { sm: "none" } }}
-        >
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" noWrap component="div">
-          Ma-Rifah
-        </Typography>
-        <Box
-          width={{
-            sm: "230px",
-            md: "350px",
-          }}
-          display={{ xs: "none", sm: "block" }}
-          overflow="hidden"
-        >
-          <SearchBar handleClick={handleOpenSearchPopUp} />
-        </Box>
-        <Stack
-          direction="row"
-          spacing={{
-            xs: 1,
-            sm: 2,
-            md: 4,
-          }}
-          className="links"
-          alignItems="center"
-        >
-          <Box
-            onClick={handleOpenSearchPopUp}
-            sx={{
-              cursor: "pointer",
-              display: {
-                xs: "block",
-                sm: "none",
-              },
-            }}
-          >
-            <SearchIcon sx={{ margin: "0 !important" }} />
-          </Box>
-          <Box
-            fontWeight="bold"
-            onClick={navigateHome}
-            sx={{ cursor: "pointer", "&:hover": { color: "primary.main" } }}
-          >
-            Home
-          </Box>
-          <Box
-            fontWeight="bold"
-            onClick={navigateHome}
-            sx={{ cursor: "pointer", "&:hover": { color: "primary.main" } }}
-          >
-            FAQ
-          </Box>
-          <Box
-            fontWeight="bold"
-            onClick={() => navigate(-1)}
-            sx={{ cursor: "pointer", "&:hover": { color: "primary.main" } }}
-          >
-            Classes
-          </Box>
-        </Stack>
-        {Cookies.get("id") === undefined ? (
-          <Box
-            fontWeight="bold"
-            onClick={navigateLoginPage}
-            color="primary.main"
-            sx={{ cursor: "pointer" }}
-          >
-            Get Started!
-          </Box>
-        ) : (
-          <Box
-            fontWeight="bold"
-            onClick={handleLogout}
-            color="primary.main"
-            sx={{ cursor: "pointer" }}
-          >
-            Log out!
-          </Box>
-        )}
-      </Toolbar>
+      <QuestionsAndAnswersHeader
+        handleDrawerToggle={handleDrawerToggle}
+        handleOpenSearchPopUp={handleOpenSearchPopUp}
+      />
       <SideBar
         mobileOpen={mobileOpen}
         handleDrawerToggle={handleDrawerToggle}
@@ -1139,7 +710,7 @@ export const QuestionsAndAnswers = () => {
                 <NoContentFound
                   iconFontSize={200}
                   textFontSize={30}
-                  seperateString={true}
+                  seperateString={false}
                 />
               ) : (
                 <InfiniteScroll
@@ -1186,499 +757,55 @@ export const QuestionsAndAnswers = () => {
                 </InfiniteScroll>
               )}
             </Stack>
+            {searchPopUpOpen && (
+              <SearchQuestionPopup
+                class_id={class_id}
+                searchedQuestionsResult={searchedQuestionsResult}
+                setsearchedQuestionsResult={setsearchedQuestionsResult}
+                handleSelectSearchQuestion={handleSelectSearchQuestion}
+                handleCloseSearchPopUp={handleCloseSearchPopUp}
+              />
+            )}
+            {isAskQuestionOpen && (
+              <AddQuestionComponent
+                chapterId={activeChapter?.chapterId}
+                operation="add question"
+                addQuestion={addQuestion}
+                onClose={() => setisAskQuestionOpen(false)}
+                setisSnackbarOpen={setisSnackbarOpen}
+                setsnackbarContent={setsnackbarContent}
+              />
+            )}
+            {isSnackbarOpen && (
+              <Snackbar
+                open={isSnackbarOpen}
+                autoHideDuration={3000}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              >
+                <SnackbarAlert
+                  onClose={handleClose}
+                  severity={snackbarContent.status}
+                  sx={{ padding: "12px 15px", fontSize: "17px" }}
+                >
+                  {snackbarContent && snackbarContent.message}
+                </SnackbarAlert>
+              </Snackbar>
+            )}
+            {isMustLoginPopupOpen && (
+              <MustLoginPopup
+                isMustLoginPopupOpen={isMustLoginPopupOpen}
+                setisMustLoginPopupOpen={setisMustLoginPopupOpen}
+              />
+            )}
           </Box>
         )}
       </Box>
-      {isAskQuestionOpen && (
-        <AddQuestionComponent
-          chapterId={activeChapter?.chapterId}
-          operation="add question"
-          addQuestion={addQuestion}
-          onClose={() => setisAskQuestionOpen(false)}
-          setisSnackbarOpen={setisSnackbarOpen}
-          setsnackbarContent={setsnackbarContent}
-        />
-      )}
-      {isSnackbarOpen && (
-        <Snackbar
-          open={isSnackbarOpen}
-          autoHideDuration={3000}
-          onClose={handleClose}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        >
-          <SnackbarAlert
-            onClose={handleClose}
-            severity={snackbarContent.status}
-            sx={{ padding: "12px 15px", fontSize: "17px" }}
-          >
-            {snackbarContent && snackbarContent.message}
-          </SnackbarAlert>
-        </Snackbar>
-      )}
-      {isMustLoginPopupOpen && (
-        <Dialog
-          aria-labelledby="dialog-title"
-          aria-describedby="dialog-description"
-          open={isMustLoginPopupOpen}
-          onClose={closeMustLoginPopup}
-        >
-          <DialogTitle
-            id="dialog-title"
-            fontSize="30px"
-            textAlign="center"
-            color="primary.main"
-            mb={2}
-          >
-            Notice!
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText
-              id="dialog-description"
-              color="secondary.main"
-              fontWeight="bold"
-              fontSize="20px"
-              mb={2}
-            >
-              You must login in order to add an answer!
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              gap: "50px",
-              marginBottom: "20px",
-            }}
-          >
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={closeMustLoginPopup}
-              sx={{ color: "white" }}
-            >
-              Later
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => navigate("/login?src=QA")}
-              sx={{ color: "white" }}
-            >
-              Log in
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
     </Box>
   );
 };
 
 export default QuestionsAndAnswers;
-
-const SearchBar = (props: { handleClick: () => void }) => {
-  const { handleClick } = props;
-  return (
-    <Stack
-      direction="row"
-      alignItems="center"
-      spacing={1}
-      p={1}
-      sx={{
-        backgroundColor: "white",
-        color: "black",
-        borderRadius: "25px",
-        cursor: "text",
-        position: "relative",
-        overflow: "visible",
-      }}
-      className="search-bar"
-      onClick={handleClick}
-    >
-      <SearchIcon sx={{ margin: "0 !important" }} />
-      <input
-        type="text"
-        placeholder="Search for a question"
-        style={{ flex: "1" }}
-      />
-    </Stack>
-  );
-};
-
-export const Answer = (props: answerProps) => {
-  const {
-    questionFrom,
-    questionId,
-    answerId,
-    answerContent,
-    answerDate,
-    answerSumRating,
-    numberOfRaters,
-    myRate,
-    studentId,
-    studentName,
-    studentAvatar,
-    changeRating,
-    updateAnswer,
-    removeAnswer,
-    openMustLoginPopup,
-  } = props;
-
-  const [value, setvalue] = useState<number | null>(null);
-  const [avg, setavg] = useState<number>(0);
-  const [nbRaters, setnbRaters] = useState<number>(0);
-  const [sumRating, setsumRating] = useState<number>(0);
-
-  const [updateAnswerPopUp, setupdateAnswerPopUp] = useState<boolean>(false);
-
-  const [loadingDeletingAnswer, setloadingDeletingAnswer] =
-    useState<boolean>(false);
-
-  const [loadingUpdatingAnswer, setloadingUpdatingAnswer] =
-    useState<boolean>(false);
-
-  const [loadingReportingAnswer, setloadingReportingAnswer] =
-    useState<boolean>(false);
-
-  const [anchorEl, setanchorEl] = useState<HTMLElement | null>(null);
-
-  const open = Boolean(anchorEl);
-
-  const answerRef = useRef<HTMLDivElement>(null!);
-
-  useEffect(() => {
-    setvalue(myRate === null ? myRate : Number(myRate));
-    setnbRaters(numberOfRaters);
-    setsumRating(answerSumRating);
-    if (answerSumRating === null) setavg(0);
-    else setavg(Number((answerSumRating / numberOfRaters).toFixed(1)));
-  }, [answerSumRating, myRate, numberOfRaters]);
-
-  // change rating or rate or remove rate
-  const handleChange = (
-    _e: React.ChangeEvent<unknown>,
-    newValue: number | null
-  ) => {
-    if (Cookies.get("id") !== undefined) {
-      if (value !== null && newValue === null) {
-        // It means that eh wants to remove his rate
-
-        let newNbOfRaters = nbRaters;
-        newNbOfRaters--;
-
-        const newSumRating = sumRating - value;
-
-        const newAverageRating = newSumRating / newNbOfRaters;
-
-        changeRating({
-          answerId,
-          myRate: 0,
-          numberOfRaters: newNbOfRaters,
-          answerSumRating: newSumRating,
-          whereToUpdateRating: questionFrom,
-        });
-
-        const props = {
-          studentId: Cookies.get("id"),
-          answerId,
-        };
-
-        axios.post("http://localhost/Ma-rifah/remove_rate.php", props);
-
-        setsumRating(newSumRating);
-        setavg(newAverageRating);
-        setnbRaters(newNbOfRaters);
-        setvalue(null);
-      } else if (value !== null && newValue !== null) {
-        // It means that he wants to update his rate
-
-        console.log("Updating my rate");
-
-        const newSumRating = Number(sumRating) + newValue - value;
-
-        const newAvg = newSumRating / nbRaters;
-
-        const newAverageRating = Number(newAvg.toFixed(1));
-
-        changeRating({
-          answerId,
-          myRate: newValue,
-          numberOfRaters: nbRaters,
-          answerSumRating: newSumRating,
-          whereToUpdateRating: questionFrom,
-        });
-
-        const inputs = {
-          studentId: Cookies.get("id"),
-          answerId,
-          ratingValue: newValue,
-        };
-
-        axios.post("http://localhost:/Ma-rifah/update_rate.php", inputs);
-
-        setvalue(newValue);
-        setavg(newAverageRating);
-        setsumRating(newSumRating);
-      } else {
-        // It means that he wants to add rate
-
-        if (newValue !== null) {
-          console.log("Inserting my rate");
-
-          let newNbOfRaters = nbRaters;
-          newNbOfRaters++;
-
-          const newSumRating = Number(sumRating) + newValue;
-
-          const newAverageRating = Number(
-            (newSumRating / newNbOfRaters).toFixed(1)
-          );
-
-          changeRating({
-            answerId,
-            myRate: newValue | 0,
-            numberOfRaters: newNbOfRaters,
-            answerSumRating: newSumRating,
-            whereToUpdateRating: questionFrom,
-          });
-
-          const props = {
-            ratingValue: newValue,
-            studentId: Cookies.get("id"),
-            answerId,
-          };
-
-          axios.post("http://localhost/Ma-rifah/insert_rate.php", props);
-
-          setvalue(newValue);
-          setavg(newAverageRating);
-          setsumRating(newSumRating);
-          setnbRaters(newNbOfRaters);
-        }
-      }
-    } else {
-      openMustLoginPopup();
-    }
-  };
-
-  // closing the menu item
-  const handleClose = () => {
-    setanchorEl(null);
-  };
-
-  // deleting answer
-  const handleClick = () => {
-    setloadingDeletingAnswer(true);
-
-    axios
-      .delete("http://localhost/Ma-rifah/remove_answer.php?id=" + answerId)
-      .then((res) => {
-        console.log(res.data);
-        answerRef.current?.classList.add("hidden");
-        setanchorEl(null);
-        removeAnswer({
-          questionId,
-          answerId,
-          whereToRemoveAnswer: questionFrom,
-        });
-        setloadingDeletingAnswer(false);
-      })
-      .catch((error) => console.log(error));
-  };
-
-  const openMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setanchorEl(event.currentTarget);
-  };
-
-  const openEditAnswerPopUp = () => {
-    setupdateAnswerPopUp(true);
-    setanchorEl(null);
-  };
-
-  const closeEditAnswerPopUp = () => {
-    setupdateAnswerPopUp(false);
-  };
-
-  const handleReportAnswer = () => {
-    setloadingReportingAnswer(true);
-    setTimeout(() => {
-      setloadingReportingAnswer(false);
-    }, 2000);
-  };
-
-  return (
-    <Stack
-      ref={answerRef}
-      sx={{
-        "&.hidden": {
-          display: "none",
-        },
-      }}
-      spacing={1}
-    >
-      {updateAnswerPopUp && (
-        <Dialog
-          aria-describedby="dialog-description"
-          open={updateAnswerPopUp}
-          onClose={closeEditAnswerPopUp}
-          fullWidth
-        >
-          <DialogContent>
-            <CustomTextInput
-              questionFrom={questionFrom}
-              questionId={questionId}
-              answerId={answerId}
-              text={answerContent}
-              setloadingUpdatingAnswer={setloadingUpdatingAnswer}
-              onClose={closeEditAnswerPopUp}
-              updateAnswer={updateAnswer}
-            />
-          </DialogContent>
-        </Dialog>
-      )}
-      {open &&
-        // Checking if this answer is mine.
-        (studentId == Number(Cookies.get("id")) ? (
-          <Menu
-            id="answer-menu"
-            anchorEl={anchorEl}
-            open={open}
-            MenuListProps={{
-              "aria-labelledby": "answer-menu-button",
-            }}
-            onClose={handleClose}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            sx={{
-              "& li": {
-                width: "200px",
-              },
-            }}
-          >
-            <MenuItem onClick={openEditAnswerPopUp}>
-              <LoadingButton
-                variant="text"
-                sx={{
-                  color: "black",
-                  fontSize: "12px",
-                }}
-                startIcon={<EditIcon />}
-                loading={loadingUpdatingAnswer}
-              >
-                Update Answer
-              </LoadingButton>
-            </MenuItem>
-            <MenuItem>
-              <LoadingButton
-                variant="text"
-                sx={{
-                  color: "black",
-                  fontSize: "12px",
-                }}
-                startIcon={<DeleteIcon />}
-                loading={loadingDeletingAnswer}
-                onClick={handleClick}
-              >
-                Remove Answer
-              </LoadingButton>
-            </MenuItem>
-          </Menu>
-        ) : (
-          <Menu
-            id="answer-menu"
-            anchorEl={anchorEl}
-            open={open}
-            MenuListProps={{
-              "aria-labelledby": "answer-menu-button",
-            }}
-            onClose={handleClose}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            sx={{
-              "& li": {
-                width: "200px",
-              },
-            }}
-          >
-            <MenuItem>
-              <LoadingButton
-                variant="text"
-                sx={{ color: "black", fontSize: "12px" }}
-                startIcon={<ReportIcon />}
-                loading={loadingReportingAnswer}
-                onClick={handleReportAnswer}
-              >
-                Report Answer
-              </LoadingButton>
-            </MenuItem>
-          </Menu>
-        ))}
-
-      <Stack direction="row" justifyContent="space-between">
-        <Stack
-          spacing={1.5}
-          direction="row"
-          justifyContent={{ xs: "center", md: "start" }}
-          alignItems="center"
-        >
-          <Avatar src={studentAvatar || ""} />
-          <Stack direction="column">
-            <Typography variant="h6" fontWeight="bold">
-              {studentName}
-            </Typography>
-            <Typography variant="subtitle2" color="grey">
-              {calculateDate(answerDate)}
-            </Typography>
-          </Stack>
-        </Stack>
-        <Box>
-          <IconButton onClick={openMenu}>
-            <MoreVertIcon />
-          </IconButton>
-        </Box>
-      </Stack>
-      <Stack
-        spacing={1}
-        direction={{
-          xs: "column",
-          md: "row",
-        }}
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <Typography variant="subtitle1" fontSize={18} pl={2} flexBasis="80%">
-          {answerContent}
-        </Typography>
-        <Stack textAlign="center">
-          <Typography variant="subtitle1" fontSize={17} color="secondary">
-            {!isNaN(avg) ? avg : 0} out of 5
-          </Typography>
-          <Rating
-            onChange={handleChange}
-            value={value}
-            sx={{
-              "& svg": {
-                color: "var(--orange)",
-              },
-            }}
-            size="large"
-          />
-        </Stack>
-      </Stack>
-    </Stack>
-  );
-};
 
 // This is a component that renders while fetching chapters of the selected class
 
@@ -1735,110 +862,5 @@ const LoadingComponent = () => {
         </Stack>
       </Paper>
     </Box>
-  );
-};
-
-const SnackbarAlert = forwardRef<HTMLDivElement, AlertProps>(
-  function SnackbarAlert(props, ref) {
-    return <Alert elevation={6} ref={ref} {...props} />;
-  }
-);
-
-export const CustomTextInput = (props: {
-  questionFrom: "search" | "normal";
-  questionId: number;
-  answerId: number;
-  text: string;
-  setloadingUpdatingAnswer: React.Dispatch<React.SetStateAction<boolean>>;
-  onClose: () => void;
-  updateAnswer: (props: {
-    questionId: number;
-    answerId: number;
-    answerContent: string;
-    whereToUpdateAnswer: "search" | "normal";
-  }) => void;
-}) => {
-  const {
-    questionFrom,
-    questionId,
-    text,
-    onClose,
-    answerId,
-    setloadingUpdatingAnswer,
-    updateAnswer,
-  } = props;
-
-  const [input, setinput] = useState<string>(text);
-
-  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setinput(event.target.value);
-  };
-
-  const handleClick = () => {
-    onClose();
-    setloadingUpdatingAnswer(true);
-    axios
-      .post("http://localhost:/Ma-rifah/update_answer.php", {
-        answerId,
-        answerContent: input,
-      })
-      .then(() => {
-        updateAnswer({
-          questionId,
-          answerId,
-          answerContent: input,
-          whereToUpdateAnswer: questionFrom,
-        });
-        setloadingUpdatingAnswer(false);
-      })
-      .catch((error) => console.log(error));
-  };
-
-  return (
-    <Stack
-      direction="row"
-      alignItems="center"
-      spacing={1}
-      sx={{
-        width: "100%",
-        flex: "1",
-        "& textarea:focus": {
-          outline: "none",
-        },
-      }}
-    >
-      <textarea
-        placeholder="Add an answer..."
-        className="add-answer-input"
-        rows={4}
-        value={input}
-        style={{
-          border: "1px solid #ccc",
-          borderRadius: "6px",
-          padding: "10px 20px",
-          fontWeight: "600",
-          color: "var(--dark-blue)",
-          resize: "none",
-          flex: "1",
-        }}
-        onChange={handleChange}
-      />
-      <IconButton
-        sx={{
-          color: "primary.main",
-          fontWeight: "bold",
-          transition: ".6s",
-          width: "45px",
-          height: "45px",
-          backgroundColor: "#0f1f3ebf",
-          "&:hover": {
-            bgcolor: "secondary.main",
-          },
-        }}
-        onClick={handleClick}
-      >
-        <SendIcon sx={{ fontSize: "25px", fontWeight: "bold" }} />
-      </IconButton>
-    </Stack>
   );
 };

@@ -50,6 +50,7 @@ export const SideBar = () => {
   const [chapterIdFromQuiz, setChapterIdFromQuiz] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const navigate = useNavigate();
 
@@ -131,6 +132,10 @@ export const SideBar = () => {
       );
     }
     return boxes;
+  };
+
+  const goToFinalExam = () => {
+    navigate("/finalExam", { state: { courseId: currentCourseId } });
   };
 
   return (
@@ -513,10 +518,7 @@ export const SideBar = () => {
             No
           </Button>
           <Button
-            onClick={() => {
-              setOpenExamWarnDialaog(false);
-              // take me to the final exam
-            }}
+            onClick={goToFinalExam}
             sx={{
               color: "white",
               backgroundColor: "green",
