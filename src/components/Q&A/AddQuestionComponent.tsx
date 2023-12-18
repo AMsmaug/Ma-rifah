@@ -7,10 +7,10 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import PublishIcon from "@mui/icons-material/Publish";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { LoadingButton } from "@mui/lab";
-import { ActiveContext } from "../../components/Auth/UserInfo";
+import { ActiveContext } from "../Auth/UserInfo";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { question, serverResponseType } from "./QuestionsAndAnswers";
+import { question, serverResponseType } from "../../pages/QuestionsAndAnswers";
 
 type propsType = {
   chapterId?: number;

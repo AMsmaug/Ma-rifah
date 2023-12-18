@@ -9,7 +9,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { LoadingButton } from "@mui/lab";
-import { ActiveContext } from "../../components/Auth/UserInfo";
+import { ActiveContext } from "../Auth/UserInfo";
 import {
   Dialog,
   DialogTitle,
@@ -20,7 +20,7 @@ import {
 import axios from "axios";
 import Cookies from "js-cookie";
 import { Answer } from "./Answer";
-import { questionType, answersType } from "./QuestionsAndAnswers";
+import { questionType, answersType } from "../../pages/QuestionsAndAnswers";
 import { AddQuestionComponent } from "./AddQuestionComponent";
 
 const calculateDate = (d: string) => {

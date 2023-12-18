@@ -3,7 +3,7 @@ import "./App.css";
 import "./normalize.css";
 import { Auth } from "./pages/Auth";
 import { Landing } from "./pages/Landing";
-import { QuestionsAndAnswers } from "./pages/Q&A/QuestionsAndAnswers";
+import { QuestionsAndAnswers } from "./pages/QuestionsAndAnswers";
 import { UserInfo } from "./components/Auth/UserInfo";
 import { createTheme, ThemeProvider } from "@mui/material";
 import PickingClassDiscussions from "./components/Picking class discussions/PickingClassDiscussions";
