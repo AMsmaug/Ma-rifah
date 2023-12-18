@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Skeleton from "@mui/material/Skeleton";
 import Snackbar from "@mui/material/Snackbar";
-import { SnackbarAlert } from "../custom snack bar/SnackbarAlert";
+import { SnackbarAlert } from "../components/custom snack bar/SnackbarAlert";
 
 type Classes = {
   class_id: number;

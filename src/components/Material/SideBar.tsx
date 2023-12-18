@@ -50,7 +50,6 @@ export const SideBar = () => {
   const [chapterIdFromQuiz, setChapterIdFromQuiz] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
-  const navigate = useNavigate();
 
   const navigate = useNavigate();
 
@@ -92,8 +91,8 @@ export const SideBar = () => {
             )
             .then((response: { data: number }) => {
               console.log(response.data);
-              setLastCompletedAssignment(response.data);
-              // setLastCompletedAssignment(1);
+              // setLastCompletedAssignment(response.data);
+              setLastCompletedAssignment(3);
             });
           axios
             .post(
@@ -101,9 +100,9 @@ export const SideBar = () => {
               { chapterIds, studentId: Cookies.get(`id`) }
             )
             .then((response: { data: number }) => {
-              setLastCompletedQuiz(response.data);
+              // setLastCompletedQuiz(response.data);
               console.log(response.data);
-              // setLastCompletedQuiz(0);
+              setLastCompletedQuiz(3);
             });
           setIsLoading(false);
         });

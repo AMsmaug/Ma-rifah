@@ -488,7 +488,7 @@ const FinalExam = () => {
   };
 
   const hanldeGoToMaterials = () => {
-    navigate("/CoursesProgress/");
+    navigate("/Courses/");
   };
 
   const handleCloseExamRules = () => {
