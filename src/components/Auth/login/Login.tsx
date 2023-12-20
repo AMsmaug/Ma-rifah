@@ -83,7 +83,7 @@ export const Login = ({ isActive }: prop) => {
     setProfileUrl(picture);
     switch (source) {
       case `land`:
-        navigate(`/CoursesProgress`, { replace: true });
+        navigate(`/Courses`, { replace: true });
         break;
       case `QA`:
         navigate(`/Q&A`, { replace: true });

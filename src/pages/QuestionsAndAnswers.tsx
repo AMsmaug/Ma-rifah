@@ -24,7 +24,7 @@ import SideBar from "../components/Q&A/Side Bar/SideBar";
 import { SnackbarAlert } from "../components/custom snack bar/SnackbarAlert";
 import NoContentFound from "../components/No Content found/NoContentFound";
 import LoadingIndicator from "../components/Loading Indicator/LoadingIndicator";
-import { MustLoginPopup } from "./MustLoginPopup";
+import { MustLoginPopup } from "../components/Q&A/MustLoginPopup";
 import { SearchQuestionPopup } from "../components/Q&A/SearchQuestionPopup";
 import "../components/Loading Indicator/loadingIndicator.css";
 

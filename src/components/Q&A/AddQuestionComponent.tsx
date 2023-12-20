@@ -260,6 +260,7 @@ export const AddQuestionComponent = (props: propsType) => {
   const handleResetImage = (e: React.MouseEvent) => {
     e.stopPropagation();
     setdroppedImage(null);
+    setSelectedFile(null);
   };
 
   const handleEditQuestion = async () => {
@@ -350,7 +351,7 @@ export const AddQuestionComponent = (props: propsType) => {
           questionId,
           questionContent: value,
 
-          imageURL: imageURL || null,
+          imageURL: droppedImage || null,
         };
 
         setloadingUpdatingQuestion(true);
@@ -407,6 +408,7 @@ export const AddQuestionComponent = (props: propsType) => {
     if (imageURL !== undefined) {
       setdroppedImage(imageURL);
     }
+
     if (questionContent !== undefined) setvalue(questionContent);
   }, [imageURL, questionContent]);
 

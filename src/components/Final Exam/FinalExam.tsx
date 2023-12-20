@@ -3,9 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
   Stack,
   Grid,
   Typography,
@@ -31,6 +28,8 @@ import {
   SubmittedFinalExam,
   submittedExamInformationType,
 } from "./SubmittedFinalExam";
+import { FinalHeader } from "./FinalHeader";
+import { Possibilities } from "./Possibilities";
 
 type problemType = {
   problemId: number;
@@ -41,14 +40,14 @@ type problemType = {
 
 type problemsType = problemType[];
 
-type problemPossibilityType = {
+export type problemPossibilityType = {
   possibilityId: number;
   possibilityContent: string;
 };
 
 type problemPossibilitiesType = problemPossibilityType[];
 
-type possibilitiesComponentType = {
+export type possibilitiesComponentType = {
   handleChoosePoosibility: (props: handleChoosePossibilityProps) => void;
   problemPossibilities: problemPossibilitiesType;
   problemId: number;
@@ -108,6 +107,7 @@ const FinalExam = () => {
   const [unAnsweredProblemDialog, setunAnsweredProblemDialog] =
     useState<boolean>(false);
 
+  // this is an array that contains the numbers of questions that hasn't been answered
   const [listOfUnAnsweredProblems, setlistOfUnAnsweredProblems] = useState<
     number[]
   >([]);
@@ -152,46 +152,6 @@ const FinalExam = () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [submittedExamInformation]);
-
-  useEffect(() => {
-    function checkInternetConnection() {
-      if (navigator.onLine) {
-        fetch("http://localhost/Ma-rifah/test.php")
-          .then((response) => {
-            if (response.ok) {
-              return;
-            } else {
-              console.log("Server not reachable.");
-              showConnectionStatus(false);
-            }
-          })
-          .catch((error) => {
-            console.error("Error checking internet connection:", error);
-            showConnectionStatus(false);
-          });
-      } else {
-        showConnectionStatus(false);
-      }
-    }
-
-    function showConnectionStatus(isConnected: boolean) {
-      // Implement logic to display a message to the user based on connectivity status
-      if (!isConnected) {
-        // For example, display a notification or overlay to inform the user
-        setsnackBarContent({
-          status: "error",
-          message:
-            "You are currently offline. Please check your internet connection.",
-        });
-      }
-    }
-
-    // Check internet connection every 5 seconds (adjust the interval as needed)
-    setInterval(checkInternetConnection, 5000);
-
-    // Initial check when the page loads
-    checkInternetConnection();
-  }, []);
 
   useEffect(() => {
     if (courseId === undefined || courseId === null)
@@ -420,6 +380,11 @@ const FinalExam = () => {
     }
   };
 
+  const handleCloseExamRules = () => {
+    setisExamStarted(true);
+    setisexamRulesPopUpOpen(false);
+  };
+
   const submitExam = async () => {
     if (canSubmitFinal && !timeIsUp) {
       const prblms: problemsToBeSentToServer = [];
@@ -487,19 +452,6 @@ const FinalExam = () => {
     seterrorStartingExam(false);
   };
 
-  const hanldeGoToMaterials = () => {
-    navigate("/Courses/");
-  };
-
-  const handleCloseExamRules = () => {
-    setisExamStarted(true);
-    setisexamRulesPopUpOpen(false);
-  };
-
-  const calculateExamDurationInMinutes = (time: number) => {
-    return time / 60;
-  };
-
   return (
     <Box
       sx={{
@@ -523,229 +475,7 @@ const FinalExam = () => {
           </SnackbarAlert>
         </Snackbar>
       )}
-      {confirmSubmitPopUp && (
-        <Dialog
-          aria-labelledby="dialog-title"
-          aria-describedby="dialog-description"
-          open={confirmSubmitPopUp}
-          onClose={handleCloseConfirmSubmitPopUp}
-        >
-          <DialogTitle
-            id="dialog-title"
-            sx={{
-              textAlign: "center",
-              fontWeight: "bold",
-              fontSize: "30px",
-              marginBottom: "20px",
-            }}
-          >
-            Submit the Exam?
-          </DialogTitle>
-          <DialogContent sx={{ marginBottom: "20px" }}>
-            <DialogContentText
-              id="dialog-description"
-              sx={{
-                fontSize: "18px",
-              }}
-            >
-              Are you sure you want to submit the Exam? You will not be able to
-              change your answers after the submission.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "20px",
-              marginBottom: "10px",
-            }}
-          >
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={handleCloseConfirmSubmitPopUp}
-              sx={{
-                color: "white",
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              autoFocus
-              variant="contained"
-              onClick={submitExam}
-              sx={{
-                color: "white",
-              }}
-              disabled={timeIsUp}
-            >
-              Confirm
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
-      {unAnsweredProblemDialog && (
-        <Dialog
-          aria-labelledby="dialog-title"
-          aria-describedby="dialog-description"
-          open={unAnsweredProblemDialog}
-          onClose={handleClose}
-        >
-          <DialogTitle
-            id="dialog-title"
-            sx={{
-              textAlign: "center",
-              fontWeight: "bold",
-              fontSize: "30px",
-              marginBottom: "20px",
-            }}
-          >
-            Submit the Exam?
-          </DialogTitle>
-          <DialogContent sx={{ marginBottom: "20px" }}>
-            <DialogContentText
-              id="dialog-description"
-              sx={{
-                fontSize: "18px",
-              }}
-            >
-              You didn't answer question{" "}
-              {listOfUnAnsweredProblems.map((p) => (
-                <span>{p} </span>
-              ))}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "20px",
-              marginBottom: "10px",
-            }}
-          >
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={handleClose}
-              sx={{
-                color: "white",
-              }}
-            >
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
-      {
-        <Dialog
-          aria-labelledby="dialog-title"
-          aria-describedby="dialog-description"
-          open={gradePopUp}
-        >
-          <DialogTitle
-            id="dialog-title"
-            sx={{
-              textAlign: "center",
-              fontWeight: "bold",
-              fontSize: "30px",
-              marginBottom: "20px",
-            }}
-          >
-            Your Final Exam Grade
-          </DialogTitle>
-          <DialogContent sx={{ marginBottom: "20px" }}>
-            <DialogContentText
-              id="dialog-description"
-              sx={{
-                fontSize: "18px",
-              }}
-            >
-              {gradePopUp && finalExamGrade < 50 ? (
-                <>
-                  Oops, your grade is {finalExamGrade}. I hope you can do better
-                  next time.
-                </>
-              ) : (
-                <>
-                  Congrats, your grade is {finalExamGrade}. You passed the exam.
-                </>
-              )}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "20px",
-              marginBottom: "10px",
-            }}
-          >
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={{
-                color: "white",
-              }}
-              onClick={hanldeGoToMaterials}
-            >
-              Go to materials
-            </Button>
-          </DialogActions>
-        </Dialog>
-      }
-      {
-        <Dialog
-          aria-labelledby="dialog-title"
-          aria-describedby="dialog-description"
-          open={timeIsUp}
-        >
-          <DialogTitle
-            id="dialog-title"
-            sx={{
-              textAlign: "center",
-              fontWeight: "bold",
-              fontSize: "30px",
-              marginBottom: "20px",
-            }}
-          >
-            Time Is Up!
-          </DialogTitle>
-          <DialogContent sx={{ marginBottom: "20px" }}>
-            <DialogContentText
-              id="dialog-description"
-              sx={{
-                fontSize: "18px",
-              }}
-            >
-              Oops, your final exam is not submitted because time is up! You
-              should try again.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "20px",
-              marginBottom: "10px",
-            }}
-          >
-            <Button
-              autoFocus
-              variant="contained"
-              sx={{
-                color: "white",
-              }}
-              onClick={hanldeGoToMaterials}
-            >
-              Go to materials
-            </Button>
-          </DialogActions>
-        </Dialog>
-      }
+
       {errorStartingExam && (
         <Snackbar
           open={errorStartingExam}
@@ -762,6 +492,27 @@ const FinalExam = () => {
           </SnackbarAlert>
         </Snackbar>
       )}
+
+      <ConfirmSubmitDialog
+        confirmSubmitPopUp={confirmSubmitPopUp}
+        timeIsUp={timeIsUp}
+        handleCloseConfirmSubmitPopUp={handleCloseConfirmSubmitPopUp}
+        submitExam={submitExam}
+      />
+
+      <UnAnsweredProblemDialog
+        unAnsweredProblemDialog={unAnsweredProblemDialog}
+        listOfUnAnsweredProblems={listOfUnAnsweredProblems}
+        handleClose={handleClose}
+      />
+
+      <AfterSubmittingExamDialog
+        gradePopUp={gradePopUp}
+        finalExamGrade={finalExamGrade}
+      />
+
+      <TimeIsUpDialog timeIsUp={timeIsUp} />
+
       <Box
         className="container"
         sx={{
@@ -798,65 +549,11 @@ const FinalExam = () => {
               problems={submittedExamInformation?.problems}
             />
           ) : isexamRulesPopUpOpen ? (
-            <Dialog
-              aria-labelledby="dialog-title"
-              aria-describedby="dialog-description"
-              open={isexamRulesPopUpOpen}
-            >
-              <DialogTitle
-                id="dialog-title"
-                sx={{
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  fontSize: "30px",
-                  marginBottom: "20px",
-                }}
-              >
-                Exam Rules
-              </DialogTitle>
-              <DialogContent sx={{ marginBottom: "20px" }}>
-                <DialogContentText
-                  id="dialog-description"
-                  sx={{
-                    fontSize: "18px",
-                  }}
-                >
-                  <span></span>
-                  Be careful , if you haven't submit the exam before time is
-                  finished the exam will not be considered done. <br /> <br />
-                  Exam duration:{" "}
-                  <span>
-                    {examInformation?.examDuration !== undefined &&
-                      calculateExamDurationInMinutes(
-                        examInformation?.examDuration
-                      )}{" "}
-                  </span>
-                  minutes
-                  <br />
-                  Number Of Problems: {examInformation?.nbOfProblems}
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: "20px",
-                  marginBottom: "10px",
-                }}
-              >
-                <Button
-                  autoFocus
-                  variant="contained"
-                  sx={{
-                    color: "white",
-                  }}
-                  onClick={handleCloseExamRules}
-                >
-                  Ok
-                </Button>
-              </DialogActions>
-            </Dialog>
+            <ExamRulesDialog
+              isexamRulesPopUpOpen={isexamRulesPopUpOpen}
+              examInformation={examInformation}
+              handleCloseExamRules={handleCloseExamRules}
+            />
           ) : (
             <>
               <FinalHeader
@@ -945,146 +642,11 @@ const FinalExam = () => {
                   </Button>
                 )}
               </Stack>
-              <Box
-                sx={{
-                  position: "absolute",
-                  right: "-5000px",
-                  visibility: "hidden",
-                }}
-              >
-                <audio ref={audio1Ref} controls>
-                  <source
-                    src="../../../public/allahakbar.mp3"
-                    type="audio/mp3"
-                  />
-                  Your browser does not support the audio element.
-                </audio>
-
-                <audio ref={audio2Ref} controls>
-                  <source src="../../../public/ahh.mp3" type="audio/mp3" />
-                  Your browser does not support the audio element.
-                </audio>
-              </Box>
             </>
           )}
         </Stack>
       </Box>
     </Box>
-  );
-};
-
-const Possibilities = (props: possibilitiesComponentType) => {
-  const { problemId, problemPossibilities, handleChoosePoosibility } = props;
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputs = {
-      problemId,
-      possibilityId: Number(e.target.value),
-    };
-    handleChoosePoosibility(inputs);
-  };
-
-  const check = () => {
-    let nbRows = 6;
-
-    problemPossibilities.forEach((p) => {
-      if (p.possibilityContent.length > 20) nbRows = 12;
-    });
-
-    return nbRows;
-  };
-
-  return (
-    <RadioGroup onChange={handleChange} name={`problem-${problemId}`}>
-      <Grid container spacing={1}>
-        {problemPossibilities.map((p) => (
-          <Grid
-            key={`possibility-id-${p.possibilityId}`}
-            item
-            xs={12}
-            sm={check()}
-          >
-            <Possibility
-              possibilityId={p.possibilityId}
-              possibilityContent={p.possibilityContent}
-            />
-          </Grid>
-        ))}
-      </Grid>
-    </RadioGroup>
-  );
-};
-
-type finalHeaderType = {
-  courseName: string | undefined;
-  nbOfProblems: number;
-  timeLeft: number;
-};
-
-const FinalHeader = (props: finalHeaderType) => {
-  const { courseName, nbOfProblems, timeLeft } = props;
-
-  const formatTime = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
-
-    if (hours > 0) {
-      return `${String(hours).padStart(2, "0")} h:${String(minutes).padStart(
-        2,
-        "0"
-      )}`;
-    } else if (minutes > 0) {
-      return `${String(minutes).padStart(2, "0")}:${String(
-        remainingSeconds
-      ).padStart(2, "0")}`;
-    } else {
-      return `${remainingSeconds}s`;
-    }
-  };
-
-  return (
-    <Box className="final-header">
-      <Typography variant="h4" mb={2} textAlign="center" fontWeight="bold">
-        {courseName} Final Exam
-      </Typography>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        px={2}
-      >
-        <Typography>
-          Total Number Of Questions:
-          <Typography component="span" ml={1} fontWeight="bold">
-            {nbOfProblems}
-          </Typography>
-        </Typography>
-        <Typography textAlign="end">
-          Time Left:
-          <Typography component="span" ml={1} fontWeight="bold">
-            {formatTime(timeLeft)}
-          </Typography>
-        </Typography>
-      </Stack>
-    </Box>
-  );
-};
-
-const Possibility = (props: problemPossibilityType) => {
-  const { possibilityId, possibilityContent } = props;
-
-  return (
-    <FormControlLabel
-      sx={{
-        border: "2px solid #ccc",
-        borderRadius: "4px",
-        width: "100%",
-      }}
-      control={<Radio />}
-      label={possibilityContent}
-      value={possibilityId}
-    />
   );
 };
 
@@ -1203,5 +765,348 @@ const LoadingComponent = () => {
         </Grid>
       </>
     </Box>
+  );
+};
+
+const TimeIsUpDialog = (props: { timeIsUp: boolean }) => {
+  const { timeIsUp } = props;
+
+  const navigate = useNavigate();
+
+  const hanldeGoToMaterials = () => {
+    navigate("/Courses/");
+  };
+
+  return (
+    <Dialog
+      aria-labelledby="dialog-title"
+      aria-describedby="dialog-description"
+      open={timeIsUp}
+    >
+      <DialogTitle
+        id="dialog-title"
+        sx={{
+          textAlign: "center",
+          fontWeight: "bold",
+          fontSize: "30px",
+          marginBottom: "20px",
+        }}
+      >
+        Time Is Up!
+      </DialogTitle>
+      <DialogContent sx={{ marginBottom: "20px" }}>
+        <DialogContentText
+          id="dialog-description"
+          sx={{
+            fontSize: "18px",
+          }}
+        >
+          Oops, your final exam is not submitted because time is up! You should
+          try again.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "20px",
+          marginBottom: "10px",
+        }}
+      >
+        <Button
+          autoFocus
+          variant="contained"
+          sx={{
+            color: "white",
+          }}
+          onClick={hanldeGoToMaterials}
+        >
+          Go to materials
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+const AfterSubmittingExamDialog = (props: {
+  gradePopUp: boolean;
+  finalExamGrade: number;
+}) => {
+  const { gradePopUp, finalExamGrade } = props;
+
+  const navigate = useNavigate();
+
+  const hanldeGoToMaterials = () => {
+    navigate("/Courses/");
+  };
+
+  return (
+    <Dialog
+      aria-labelledby="dialog-title"
+      aria-describedby="dialog-description"
+      open={gradePopUp}
+    >
+      <DialogTitle
+        id="dialog-title"
+        sx={{
+          textAlign: "center",
+          fontWeight: "bold",
+          fontSize: "30px",
+          marginBottom: "20px",
+        }}
+      >
+        Your Final Exam Grade
+      </DialogTitle>
+      <DialogContent sx={{ marginBottom: "20px" }}>
+        <DialogContentText
+          id="dialog-description"
+          sx={{
+            fontSize: "18px",
+          }}
+        >
+          {gradePopUp && finalExamGrade < 50 ? (
+            <>
+              Oops, your grade is {finalExamGrade}. I hope you can do better
+              next time.
+            </>
+          ) : (
+            <>Congrats, your grade is {finalExamGrade}. You passed the exam.</>
+          )}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "20px",
+          marginBottom: "10px",
+        }}
+      >
+        <Button
+          variant="contained"
+          color="secondary"
+          sx={{
+            color: "white",
+          }}
+          onClick={hanldeGoToMaterials}
+        >
+          Go to materials
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+const UnAnsweredProblemDialog = (props: {
+  unAnsweredProblemDialog: boolean;
+  listOfUnAnsweredProblems: number[];
+  handleClose: () => void;
+}) => {
+  const { unAnsweredProblemDialog, listOfUnAnsweredProblems, handleClose } =
+    props;
+
+  return (
+    <Dialog
+      aria-labelledby="dialog-title"
+      aria-describedby="dialog-description"
+      open={unAnsweredProblemDialog}
+      onClose={handleClose}
+    >
+      <DialogTitle
+        id="dialog-title"
+        sx={{
+          textAlign: "center",
+          fontWeight: "bold",
+          fontSize: "30px",
+          marginBottom: "20px",
+        }}
+      >
+        Submit the Exam?
+      </DialogTitle>
+      <DialogContent sx={{ marginBottom: "20px" }}>
+        <DialogContentText
+          id="dialog-description"
+          sx={{
+            fontSize: "18px",
+          }}
+        >
+          You didn't answer question{" "}
+          {listOfUnAnsweredProblems.map((p) => (
+            <span>{p} </span>
+          ))}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "20px",
+          marginBottom: "10px",
+        }}
+      >
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleClose}
+          sx={{
+            color: "white",
+          }}
+        >
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+const ConfirmSubmitDialog = (props: {
+  confirmSubmitPopUp: boolean;
+  submitExam: () => void;
+  handleCloseConfirmSubmitPopUp: () => void;
+  timeIsUp: boolean;
+}) => {
+  const {
+    confirmSubmitPopUp,
+    timeIsUp,
+    submitExam,
+    handleCloseConfirmSubmitPopUp,
+  } = props;
+
+  return (
+    <Dialog
+      aria-labelledby="dialog-title"
+      aria-describedby="dialog-description"
+      open={confirmSubmitPopUp}
+      onClose={handleCloseConfirmSubmitPopUp}
+    >
+      <DialogTitle
+        id="dialog-title"
+        sx={{
+          textAlign: "center",
+          fontWeight: "bold",
+          fontSize: "30px",
+          marginBottom: "20px",
+        }}
+      >
+        Submit the Exam?
+      </DialogTitle>
+      <DialogContent sx={{ marginBottom: "20px" }}>
+        <DialogContentText
+          id="dialog-description"
+          sx={{
+            fontSize: "18px",
+          }}
+        >
+          Are you sure you want to submit the Exam? You will not be able to
+          change your answers after the submission.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "20px",
+          marginBottom: "10px",
+        }}
+      >
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleCloseConfirmSubmitPopUp}
+          sx={{
+            color: "white",
+          }}
+        >
+          Cancel
+        </Button>
+        <Button
+          autoFocus
+          variant="contained"
+          onClick={submitExam}
+          sx={{
+            color: "white",
+          }}
+          disabled={timeIsUp}
+        >
+          Confirm
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+const ExamRulesDialog = (props: {
+  isexamRulesPopUpOpen: boolean;
+  examInformation: examInformationType | null;
+  handleCloseExamRules: () => void;
+}) => {
+  const { isexamRulesPopUpOpen, examInformation, handleCloseExamRules } = props;
+
+  const calculateExamDurationInMinutes = (time: number) => {
+    return time / 60;
+  };
+
+  return (
+    <Dialog
+      aria-labelledby="dialog-title"
+      aria-describedby="dialog-description"
+      open={isexamRulesPopUpOpen}
+    >
+      <DialogTitle
+        id="dialog-title"
+        sx={{
+          textAlign: "center",
+          fontWeight: "bold",
+          fontSize: "30px",
+          marginBottom: "20px",
+        }}
+      >
+        Exam Rules
+      </DialogTitle>
+      <DialogContent sx={{ marginBottom: "20px" }}>
+        <DialogContentText
+          id="dialog-description"
+          sx={{
+            fontSize: "18px",
+          }}
+        >
+          <span></span>
+          Be careful , if you haven't submit the exam before time is finished
+          the exam will not be considered done. <br /> <br />
+          Exam duration:{" "}
+          <span>
+            {examInformation?.examDuration !== undefined &&
+              calculateExamDurationInMinutes(examInformation?.examDuration)}
+          </span>
+          minutes
+          <br />
+          Number Of Problems: {examInformation?.nbOfProblems}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "20px",
+          marginBottom: "10px",
+        }}
+      >
+        <Button
+          autoFocus
+          variant="contained"
+          sx={{
+            color: "white",
+          }}
+          onClick={handleCloseExamRules}
+        >
+          Ok
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
