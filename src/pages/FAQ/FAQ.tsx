@@ -66,11 +66,21 @@ const Faq = () => {
           </SnackbarAlert>
         </Snackbar>
       )}
+      <Box
+        sx={{
+          width: "100%",
+          height: "15px",
+          position: "fixed",
+          backgroundColor: "var(--dark-blue)",
+          top: "0",
+          left: "0",
+        }}
+      ></Box>
       <Typography
         className="main-title"
         variant="h4"
         sx={{
-          margin: "10px auto",
+          margin: "40px auto 10px",
           fontSize: {
             xs: "18px",
             sm: "30px",

@@ -8,12 +8,10 @@ import {
   MenuItem,
 } from "@mui/material";
 
-import axios from "axios";
-
 import LogoutIcon from "@mui/icons-material/Logout";
 
 import { useNavigate } from "react-router-dom";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 
 import { ActiveContext } from "../Auth/UserInfo";
 
@@ -21,6 +19,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 
 import Cookies from "js-cookie";
+
+import { Profile } from "../Profile/Profile";
 
 type QuestionsAndAnswersHeaderPropsType = {
   handleDrawerToggle: () => void;
@@ -32,8 +32,7 @@ export const QuestionsAndAnswersHeader = (
 ) => {
   const { handleDrawerToggle, handleOpenSearchPopUp } = props;
 
-  const [UserName, setUserName] = useState<string>("");
-  const [ProfileUrl, setProfileUrl] = useState<string>("");
+  const [isProfilePopUpOpen, setisProfilePopUpOpen] = useState<boolean>(false);
 
   // This is for displaying the menu
   const [anchorEl, setanchorEl] = useState<null | HTMLElement>(null);
@@ -42,7 +41,15 @@ export const QuestionsAndAnswersHeader = (
 
   const navigate = useNavigate();
 
-  const { userName } = useContext(ActiveContext);
+  const {
+    userName,
+    setUserName,
+    profileUrl,
+    setProfileUrl,
+    grade,
+    loggedInWithGoogle,
+    logout,
+  } = useContext(ActiveContext);
 
   const navigateHome = () => {
     navigate("/");
@@ -60,10 +67,6 @@ export const QuestionsAndAnswersHeader = (
     navigate("/Courses");
   };
 
-  const navigateToProfilePage = () => {
-    navigate("/Profile");
-  };
-
   const handleLogout = () => {
     Cookies.remove("id");
     navigate("/login?src=QA");
@@ -77,29 +80,10 @@ export const QuestionsAndAnswersHeader = (
     setanchorEl(null);
   };
 
-  useEffect(() => {
-    const fetchStudentInfo = async () => {
-      const studentId = Cookies.get("id");
-
-      if (studentId !== undefined && userName === "") {
-        try {
-          const res = await axios.post(
-            "http://localhost/Ma-rifah/get_main_student_info.php",
-            studentId
-          );
-          if (res.data.status === "success") {
-            const { studentName, avatar } = res.data.message;
-
-            setUserName(studentName);
-            setProfileUrl(avatar);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    };
-    fetchStudentInfo();
-  }, [userName]);
+  const openProfilePopup = () => {
+    setisProfilePopUpOpen(true);
+    setanchorEl(null);
+  };
 
   return (
     <Toolbar
@@ -233,7 +217,7 @@ export const QuestionsAndAnswersHeader = (
                 marginBottom: "5px",
                 borderRadius: "6px",
               }}
-              onClick={navigateToProfilePage}
+              onClick={openProfilePopup}
             >
               <Stack direction="row" alignItems="center">
                 <Box
@@ -247,12 +231,14 @@ export const QuestionsAndAnswersHeader = (
                     style={{
                       display: "block",
                       width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
                     }}
-                    src={ProfileUrl}
+                    src={profileUrl}
                   />
                 </Box>
                 <Typography textTransform="capitalize" fontWeight="bold">
-                  {UserName}
+                  {userName}
                 </Typography>
               </Stack>
             </MenuItem>
@@ -282,9 +268,25 @@ export const QuestionsAndAnswersHeader = (
             overflow="hidden"
             onClick={handleOpenMenu}
           >
-            <img src={ProfileUrl} style={{ width: "100%" }} alt="" />
+            <img
+              src={profileUrl}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              alt=""
+            />
           </Box>
         </>
+      )}
+      {isProfilePopUpOpen && (
+        <Profile
+          profilePictureUrl={profileUrl}
+          setprofilePicture={setProfileUrl}
+          name={userName}
+          setname={setUserName}
+          grade={grade}
+          closeProfilePopup={() => setisProfilePopUpOpen(false)}
+          loggedInWithGoogle={loggedInWithGoogle}
+          logout={logout}
+        />
       )}
     </Toolbar>
   );

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 
 import axios from "axios";
@@ -27,6 +27,7 @@ import LoadingIndicator from "../components/Loading Indicator/LoadingIndicator";
 import { MustLoginPopup } from "../components/Q&A/MustLoginPopup";
 import { SearchQuestionPopup } from "../components/Q&A/SearchQuestionPopup";
 import "../components/Loading Indicator/loadingIndicator.css";
+import { ActiveContext } from "../components/Auth/UserInfo";
 
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -197,7 +198,17 @@ export const QuestionsAndAnswers = () => {
   const [isMustLoginPopupOpen, setisMustLoginPopupOpen] =
     useState<boolean>(false);
 
-  console.log(questions);
+  const {
+    grade,
+    setUserName,
+    setProfileUrl,
+    setEmail,
+    setgrade,
+    setloggedInWithGoogle,
+  } = useContext(ActiveContext);
+  console.log(grade);
+
+  // console.log(questions);
 
   // I am using location here to extract the id of the class to fetch its data. if id is null (default classId: 1)
 
@@ -211,7 +222,31 @@ export const QuestionsAndAnswers = () => {
 
   useEffect(() => {
     const fetchCourses = async () => {
-      const class_i = class_id === null ? 1 : class_id;
+      const studentId = Cookies.get("id");
+
+      if (studentId !== undefined && grade === null) {
+        try {
+          const res = await axios.post(
+            "http://localhost/Ma-rifah/get_main_student_info.php",
+            studentId
+          );
+          if (res.data.status === "success") {
+            const { studentName, loggedInWithGoogle, avatar, email, class_id } =
+              res.data.message;
+
+            setUserName(studentName);
+            setProfileUrl(avatar);
+            setEmail(email);
+            setgrade(class_id);
+            setloggedInWithGoogle(loggedInWithGoogle);
+            return;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      const class_i = class_id !== null ? class_id : grade !== null ? grade : 1;
       const res = await axios.get(
         "http://localhost/Ma-rifah/fetch_courses.php?id=" + class_i
       );
@@ -229,18 +264,26 @@ export const QuestionsAndAnswers = () => {
     };
 
     fetchCourses();
-  }, [class_id]);
+  }, [
+    class_id,
+    grade,
+    setEmail,
+    setProfileUrl,
+    setUserName,
+    setgrade,
+    setloggedInWithGoogle,
+  ]);
 
   // After the user changes the chapter. Questions of the new chapters will be fetched in this function.
   useEffect(() => {
     if (activeChapter === null) return;
     const fetchQuestionsAndAnswers = async () => {
       setisLoading(true);
+      setsearchedQuestions([]);
+      setsearchedQuestionsResult([]);
 
       const studentId =
         Cookies.get("id") == undefined ? null : Number(Cookies.get("id"));
-
-      console.log(activeChapter);
 
       const res = await axios.post(
         "http://localhost/Ma-rifah/get_questions_answers.php",
@@ -249,8 +292,6 @@ export const QuestionsAndAnswers = () => {
           chapterId: activeChapter.chapterId,
         }
       );
-
-      console.log(res.data);
 
       if (res?.data.length === 0) {
         setnoContentFound(true);

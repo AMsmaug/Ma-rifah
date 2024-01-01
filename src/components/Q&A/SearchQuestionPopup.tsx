@@ -271,7 +271,11 @@ export const SearchQuestionPopup = (props: SearchQuestionPopupPropsType) => {
           ) : (
             <Stack justifyContent="center" alignItems="center" height="100%">
               {searchNoContentFound ? (
-                <NoContentFound iconFontSize={130} textFontSize={20} />
+                <NoContentFound
+                  iconFontSize={130}
+                  textFontSize={20}
+                  seperateString={false}
+                />
               ) : isSearchQuestionsLoading ? (
                 <LoadingIndicator />
               ) : (
