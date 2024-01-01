@@ -23,6 +23,7 @@ import React from "react";
 import { Quiz } from "./pages/Quiz";
 import FinalExam from "./components/Final Exam/FinalExam";
 import Faq from "./pages/FAQ/FAQ";
+import ProfilePage from "./pages/ProfilePage";
 
 const theme = createTheme({
   palette: {
@@ -123,6 +124,7 @@ function App() {
               />
               <Route element={<FinalExam />} path="finalExam" />
               <Route element={<Faq />} path="FAQ" />
+              <Route element={<ProfilePage />} path="Profile" />
             </Routes>
           </ThemeProvider>
         </CoursesData>

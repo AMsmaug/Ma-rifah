@@ -1,11 +1,26 @@
-import { Box, Toolbar, IconButton, Typography, Stack } from "@mui/material";
+import {
+  Box,
+  Toolbar,
+  IconButton,
+  Typography,
+  Stack,
+  Menu,
+  MenuItem,
+} from "@mui/material";
+
+import LogoutIcon from "@mui/icons-material/Logout";
 
 import { useNavigate } from "react-router-dom";
+import { useState, useContext } from "react";
+
+import { ActiveContext } from "../Auth/UserInfo";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 
 import Cookies from "js-cookie";
+
+import { Profile } from "../Profile/Profile";
 
 type QuestionsAndAnswersHeaderPropsType = {
   handleDrawerToggle: () => void;
@@ -17,7 +32,24 @@ export const QuestionsAndAnswersHeader = (
 ) => {
   const { handleDrawerToggle, handleOpenSearchPopUp } = props;
 
+  const [isProfilePopUpOpen, setisProfilePopUpOpen] = useState<boolean>(false);
+
+  // This is for displaying the menu
+  const [anchorEl, setanchorEl] = useState<null | HTMLElement>(null);
+
+  const open = Boolean(anchorEl);
+
   const navigate = useNavigate();
+
+  const {
+    userName,
+    setUserName,
+    profileUrl,
+    setProfileUrl,
+    grade,
+    loggedInWithGoogle,
+    logout,
+  } = useContext(ActiveContext);
 
   const navigateHome = () => {
     navigate("/");
@@ -32,12 +64,25 @@ export const QuestionsAndAnswersHeader = (
   };
 
   const navigateToMaterials = () => {
-    navigate("/CoursesProgress");
+    navigate("/Courses");
   };
 
   const handleLogout = () => {
     Cookies.remove("id");
     navigate("/login?src=QA");
+  };
+
+  const handleOpenMenu = (event: React.MouseEvent<HTMLDivElement>) => {
+    setanchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setanchorEl(null);
+  };
+
+  const openProfilePopup = () => {
+    setisProfilePopUpOpen(true);
+    setanchorEl(null);
   };
 
   return (
@@ -132,14 +177,116 @@ export const QuestionsAndAnswersHeader = (
           Get Started!
         </Box>
       ) : (
-        <Box
-          fontWeight="bold"
-          onClick={handleLogout}
-          color="primary.main"
-          sx={{ cursor: "pointer" }}
-        >
-          Log out!
-        </Box>
+        <>
+          <Menu
+            id="question-menu"
+            anchorEl={anchorEl}
+            open={open}
+            MenuListProps={{
+              "aria-labelledby": "question-menu-button",
+            }}
+            onClose={handleCloseMenu}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            sx={{
+              "& .MuiPaper-root": {
+                top: "58px !important",
+
+                padding: "10px",
+              },
+              "& li": {
+                width: "300px",
+                transition: ".4s",
+              },
+              "& li:hover": {
+                backgroundColor: "#ccc",
+              },
+            }}
+          >
+            <MenuItem
+              sx={{
+                fontWeight: "bold",
+                cursor: "pointer",
+                display: "flex",
+                marginBottom: "5px",
+                borderRadius: "6px",
+              }}
+              onClick={openProfilePopup}
+            >
+              <Stack direction="row" alignItems="center">
+                <Box
+                  width="35px"
+                  height="35px"
+                  borderRadius="50%"
+                  overflow="hidden"
+                  marginRight="15px"
+                >
+                  <img
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                    src={profileUrl}
+                  />
+                </Box>
+                <Typography textTransform="capitalize" fontWeight="bold">
+                  {userName}
+                </Typography>
+              </Stack>
+            </MenuItem>
+            <MenuItem
+              onClick={handleLogout}
+              sx={{
+                fontWeight: "bold",
+                cursor: "pointer",
+                borderRadius: "6px",
+              }}
+            >
+              <LogoutIcon
+                sx={{
+                  width: "35px",
+                  marginRight: "15px",
+                }}
+              />
+              Log out
+            </MenuItem>
+          </Menu>
+          <Box
+            width={40}
+            height={40}
+            borderRadius="50%"
+            sx={{ backgroundColor: "var(--orange)", cursor: "pointer" }}
+            textAlign="center"
+            overflow="hidden"
+            onClick={handleOpenMenu}
+          >
+            <img
+              src={profileUrl}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              alt=""
+            />
+          </Box>
+        </>
+      )}
+      {isProfilePopUpOpen && (
+        <Profile
+          profilePictureUrl={profileUrl}
+          setprofilePicture={setProfileUrl}
+          name={userName}
+          setname={setUserName}
+          grade={grade}
+          closeProfilePopup={() => setisProfilePopUpOpen(false)}
+          loggedInWithGoogle={loggedInWithGoogle}
+          logout={logout}
+        />
       )}
     </Toolbar>
   );
