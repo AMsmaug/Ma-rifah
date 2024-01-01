@@ -154,46 +154,6 @@ const FinalExam = () => {
   }, [submittedExamInformation]);
 
   useEffect(() => {
-    function checkInternetConnection() {
-      if (navigator.onLine) {
-        fetch("http://localhost/Ma-rifah/test.php")
-          .then((response) => {
-            if (response.ok) {
-              return;
-            } else {
-              console.log("Server not reachable.");
-              showConnectionStatus(false);
-            }
-          })
-          .catch((error) => {
-            console.error("Error checking internet connection:", error);
-            showConnectionStatus(false);
-          });
-      } else {
-        showConnectionStatus(false);
-      }
-    }
-
-    function showConnectionStatus(isConnected: boolean) {
-      // Implement logic to display a message to the user based on connectivity status
-      if (!isConnected) {
-        // For example, display a notification or overlay to inform the user
-        setsnackBarContent({
-          status: "error",
-          message:
-            "You are currently offline. Please check your internet connection.",
-        });
-      }
-    }
-
-    // Check internet connection every 5 seconds (adjust the interval as needed)
-    setInterval(checkInternetConnection, 5000);
-
-    // Initial check when the page loads
-    checkInternetConnection();
-  }, []);
-
-  useEffect(() => {
     if (courseId === undefined || courseId === null)
       navigate("/CoursesProgress");
     else {

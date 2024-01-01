@@ -50,7 +50,9 @@ export const MaterialContent = () => {
   const isMobile = window.innerWidth <= 960;
 
   const handleStartAssignment = () => {
-    navigate(`Assignment`, { state: chapterTitle });
+    navigate(`Assignment`, {
+      state: { chapterTitle, currentChapterId, fromPage: true },
+    });
   };
 
   useEffect(() => {
@@ -138,7 +140,7 @@ export const MaterialContent = () => {
             lg: `18px`,
           }}
         >
-          Course grade: {grade} / {fullMark}
+          Course grade: {Math.round(grade as unknown as number)} / {fullMark}
         </Typography>
       </Stack>
       <Typography

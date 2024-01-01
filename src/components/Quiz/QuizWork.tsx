@@ -3,13 +3,15 @@ import {
   Button,
   List,
   RadioGroup,
+  Skeleton,
   Stack,
   Typography,
 } from "@mui/material";
 import { Possibility } from "./Possibility";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { CoursesContext } from "../Courses progress/CoursesContext";
 
 type problemsType = {
   problemId: number;
@@ -31,6 +33,9 @@ export const QuizWork = ({
   duration: number;
 }) => {
   const radius = `12px`;
+
+  const { setStudentGrade, setStudentInfo } = useContext(CoursesContext);
+
   const [problems, setProblems] = useState([] as problemsType[]);
   const [checkedPossibilities, setCheckedPossibilities] = useState(
     {} as { [key: string]: number }
@@ -38,9 +43,7 @@ export const QuizWork = ({
   const [confirmSubmission, setConfirmSubmission] = useState(true);
   const [durationInMinutes, setDurationInMinutes] = useState(0);
   const [durationInSeconds, setDurationInSeconds] = useState(0);
-
-  console.log(quizData.quizId);
-  console.log(`duration from quiz work: `, durationInMinutes);
+  const [isLoading, setIsLoading] = useState(true);
 
   const currentPath = location.pathname;
   const arrayPath = currentPath.split(`/`);
@@ -82,10 +85,32 @@ export const QuizWork = ({
           .then((response) => {
             console.log(response.data);
             setIsSubmitted(true);
+            axios
+              .post(
+                `http://localhost/Ma-rifah/get_student_info.php`,
+                Cookies.get(`id`)
+              )
+              .then((response) => {
+                const studentInfo = response.data;
+                setStudentInfo(studentInfo);
+                let totalGrade = 0;
+                if (Array.isArray(studentInfo))
+                  studentInfo.forEach((student) => {
+                    totalGrade += +student.studentGrade;
+                  });
+                setStudentGrade(totalGrade);
+              });
           });
       }
     },
-    [checkedPossibilities, problems, quizData.quizId, setIsSubmitted]
+    [
+      checkedPossibilities,
+      problems,
+      quizData.quizId,
+      setIsSubmitted,
+      setStudentGrade,
+      setStudentInfo,
+    ]
   );
 
   useEffect(() => {
@@ -130,8 +155,48 @@ export const QuizWork = ({
         .then((response: { data: problemsType[] }) => {
           console.log(response.data);
           setProblems(response.data);
+          setIsLoading(false);
         });
   }, [duration, quizData]);
+
+  const generateSkeletons = (nbOfSkeletons: number) => {
+    const skeletons = [];
+    for (let i = 0; i < nbOfSkeletons; i++) {
+      skeletons.push(
+        <Box
+          bgcolor={`white`}
+          borderRadius={radius}
+          mt={2}
+          padding={`20px`}
+          key={i}
+        >
+          <Box m={`10px 0 20px`} fontSize={`17px`} />
+          <Skeleton
+            animation="wave"
+            height={`80px`}
+            sx={{ borderRadius: `12px` }}
+          />
+          <Skeleton
+            animation="wave"
+            height={`80px`}
+            sx={{ borderRadius: `12px` }}
+          />
+          <Skeleton
+            animation="wave"
+            height={`80px`}
+            sx={{ borderRadius: `12px` }}
+          />
+          <Skeleton
+            animation="wave"
+            height={`80px`}
+            sx={{ borderRadius: `12px` }}
+          />
+        </Box>
+      );
+    }
+
+    return skeletons;
+  };
 
   return (
     <div className="container">
@@ -184,53 +249,59 @@ export const QuizWork = ({
               : `0${durationInSeconds}`}
           </Typography>
         </Stack>
-        {problems.map((problem) => (
-          <Box
-            bgcolor={`white`}
-            borderRadius={radius}
-            mt={2}
-            padding={`20px`}
-            key={problem.problemId}
-          >
-            {problem.problemParagraph ? (
-              <Typography m={`10px 0 20px`} fontSize={`17px`}>
-                {problem.problemParagraph}
-              </Typography>
-            ) : null}
-            <Typography fontWeight={`bold`} fontSize={`18px`}>
-              {problem.problemQuestion} <span style={{ color: `red` }}>*</span>
-            </Typography>
-            <List sx={{ borderRadius: radius, bgcolor: `#e5e5e5`, mt: `15px` }}>
-              <RadioGroup
-                name="possibilities"
-                aria-labelledby="possibilities-label"
-                value={
-                  checkedPossibilities[`problem_${problem.problemId}`] || ``
-                }
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setCheckedPossibilities((previous) => ({
-                    ...previous,
-                    [`problem_${problem.problemId}`]: +e.target.value,
-                  }));
-                  setConfirmSubmission(true);
-                }}
+        {isLoading
+          ? generateSkeletons(2)
+          : problems.map((problem) => (
+              <Box
+                bgcolor={`white`}
+                borderRadius={radius}
+                mt={2}
+                padding={`20px`}
+                key={problem.problemId}
               >
-                {problem.possibilities.map((element) => (
-                  <Possibility
-                    key={element.possId}
-                    sentence={element.possSentence}
-                    possId={element.possId}
-                    isChecked={
-                      checkedPossibilities[`problem_${problem.problemId}`] ==
-                      element.possId
+                {problem.problemParagraph ? (
+                  <Typography m={`10px 0 20px`} fontSize={`17px`}>
+                    {problem.problemParagraph}
+                  </Typography>
+                ) : null}
+                <Typography fontWeight={`bold`} fontSize={`18px`}>
+                  {problem.problemQuestion}{" "}
+                  <span style={{ color: `red` }}>*</span>
+                </Typography>
+                <List
+                  sx={{ borderRadius: radius, bgcolor: `#e5e5e5`, mt: `15px` }}
+                >
+                  <RadioGroup
+                    name="possibilities"
+                    aria-labelledby="possibilities-label"
+                    value={
+                      checkedPossibilities[`problem_${problem.problemId}`] || ``
                     }
-                    isDisabled={false}
-                  />
-                ))}
-              </RadioGroup>
-            </List>
-          </Box>
-        ))}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setCheckedPossibilities((previous) => ({
+                        ...previous,
+                        [`problem_${problem.problemId}`]: +e.target.value,
+                      }));
+                      setConfirmSubmission(true);
+                    }}
+                  >
+                    {problem.possibilities.map((element) => (
+                      <Possibility
+                        key={element.possId}
+                        sentence={element.possSentence}
+                        possId={element.possId}
+                        isChecked={
+                          checkedPossibilities[
+                            `problem_${problem.problemId}`
+                          ] == element.possId
+                        }
+                        isDisabled={false}
+                      />
+                    ))}
+                  </RadioGroup>
+                </List>
+              </Box>
+            ))}
         <Button
           sx={{
             color: `white`,

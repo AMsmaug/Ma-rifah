@@ -7,13 +7,13 @@ import "./signup.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import {
-  Box,
-  FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-} from "@mui/material";
+// import {
+//   Box,
+//   FormControl,
+//   FormControlLabel,
+//   Radio,
+//   RadioGroup,
+// } from "@mui/material";
 
 type prop = {
   isActive: boolean;
@@ -26,7 +26,7 @@ export const SignUp = ({ isActive }: prop) => {
   const [password, setPassword] = useState(``);
   const [passwordAgain, setPasswordAgain] = useState(``);
   const [grade, setGrade] = useState(1);
-  const [gender, setGender] = useState(`m`);
+  // const [gender, setGender] = useState(`m`);
   const [validation, setValidation] = useState({
     validUsername: true,
     validEmail: true,
@@ -48,7 +48,7 @@ export const SignUp = ({ isActive }: prop) => {
 
   const checkUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserName(e.target.value);
-    if (/\d+/.test(e.target.value)) {
+    if (/^\d/.test(e.target.value)) {
       setValidation((prev) => {
         return {
           ...prev,
@@ -167,20 +167,19 @@ export const SignUp = ({ isActive }: prop) => {
         setAuthMessage(`*Please enter the information correctly!`);
       } else {
         // post data
-        let path;
-        if (gender === `male`) {
-          const imgNumber = Math.floor(Math.random() * 5);
-          path = `../../../public/images/av${imgNumber}.png`;
-        } else {
-          const imgNumber = Math.round(Math.random() * (7 - 5) + 4);
-          path = `../../../public/images/av${imgNumber}.png`;
-        }
+        const path = null;
+        // if (gender === `male`) {
+        //   const imgNumber = Math.floor(Math.random() * 5);
+        //   path = `../../../public/images/av${imgNumber}.png`;
+        // } else {
+        //   const imgNumber = Math.round(Math.random() * (7 - 5) + 4);
+        //   path = `../../../public/images/av${imgNumber}.png`;
+        // }
         axios
           .post(`http://localhost/Ma-rifah/authentication/Add_account.php`, {
             userName,
             email,
             password,
-            gender,
             grade,
             path,
           })
@@ -193,7 +192,7 @@ export const SignUp = ({ isActive }: prop) => {
               // In case all the entered data are valid, the server will return the student id as a message.
               // The id will be used for all subsequent pages, so it's important to store it in a global place.
               Cookies.set(`id`, `${serverResponse.message}`);
-              navigate(`/CoursesProgress`);
+              navigate(`/Courses`);
             }
           });
       }
@@ -207,7 +206,9 @@ export const SignUp = ({ isActive }: prop) => {
     >
       <div className="inp">
         {!validation.validUsername && (
-          <span className="error">*A username must not contain numbers</span>
+          <span className="error">
+            *A username must not start with a number
+          </span>
         )}
         <PersonIcon className="icon" />
         <input
@@ -295,7 +296,7 @@ export const SignUp = ({ isActive }: prop) => {
       <div className="inp">
         {<span className="error signup-error">{authMessage}</span>}
       </div>
-      <label htmlFor="class" className="class gender">
+      {/* <label htmlFor="class" className="class gender">
         Choose your gender
       </label>
       <Box sx={{ display: `flex`, justifyContent: `center` }}>
@@ -322,7 +323,7 @@ export const SignUp = ({ isActive }: prop) => {
             />
           </RadioGroup>
         </FormControl>
-      </Box>
+      </Box> */}
       <button className="sign-button">Sign up</button>
 
       {/* bla */}

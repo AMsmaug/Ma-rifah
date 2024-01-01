@@ -1,0 +1,9 @@
+@keyframes rotateIcon {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.settings {
+  animation: rotateIcon 3s linear infinite;
+}

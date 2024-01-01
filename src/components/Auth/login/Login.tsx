@@ -83,7 +83,7 @@ export const Login = ({ isActive }: prop) => {
     setProfileUrl(picture);
     switch (source) {
       case `land`:
-        navigate(`/CoursesProgress`, { replace: true });
+        navigate(`/Courses`, { replace: true });
         break;
       case `QA`:
         navigate(`/Q&A`, { replace: true });
@@ -391,15 +391,7 @@ export const Login = ({ isActive }: prop) => {
               }
             />
           </Box>
-          <Snackbar
-            open={openError}
-            autoHideDuration={6000}
-            onClose={handleErrorClose}
-          >
-            <SnackbarAlert severity="error" onClose={handleErrorClose}>
-              Error during login!
-            </SnackbarAlert>
-          </Snackbar>
+
           <Dialog
             open={openClassDialog}
             onClose={() => setOpenClassDialog(false)}
@@ -474,6 +466,16 @@ export const Login = ({ isActive }: prop) => {
       ) : (
         <Navigate to={`/NoContentFound`} />
       )}
+      <Snackbar
+        anchorOrigin={{ vertical: `bottom`, horizontal: `right` }}
+        open={openError}
+        autoHideDuration={6000}
+        onClose={handleErrorClose}
+      >
+        <SnackbarAlert severity="error" onClose={handleErrorClose}>
+          Error during login!
+        </SnackbarAlert>
+      </Snackbar>
     </>
   );
 };

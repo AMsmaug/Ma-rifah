@@ -13,10 +13,11 @@ import {
 } from "@mui/material";
 import { Possibility } from "./Possibility";
 import { resultType } from "../../pages/Quiz";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { CoursesContext } from "../Courses progress/CoursesContext";
 
 export const QuizResult = ({
   results,
@@ -34,6 +35,8 @@ export const QuizResult = ({
   const currentPath = location.pathname;
   const arrayPath = currentPath.split(`/`);
   const courseName = arrayPath[arrayPath.length - 2];
+
+  const { setStudentGrade, setStudentInfo } = useContext(CoursesContext);
 
   const [openWarnDialaog, setOpenWarnDialaog] = useState(false);
 
@@ -223,9 +226,26 @@ export const QuizResult = ({
                 .post(`http://localhost/Ma-rifah/quiz/delete_record.php`, {
                   studentId: Cookies.get(`id`),
                   quizId,
+                  nbOfQuestions: results.length,
                 })
-                .then(() => {
+                .then((response) => {
+                  console.log(response.data);
                   setIsSubmitted(false);
+                  axios
+                    .post(
+                      `http://localhost/Ma-rifah/get_student_info.php`,
+                      Cookies.get(`id`)
+                    )
+                    .then((response) => {
+                      const studentInfo = response.data;
+                      setStudentInfo(studentInfo);
+                      let totalGrade = 0;
+                      if (Array.isArray(studentInfo))
+                        studentInfo.forEach((student) => {
+                          totalGrade += +student.studentGrade;
+                        });
+                      setStudentGrade(totalGrade);
+                    });
                 });
             }}
             sx={{

@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { Box, Toolbar, IconButton, Stack, Drawer } from "@mui/material";
 import ReorderIcon from "@mui/icons-material/Reorder";
@@ -7,7 +7,8 @@ import { CoursesContext } from "./CoursesContext";
 import { DrawerContent } from "../Material/DrawerContent";
 
 export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
-  const { studentInfo } = useContext(CoursesContext);
+  const { studentInfo, studentGrade, setStudentGrade } =
+    useContext(CoursesContext);
   const [openDrawer, setOpenDrawer] = useState(false);
   const navigate = useNavigate();
 
@@ -30,6 +31,12 @@ export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
       totalGrade += +student.studentGrade;
       totalMarks += +student.fullMark;
     });
+
+  useEffect(() => {
+    if (totalGrade !== 0) {
+      setStudentGrade(totalGrade);
+    }
+  });
   return (
     <Toolbar
       sx={{
@@ -102,13 +109,13 @@ export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
         alignItems="center"
       >
         <Box color="primary.main">
-          <span style={{ fontWeight: "bold" }}>Grade:</span> {totalGrade}/
-          {totalMarks}
+          <span style={{ fontWeight: "bold" }}>Grade:</span>{" "}
+          {Math.round(studentGrade)}/{totalMarks}
         </Box>
         <Box color="primary.main">
           <span style={{ fontWeight: "bold" }}>Average:</span>{" "}
-          {(totalMarks === 0 ? 0 : (totalGrade * 20) / totalMarks).toFixed(2)}/
-          {20}
+          {(totalMarks === 0 ? 0 : (studentGrade * 20) / totalMarks).toFixed(2)}
+          /{20}
         </Box>
       </Stack>
       <Box sx={{ cursor: "pointer" }} onClick={handleClick}>

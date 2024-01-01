@@ -1,3 +1,4 @@
+import "./courses.css";
 import {
   Box,
   Stack,
@@ -6,6 +7,9 @@ import {
   ListItem,
   Skeleton,
 } from "@mui/material";
+import SettingsIcon from "@mui/icons-material/Settings";
+import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
+import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 import { useContext, useEffect, useState } from "react";
 import Footer from "../Footer/Footer";
 import { useNavigate } from "react-router-dom";
@@ -143,9 +147,9 @@ const CoursesProgress = () => {
               },
             }}
           >
-            <ListItem>10% Assignments</ListItem>
-            <ListItem>30% Quizzes</ListItem>
-            <ListItem>60% Final Exam </ListItem>
+            <ListItem>15% Assignments</ListItem>
+            <ListItem>35% Quizzes</ListItem>
+            <ListItem>50% Final Exam </ListItem>
           </List>
         </Box>
         <Stack spacing={2} mt={3} mb={{ xs: 5, md: 8 }}>
@@ -195,7 +199,11 @@ const CourseProgress = ({
       alignItems="center"
       onClick={() => {
         setCurrentCourseId(courseId);
-        navigate(`${courseName}`);
+        navigate(`${courseName}`, {
+          state: {
+            fromPage: true,
+          },
+        });
       }}
       p={{
         xs: 1.5,
@@ -228,7 +236,6 @@ const CourseProgress = ({
         {courseName}
       </Box>
       <Box
-        fontWeight="bold"
         flexBasis={{
           xs: "90px",
           md: "150px",
@@ -241,10 +248,95 @@ const CourseProgress = ({
             : "success.main"
         }
         textAlign="center"
+        position={`relative`}
       >
-        {courseStatus
-          .replace(`_`, ` `)
-          .replace(courseStatus[0], courseStatus[0].toUpperCase())}
+        {courseStatus === "failed" ? (
+          <SentimentVeryDissatisfiedIcon
+            sx={{
+              position: `absolute`,
+              left: {
+                xs: -2,
+                sm: -2,
+                md: 10,
+                lg: 10,
+              },
+              top: {
+                xs: 2,
+                sm: 2,
+                md: 3,
+                lg: 3,
+              },
+              fontSize: {
+                xs: `18px`,
+                sm: `18px`,
+                md: `22px`,
+                lg: `24px`,
+              },
+            }}
+          />
+        ) : courseStatus === "in_progress" ? (
+          <SettingsIcon
+            sx={{
+              fontSize: {
+                xs: `16px`,
+                sm: `16px`,
+                md: `20px`,
+                lg: `20px`,
+              },
+              position: `absolute`,
+              left: {
+                xs: -20,
+                sm: -20,
+                md: -15,
+                lg: -15,
+              },
+              top: {
+                xs: 3,
+                sm: 3,
+                md: 5,
+                lg: 5,
+              },
+            }}
+            className="settings"
+          />
+        ) : (
+          <SentimentSatisfiedAltIcon
+            sx={{
+              position: `absolute`,
+              left: {
+                xs: -10,
+                sm: -10,
+                md: -2,
+                lg: -2,
+              },
+              top: {
+                xs: 2,
+                sm: 2,
+                md: 3,
+                lg: 3,
+              },
+              fontSize: {
+                xs: `18px`,
+                sm: `18px`,
+                md: `22px`,
+                lg: `24px`,
+              },
+            }}
+          />
+        )}
+        <Typography
+          fontWeight="bold"
+          fontSize={{
+            xs: `14px`,
+            sm: `14px`,
+            md: `20px`,
+            lg: `20px`,
+          }}
+        >
+          {courseStatus
+            .replace(`_`, ` `)
+            .replace(courseStatus[0], courseStatus[0].toUpperCase())}
+        </Typography>
       </Box>
       <Box fontWeight="bold">
         {studentGrade} / {fullMark}

@@ -35,10 +35,6 @@ export const SideBar = () => {
     setCurrentCourseId,
     currentChapterId,
     setCurrentChapterId,
-    lastCompletedAssignment,
-    setLastCompletedAssignment,
-    lastCompletedQuiz,
-    setLastCompletedQuiz,
   } = useContext(CoursesContext);
   const [chapters, setChapters] = useState<chaptersType[]>([]);
   const [openChapterDialaog, setOpenChapterDialaog] = useState(false);
@@ -49,6 +45,11 @@ export const SideBar = () => {
   const [clickedChapter, setClickedChapter] = useState(0);
   const [chapterIdFromQuiz, setChapterIdFromQuiz] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [lastCompletedAssignment, setLastCompletedAssignment] = useState(0);
+  const [lastCompletedQuiz, setLastCompletedQuiz] = useState(0);
+  const [examSubmission, setExamSubmission] = useState(false);
+
   const location = useLocation();
 
   const navigate = useNavigate();
@@ -86,23 +87,33 @@ export const SideBar = () => {
           console.log(chapterIds);
           axios
             .post(
-              `http://localhost/Ma-rifah/courses_content/check_assignment_work.php`,
+              `http://localhost/Ma-rifah/courses_content/check_assignments_submission.php`,
               { chapterIds, studentId: Cookies.get(`id`) }
             )
             .then((response: { data: number }) => {
               console.log(response.data);
-              // setLastCompletedAssignment(response.data);
-              setLastCompletedAssignment(3);
+              setLastCompletedAssignment(response.data);
+              // setLastCompletedAssignment(3);
             });
           axios
             .post(
-              `http://localhost/Ma-rifah/courses_content/check_quiz_work.php`,
+              `http://localhost/Ma-rifah/courses_content/check_quizzes_submission.php`,
               { chapterIds, studentId: Cookies.get(`id`) }
             )
             .then((response: { data: number }) => {
-              // setLastCompletedQuiz(response.data);
+              setLastCompletedQuiz(response.data);
               console.log(response.data);
-              setLastCompletedQuiz(3);
+              // setLastCompletedQuiz(3);
+            });
+          axios
+            .post(
+              `http://localhost/Ma-rifah/courses_content/check_exam_submission.php`,
+              { currentCourseId, studentId: Cookies.get(`id`) }
+            )
+            .then((response: { data: boolean }) => {
+              setExamSubmission(response.data);
+              console.log(response.data);
+              // setExamSubmission(true);
             });
           setIsLoading(false);
         });
@@ -134,7 +145,9 @@ export const SideBar = () => {
   };
 
   const goToFinalExam = () => {
-    navigate("/finalExam", { state: { courseId: currentCourseId } });
+    navigate("/finalExam", {
+      state: { courseId: currentCourseId, fromPage: true },
+    });
   };
 
   return (
@@ -231,11 +244,12 @@ export const SideBar = () => {
                           setOpenQuizWarnDialaog(true);
                         } else {
                           // the quiz is already done
-                          setCurrentChapterId(chapter.chapterId);
                           navigate(`Quiz`, {
                             state: {
                               number: chapter.chapterNumber,
                               name: chapter.chapterName,
+                              currentChapterId: chapter.chapterId,
+                              fromPage: true,
                             },
                           });
                         }
@@ -266,10 +280,16 @@ export const SideBar = () => {
           fontSize: `16px`,
         }}
         onClick={() => {
-          if (lastCompletedQuiz < chapters.length) {
-            setOpenExamDialaog(true);
+          if (examSubmission) {
+            navigate("/finalExam", {
+              state: { courseId: currentCourseId, fromPage: true },
+            });
           } else {
-            setOpenExamWarnDialaog(true);
+            if (lastCompletedQuiz < chapters.length) {
+              setOpenExamDialaog(true);
+            } else {
+              setOpenExamWarnDialaog(true);
+            }
           }
         }}
       >
@@ -403,18 +423,19 @@ export const SideBar = () => {
               // take me to the quiz
               setOpenQuizWarnDialaog(false);
               console.log(`chapterIdFromQuiz :`, chapterIdFromQuiz);
-              setCurrentChapterId(chapterIdFromQuiz);
-              const currenctChapter = chapters.filter(
+              const currentChapter = chapters.filter(
                 (chapter) => chapter.chapterId === chapterIdFromQuiz
               )[0];
               console.log(
                 `current chapter Id from sideBar: `,
-                currenctChapter.chapterId
+                currentChapter.chapterId
               );
               navigate(`Quiz`, {
                 state: {
-                  number: currenctChapter.chapterNumber,
-                  name: currenctChapter.chapterName,
+                  number: currentChapter.chapterNumber,
+                  name: currentChapter.chapterName,
+                  currentChapterId: currentChapter.chapterId,
+                  fromPage: true,
                 },
               });
             }}
