@@ -1,8 +1,10 @@
 import "./header.css";
 import { Menu, MenuItem } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { ActiveContext } from "../Auth/UserInfo";
 
 export const Header = () => {
   const [anchorEl, setanchorEl] = useState<null | HTMLElement>(null);
@@ -17,6 +19,8 @@ export const Header = () => {
   };
 
   const navigate = useNavigate();
+
+  const { setUserName, setProfileUrl } = useContext(ActiveContext);
 
   return (
     <>
@@ -60,6 +64,23 @@ export const Header = () => {
               className="option"
               onClick={() => {
                 if (Cookies.get(`id`)) {
+                  axios
+                    .post(
+                      "http://localhost/Ma-rifah/get_main_student_info.php",
+                      Cookies.get("id")
+                    )
+                    .then((response) => {
+                      const serverResponse: {
+                        status: string;
+                        message: {
+                          studentName: string;
+                          avatar: string;
+                        };
+                      } = response.data;
+                      console.log(serverResponse);
+                      setUserName(serverResponse.message.studentName);
+                      setProfileUrl(serverResponse.message.avatar);
+                    });
                   navigate("/Courses");
                 } else {
                   navigate("/login?src=land");
