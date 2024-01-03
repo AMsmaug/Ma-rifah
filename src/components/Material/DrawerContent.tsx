@@ -76,7 +76,7 @@ export const DrawerContent = () => {
           setCurrentChapterId(response.data[0].chapterId);
           axios
             .post(
-              `http://localhost/Ma-rifah/courses_content/check_assignment_work.php`,
+              `http://localhost/Ma-rifah/courses_content/check_assignments_submission.php`,
               response.data
             )
             .then((response: { data: number }) => {
@@ -84,7 +84,7 @@ export const DrawerContent = () => {
             });
           axios
             .post(
-              `http://localhost/Ma-rifah/courses_content/check_quiz_work.php`,
+              `http://localhost/Ma-rifah/courses_content/check_quizzes_submission.php`,
               response.data
             )
             .then((response: { data: number }) => {

@@ -17,6 +17,7 @@ import { DrawerContent } from "../Material/DrawerContent";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { ActiveContext } from "../Auth/UserInfo";
 import Profile from "../Profile/Profile";
+import axios from "axios";
 
 export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
   const { studentInfo, studentGrade, setStudentGrade } =
@@ -34,12 +35,31 @@ export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
     logout,
   } = useContext(ActiveContext);
 
+  if (profileUrl === "") {
+    axios
+      .post(
+        "http://localhost/Ma-rifah/get_main_student_info.php",
+        Cookies.get("id")
+      )
+      .then((response) => {
+        const serverResponse: {
+          status: string;
+          message: {
+            studentName: string;
+            avatar: string;
+          };
+        } = response.data;
+        console.log(serverResponse);
+        setUserName(serverResponse.message.studentName);
+        setProfileUrl(serverResponse.message.avatar);
+      });
+  }
+
   let totalGrade = 0;
   let totalMarks = 0;
 
   const handleLogoClick = () => {
-    Cookies.remove(`id`);
-    navigate("/login?src=land");
+    navigate("/");
   };
 
   const [isProfilePopUpOpen, setisProfilePopUpOpen] = useState<boolean>(false);

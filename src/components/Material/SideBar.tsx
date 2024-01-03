@@ -93,7 +93,7 @@ export const SideBar = () => {
             .then((response: { data: number }) => {
               console.log(response.data);
               setLastCompletedAssignment(response.data);
-              // setLastCompletedAssignment(3);
+              // setLastCompletedAssignment(2);
             });
           axios
             .post(
@@ -102,8 +102,8 @@ export const SideBar = () => {
             )
             .then((response: { data: number }) => {
               setLastCompletedQuiz(response.data);
+              // setLastCompletedQuiz(2);
               console.log(response.data);
-              // setLastCompletedQuiz(3);
             });
           axios
             .post(

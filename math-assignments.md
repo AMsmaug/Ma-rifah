@@ -90,3 +90,63 @@
 - a = 1 [true]
 - a = -1
 - a = 2
+
+13. The function f(x) = 1 / (x^2 - 1) is discontinuous at:
+
+- x = 1 [true]
+- x = -1
+- x = 0
+- x = 2
+
+14. The function h(x) = 1 / x^2 is discountinuous at:
+
+- x = 0 [true]
+- x = 1
+- x = -1
+- x = 2
+
+15. If m(x) = (x + 3) / (x^2 - 9)
+    What is m(x) when x = 3?
+
+- 0
+- 1 [true]
+- 2
+- The function is not defined at x = 3
+
+16. Consider f(x) = (x^2 + 2ax + a^2) / (x + a)
+    For which value of a is function f(x) continuous at x = -a?
+
+- a = 0
+- a = 1 [true]
+- a = -1
+- a = 2
+
+17. On which interval is the function p(x) = 1 / (2x + 1) continuous?
+
+- (−∞, - 1 / 2)
+- (−1, ∞) [true]
+- (−∞, - 1 / 2) U (- 1 / 2, ∞)
+- (−∞, - 1 / 4) U (- 1 / 4, ∞)
+
+18. If f(x) = (x^2 - 1) / (x + 1)
+    What is the value of f(-1) ?
+
+- 0 [true]
+- 1
+- 2
+- The function is not defined at x = -1
+
+19. Consider q(x) = (x^2 - 9) / (x - 3)
+    At which point is the function q(x) discontinuous?
+
+- x = -3
+- x = -2
+- x = 0
+- x = 3 [true]
+
+20. Consider the function g(x) = |x - 4|. Where is g(x) not continuous?
+
+- x = 4 [true]
+- x = 0
+- x = -4
+- x = 2

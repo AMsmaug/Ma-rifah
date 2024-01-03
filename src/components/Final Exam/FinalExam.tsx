@@ -125,8 +125,6 @@ const FinalExam = () => {
   const scrollContent = useRef<HTMLDivElement>(null!);
   const leftScrollButton = useRef<HTMLButtonElement>(null!);
   const rightScrollButton = useRef<HTMLButtonElement>(null!);
-  const audio1Ref = useRef<HTMLAudioElement>(null!);
-  const audio2Ref = useRef<HTMLAudioElement>(null!);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -402,6 +400,8 @@ const FinalExam = () => {
       const inputs = {
         examId: examInformation?.examId,
         problems: prblms,
+        studentId: Cookies.get("id"),
+        courseId,
       };
 
       try {
@@ -409,6 +409,7 @@ const FinalExam = () => {
           "http://localhost/Ma-rifah/submit_final_exam.php",
           inputs
         );
+        console.log(inputs);
         console.log(res);
         if (res.data.status === "success") {
           const grade = res.data.grade;
@@ -417,14 +418,6 @@ const FinalExam = () => {
           setgradePopUp(true);
           setfinalExamGrade(grade);
           setisFinalSubmitted(true);
-
-          setTimeout(() => {
-            if (grade >= 50) {
-              audio1Ref.current.play();
-            } else {
-              audio2Ref.current.play();
-            }
-          }, 200);
         } else {
           setsnackBarContent({
             status: "error",

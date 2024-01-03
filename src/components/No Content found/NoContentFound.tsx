@@ -16,11 +16,25 @@ const NoContentFound = (props: {
   } = props;
 
   const location = useLocation();
-  const { fromPage } = location.state;
+  if (location.state !== null) {
+    const { fromPage } = location.state;
 
-  if (fromPage) {
-    return <></>;
-  } else
+    if (fromPage) {
+      return <></>;
+    } else
+      return (
+        <Stack direction="row" justifyContent="center" alignItems="center">
+          <Box textAlign="center">
+            <SentimentVeryDissatisfiedIcon
+              sx={{ fontSize: iconFontSize, color: iconColor }}
+            />
+            <Box fontSize={textFontSize}>
+              Sorry, {seperateString ? <br /> : null} No content found!
+            </Box>
+          </Box>
+        </Stack>
+      );
+  } else {
     return (
       <Stack direction="row" justifyContent="center" alignItems="center">
         <Box textAlign="center">
@@ -33,6 +47,7 @@ const NoContentFound = (props: {
         </Box>
       </Stack>
     );
+  }
 };
 
 export default NoContentFound;
