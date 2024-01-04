@@ -12,6 +12,7 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { CoursesContext } from "../Courses progress/CoursesContext";
+import { useLocation } from "react-router-dom";
 
 type problemsType = {
   problemId: number;
@@ -45,9 +46,15 @@ export const QuizWork = ({
   const [durationInSeconds, setDurationInSeconds] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
+  const location = useLocation();
+
   const currentPath = location.pathname;
   const arrayPath = currentPath.split(`/`);
   const courseName = arrayPath[arrayPath.length - 2];
+
+  const { currentCourseId } = location.state;
+
+  console.log(`currentCourseId from quiz: ${currentCourseId}`);
 
   const handleSubmit = useCallback(
     (fromTimer: boolean) => {
@@ -81,6 +88,7 @@ export const QuizWork = ({
             quizId: quizData.quizId,
             problemIds,
             studentAnswers,
+            courseId: currentCourseId,
           })
           .then((response) => {
             console.log(response.data);
@@ -110,6 +118,7 @@ export const QuizWork = ({
       setIsSubmitted,
       setStudentGrade,
       setStudentInfo,
+      currentCourseId,
     ]
   );
 

@@ -51,7 +51,12 @@ export const MaterialContent = () => {
 
   const handleStartAssignment = () => {
     navigate(`Assignment`, {
-      state: { chapterTitle, currentChapterId, fromPage: true },
+      state: {
+        chapterTitle,
+        currentChapterId,
+        fromPage: true,
+        currentCourseId,
+      },
     });
   };
 

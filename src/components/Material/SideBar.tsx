@@ -250,6 +250,7 @@ export const SideBar = () => {
                               name: chapter.chapterName,
                               currentChapterId: chapter.chapterId,
                               fromPage: true,
+                              currentCourseId,
                             },
                           });
                         }
@@ -436,6 +437,7 @@ export const SideBar = () => {
                   name: currentChapter.chapterName,
                   currentChapterId: currentChapter.chapterId,
                   fromPage: true,
+                  currentCourseId,
                 },
               });
             }}

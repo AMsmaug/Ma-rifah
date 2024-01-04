@@ -40,6 +40,10 @@ export const AssignmentResult = ({
 
   // const [openWarnDialaog, setOpenWarnDialaog] = useState(false);
 
+  // const location = useLocation();
+
+  // const { currentCourseId } = location.state;
+
   const navigate = useNavigate();
 
   return (
@@ -229,6 +233,7 @@ export const AssignmentResult = ({
                     studentId: Cookies.get(`id`),
                     assignmentId,
                     nbOfQuestions: results.length,
+                    currentCourseId
                   }
                 )
                 .then((response) => {

@@ -13,6 +13,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { CoursesContext } from "../Courses progress/CoursesContext";
 import React from "react";
+import { useLocation } from "react-router-dom";
 
 type problemsType = {
   problemId: number;
@@ -34,6 +35,10 @@ export const AssignmentWork = ({
   const radius = `12px`;
 
   const { setStudentGrade, setStudentInfo } = useContext(CoursesContext);
+
+  const location = useLocation();
+
+  const { currentCourseId } = location.state;
 
   const [problems, setProblems] = useState([] as problemsType[]);
   const [checkedPossibilities, setCheckedPossibilities] = useState(
@@ -83,6 +88,7 @@ export const AssignmentWork = ({
           assignmentId: assignmentData.assignmentId,
           problemIds,
           studentAnswers,
+          courseId: currentCourseId,
         })
         .then(() => {
           setIsSubmitted(true);

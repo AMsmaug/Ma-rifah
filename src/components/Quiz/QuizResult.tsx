@@ -40,6 +40,10 @@ export const QuizResult = ({
 
   // const [openWarnDialaog, setOpenWarnDialaog] = useState(false);
 
+  // const location = useLocation();
+
+  // const { currentCourseId } = location.state;
+
   const navigate = useNavigate();
 
   return (
@@ -227,6 +231,7 @@ export const QuizResult = ({
                   studentId: Cookies.get(`id`),
                   quizId,
                   nbOfQuestions: results.length,
+                  currentCourseId
                 })
                 .then((response) => {
                   console.log(response.data);
