@@ -40,6 +40,7 @@ type ProfilePropsType = {
   closeProfilePopup: () => void;
   loggedInWithGoogle: boolean;
   logout: () => void;
+  handleSnackBarClick: () => void;
 };
 
 export const Profile = (props: ProfilePropsType) => {
@@ -52,6 +53,7 @@ export const Profile = (props: ProfilePropsType) => {
     setname,
     loggedInWithGoogle,
     logout,
+    handleSnackBarClick,
   } = props;
 
   const [Name, setName] = useState<string>("");
@@ -130,6 +132,7 @@ export const Profile = (props: ProfilePropsType) => {
       //   }
       // }
 
+      console.log(response);
       return response;
     } catch (error) {
       console.error("Error during file upload:", error);
@@ -266,7 +269,7 @@ export const Profile = (props: ProfilePropsType) => {
         console.error("Failed to edit profile picture.");
       }
     }
-
+    console.log(inputs);
     try {
       setloadingEditingProfile(true);
       const response = await axios.post(
@@ -285,6 +288,11 @@ export const Profile = (props: ProfilePropsType) => {
         } else {
           setname(Name);
           setprofilePicture(inputs.imageURL);
+          try {
+            handleSnackBarClick();
+          } catch (error) {
+            console.log(error);
+          }
           closeProfilePopup();
         }
       } else {

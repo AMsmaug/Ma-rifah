@@ -1,7 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import "./footer.css";
 import { Box, Stack, IconButton, Typography } from "@mui/material";
 
 const Footer = () => {
+  const navigate = useNavigate();
   const getCurrentYear = () => {
     const date = new Date();
     return date.getFullYear();
@@ -119,6 +121,9 @@ const Footer = () => {
               height: "100%",
               fontWeight: "700",
               color: "primary.main",
+            }}
+            onClick={() => {
+              navigate("/");
             }}
           >
             Ma'rifah

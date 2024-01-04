@@ -30,6 +30,7 @@ import "../components/Loading Indicator/loadingIndicator.css";
 import { ActiveContext } from "../components/Auth/UserInfo";
 
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Advertisment } from "../components/Material/Advertisment";
 
 export type chapterType = {
   chapterId: number;
@@ -201,6 +202,7 @@ export const QuestionsAndAnswers = () => {
   const {
     grade,
     setUserName,
+    profileUrl,
     setProfileUrl,
     setEmail,
     setgrade,
@@ -224,7 +226,7 @@ export const QuestionsAndAnswers = () => {
     const fetchCourses = async () => {
       const studentId = Cookies.get("id");
 
-      if (studentId !== undefined && grade === null) {
+      if ((studentId !== undefined && grade === null) || profileUrl === "") {
         try {
           const res = await axios.post(
             "http://localhost/Ma-rifah/get_main_student_info.php",
@@ -272,6 +274,7 @@ export const QuestionsAndAnswers = () => {
     setUserName,
     setgrade,
     setloggedInWithGoogle,
+    profileUrl,
   ]);
 
   // After the user changes the chapter. Questions of the new chapters will be fetched in this function.
@@ -842,6 +845,7 @@ export const QuestionsAndAnswers = () => {
           </Box>
         )}
       </Box>
+      <Advertisment formQuestionAndAnswers={true} />
     </Box>
   );
 };

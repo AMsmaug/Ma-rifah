@@ -33,8 +33,40 @@ const AcademicSupport = () => {
             color="white"
             height="175px"
             className="material"
-            sx={{ borderRadius: "6px" }}
             bgcolor="secondary.main"
+            sx={{
+              overflow: `hidden`,
+              borderRadius: "6px",
+              position: `relative`,
+              "&:before": {
+                content: `""`,
+                position: `absolute`,
+                left: 0,
+                bottom: 0,
+                height: 0,
+                width: `4px`,
+                transition: `1s`,
+                bgcolor: `#fca311`,
+              },
+              "&:after": {
+                content: `""`,
+                position: `absolute`,
+                right: 0,
+                top: 0,
+                height: 0,
+                width: `4px`,
+                transition: `1s`,
+                bgcolor: `#fca311`,
+              },
+              "&:hover": {
+                "&:before": {
+                  height: `100%`,
+                },
+                "&:after": {
+                  height: `100%`,
+                },
+              },
+            }}
           >
             <Box className="material-name">Mathematics</Box>
           </Grid>
@@ -50,7 +82,39 @@ const AcademicSupport = () => {
             color="white"
             height="175px"
             className="material"
-            sx={{ borderRadius: "6px" }}
+            sx={{
+              overflow: `hidden`,
+              borderRadius: "6px",
+              position: `relative`,
+              "&:before": {
+                content: `""`,
+                position: `absolute`,
+                left: 0,
+                bottom: 0,
+                height: 0,
+                width: `4px`,
+                transition: `1s`,
+                bgcolor: `#fca311`,
+              },
+              "&:after": {
+                content: `""`,
+                position: `absolute`,
+                right: 0,
+                top: 0,
+                height: 0,
+                width: `4px`,
+                transition: `0.3s`,
+                bgcolor: `#fca311`,
+              },
+              "&:hover": {
+                "&:before": {
+                  height: `100%`,
+                },
+                "&:after": {
+                  height: `100%`,
+                },
+              },
+            }}
             bgcolor="secondary.main"
           >
             <Box>Physics</Box>
@@ -67,7 +131,39 @@ const AcademicSupport = () => {
             color="white"
             height="175px"
             className="material"
-            sx={{ borderRadius: "6px" }}
+            sx={{
+              overflow: `hidden`,
+              borderRadius: "6px",
+              position: `relative`,
+              "&:before": {
+                content: `""`,
+                position: `absolute`,
+                left: 0,
+                bottom: 0,
+                height: 0,
+                width: `4px`,
+                transition: `1s`,
+                bgcolor: `#fca311`,
+              },
+              "&:after": {
+                content: `""`,
+                position: `absolute`,
+                right: 0,
+                top: 0,
+                height: 0,
+                width: `4px`,
+                transition: `0.3s`,
+                bgcolor: `#fca311`,
+              },
+              "&:hover": {
+                "&:before": {
+                  height: `100%`,
+                },
+                "&:after": {
+                  height: `100%`,
+                },
+              },
+            }}
             bgcolor="secondary.main"
           >
             <Box>Chemistery</Box>
@@ -84,7 +180,39 @@ const AcademicSupport = () => {
             color="white"
             height="175px"
             className="material"
-            sx={{ borderRadius: "6px" }}
+            sx={{
+              overflow: `hidden`,
+              borderRadius: "6px",
+              position: `relative`,
+              "&:before": {
+                content: `""`,
+                position: `absolute`,
+                left: 0,
+                bottom: 0,
+                height: 0,
+                width: `4px`,
+                transition: `1s`,
+                bgcolor: `#fca311`,
+              },
+              "&:after": {
+                content: `""`,
+                position: `absolute`,
+                right: 0,
+                top: 0,
+                height: 0,
+                width: `4px`,
+                transition: `0.3s`,
+                bgcolor: `#fca311`,
+              },
+              "&:hover": {
+                "&:before": {
+                  height: `100%`,
+                },
+                "&:after": {
+                  height: `100%`,
+                },
+              },
+            }}
             bgcolor="secondary.main"
           >
             <Box>Biology</Box>
@@ -101,7 +229,39 @@ const AcademicSupport = () => {
             color="white"
             height="175px"
             className="material"
-            sx={{ borderRadius: "6px" }}
+            sx={{
+              overflow: `hidden`,
+              borderRadius: "6px",
+              position: `relative`,
+              "&:before": {
+                content: `""`,
+                position: `absolute`,
+                left: 0,
+                bottom: 0,
+                height: 0,
+                width: `4px`,
+                transition: `1s`,
+                bgcolor: `#fca311`,
+              },
+              "&:after": {
+                content: `""`,
+                position: `absolute`,
+                right: 0,
+                top: 0,
+                height: 0,
+                width: `4px`,
+                transition: `0.3s`,
+                bgcolor: `#fca311`,
+              },
+              "&:hover": {
+                "&:before": {
+                  height: `100%`,
+                },
+                "&:after": {
+                  height: `100%`,
+                },
+              },
+            }}
             bgcolor="secondary.main"
           >
             <Box>Arabic</Box>
@@ -118,7 +278,39 @@ const AcademicSupport = () => {
             color="white"
             height="175px"
             className="material"
-            sx={{ borderRadius: "6px" }}
+            sx={{
+              overflow: `hidden`,
+              borderRadius: "6px",
+              position: `relative`,
+              "&:before": {
+                content: `""`,
+                position: `absolute`,
+                left: 0,
+                bottom: 0,
+                height: 0,
+                width: `4px`,
+                transition: `1s`,
+                bgcolor: `#fca311`,
+              },
+              "&:after": {
+                content: `""`,
+                position: `absolute`,
+                right: 0,
+                top: 0,
+                height: 0,
+                width: `4px`,
+                transition: `0.3s`,
+                bgcolor: `#fca311`,
+              },
+              "&:hover": {
+                "&:before": {
+                  height: `100%`,
+                },
+                "&:after": {
+                  height: `100%`,
+                },
+              },
+            }}
             bgcolor="secondary.main"
           >
             <Box>French</Box>
@@ -135,7 +327,39 @@ const AcademicSupport = () => {
             color="white"
             height="175px"
             className="material"
-            sx={{ borderRadius: "6px" }}
+            sx={{
+              overflow: `hidden`,
+              borderRadius: "6px",
+              position: `relative`,
+              "&:before": {
+                content: `""`,
+                position: `absolute`,
+                left: 0,
+                bottom: 0,
+                height: 0,
+                width: `4px`,
+                transition: `1s`,
+                bgcolor: `#fca311`,
+              },
+              "&:after": {
+                content: `""`,
+                position: `absolute`,
+                right: 0,
+                top: 0,
+                height: 0,
+                width: `4px`,
+                transition: `0.3s`,
+                bgcolor: `#fca311`,
+              },
+              "&:hover": {
+                "&:before": {
+                  height: `100%`,
+                },
+                "&:after": {
+                  height: `100%`,
+                },
+              },
+            }}
             bgcolor="secondary.main"
           >
             <Box>English</Box>
@@ -152,7 +376,39 @@ const AcademicSupport = () => {
             color="white"
             height="175px"
             className="material"
-            sx={{ borderRadius: "6px" }}
+            sx={{
+              overflow: `hidden`,
+              borderRadius: "6px",
+              position: `relative`,
+              "&:before": {
+                content: `""`,
+                position: `absolute`,
+                left: 0,
+                bottom: 0,
+                height: 0,
+                width: `4px`,
+                transition: `1s`,
+                bgcolor: `#fca311`,
+              },
+              "&:after": {
+                content: `""`,
+                position: `absolute`,
+                right: 0,
+                top: 0,
+                height: 0,
+                width: `4px`,
+                transition: `0.3s`,
+                bgcolor: `#fca311`,
+              },
+              "&:hover": {
+                "&:before": {
+                  height: `100%`,
+                },
+                "&:after": {
+                  height: `100%`,
+                },
+              },
+            }}
             bgcolor="secondary.main"
           >
             <Box>Social Studies</Box>
@@ -169,7 +425,39 @@ const AcademicSupport = () => {
             color="white"
             height="175px"
             className="material"
-            sx={{ borderRadius: "6px" }}
+            sx={{
+              overflow: `hidden`,
+              borderRadius: "6px",
+              position: `relative`,
+              "&:before": {
+                content: `""`,
+                position: `absolute`,
+                left: 0,
+                bottom: 0,
+                height: 0,
+                width: `4px`,
+                transition: `1s`,
+                bgcolor: `#fca311`,
+              },
+              "&:after": {
+                content: `""`,
+                position: `absolute`,
+                right: 0,
+                top: 0,
+                height: 0,
+                width: `4px`,
+                transition: `0.3s`,
+                bgcolor: `#fca311`,
+              },
+              "&:hover": {
+                "&:before": {
+                  height: `100%`,
+                },
+                "&:after": {
+                  height: `100%`,
+                },
+              },
+            }}
             bgcolor="secondary.main"
           >
             <Box>History</Box>
@@ -186,7 +474,39 @@ const AcademicSupport = () => {
             color="white"
             height="175px"
             className="material"
-            sx={{ borderRadius: "6px" }}
+            sx={{
+              overflow: `hidden`,
+              borderRadius: "6px",
+              position: `relative`,
+              "&:before": {
+                content: `""`,
+                position: `absolute`,
+                left: 0,
+                bottom: 0,
+                height: 0,
+                width: `4px`,
+                transition: `1s`,
+                bgcolor: `#fca311`,
+              },
+              "&:after": {
+                content: `""`,
+                position: `absolute`,
+                right: 0,
+                top: 0,
+                height: 0,
+                width: `4px`,
+                transition: `0.3s`,
+                bgcolor: `#fca311`,
+              },
+              "&:hover": {
+                "&:before": {
+                  height: `100%`,
+                },
+                "&:after": {
+                  height: `100%`,
+                },
+              },
+            }}
             bgcolor="secondary.main"
           >
             <Box>Geography</Box>
@@ -203,7 +523,39 @@ const AcademicSupport = () => {
             color="white"
             height="175px"
             className="material"
-            sx={{ borderRadius: "6px" }}
+            sx={{
+              overflow: `hidden`,
+              borderRadius: "6px",
+              position: `relative`,
+              "&:before": {
+                content: `""`,
+                position: `absolute`,
+                left: 0,
+                bottom: 0,
+                height: 0,
+                width: `4px`,
+                transition: `1s`,
+                bgcolor: `#fca311`,
+              },
+              "&:after": {
+                content: `""`,
+                position: `absolute`,
+                right: 0,
+                top: 0,
+                height: 0,
+                width: `4px`,
+                transition: `0.3s`,
+                bgcolor: `#fca311`,
+              },
+              "&:hover": {
+                "&:before": {
+                  height: `100%`,
+                },
+                "&:after": {
+                  height: `100%`,
+                },
+              },
+            }}
             bgcolor="secondary.main"
           >
             <Box>Cyvics</Box>
@@ -220,7 +572,39 @@ const AcademicSupport = () => {
             color="white"
             height="175px"
             className="material"
-            sx={{ borderRadius: "6px" }}
+            sx={{
+              overflow: `hidden`,
+              borderRadius: "6px",
+              position: `relative`,
+              "&:before": {
+                content: `""`,
+                position: `absolute`,
+                left: 0,
+                bottom: 0,
+                height: 0,
+                width: `4px`,
+                transition: `1s`,
+                bgcolor: `#fca311`,
+              },
+              "&:after": {
+                content: `""`,
+                position: `absolute`,
+                right: 0,
+                top: 0,
+                height: 0,
+                width: `4px`,
+                transition: `0.3s`,
+                bgcolor: `#fca311`,
+              },
+              "&:hover": {
+                "&:before": {
+                  height: `100%`,
+                },
+                "&:after": {
+                  height: `100%`,
+                },
+              },
+            }}
             bgcolor="secondary.main"
           >
             <Box>Economy</Box>

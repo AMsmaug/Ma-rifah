@@ -63,7 +63,16 @@ const CoursesProgress = () => {
 
   return (
     <Box className="materials">
-      <Box className="container" marginTop="50px" padding={`0 15px`}>
+      <Box
+        className="container"
+        marginTop={{
+          xs: "25px",
+          sm: "25px",
+          md: "50px",
+          lg: "50px",
+        }}
+        padding={`0 15px`}
+      >
         <Typography
           className="main-title"
           variant="h3"

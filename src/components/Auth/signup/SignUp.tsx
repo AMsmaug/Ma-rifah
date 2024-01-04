@@ -167,7 +167,7 @@ export const SignUp = ({ isActive }: prop) => {
         setAuthMessage(`*Please enter the information correctly!`);
       } else {
         // post data
-        const path = null;
+        const profilePicture = null;
         // if (gender === `male`) {
         //   const imgNumber = Math.floor(Math.random() * 5);
         //   path = `../../../public/images/av${imgNumber}.png`;
@@ -181,7 +181,7 @@ export const SignUp = ({ isActive }: prop) => {
             email,
             password,
             grade,
-            path,
+            profilePicture,
           })
           .then((response) => {
             const serverResponse: { code: number; message: string } =

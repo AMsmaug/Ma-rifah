@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { forwardRef, useContext, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import {
   Box,
@@ -9,9 +9,12 @@ import {
   Menu,
   MenuItem,
   Typography,
+  Alert,
 } from "@mui/material";
+import Snackbar from "@mui/material/Snackbar";
+import { AlertProps } from "@mui/material/Alert";
 import ReorderIcon from "@mui/icons-material/Reorder";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CoursesContext } from "./CoursesContext";
 import { DrawerContent } from "../Material/DrawerContent";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -30,30 +33,38 @@ export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
     setUserName,
     profileUrl,
     setProfileUrl,
+    setgrade,
     grade,
     loggedInWithGoogle,
     logout,
   } = useContext(ActiveContext);
 
-  if (profileUrl === "") {
-    axios
-      .post(
-        "http://localhost/Ma-rifah/get_main_student_info.php",
-        Cookies.get("id")
-      )
-      .then((response) => {
-        const serverResponse: {
-          status: string;
-          message: {
-            studentName: string;
-            avatar: string;
-          };
-        } = response.data;
-        console.log(serverResponse);
-        setUserName(serverResponse.message.studentName);
-        setProfileUrl(serverResponse.message.avatar);
-      });
-  }
+  console.log(profileUrl);
+
+  useEffect(() => {
+    if (profileUrl === "") {
+      console.log(`true from courses header`);
+      axios
+        .post(
+          "http://localhost/Ma-rifah/get_main_student_info.php",
+          Cookies.get("id")
+        )
+        .then((response) => {
+          const serverResponse: {
+            status: string;
+            message: {
+              studentName: string;
+              avatar: string;
+              class_id: number;
+            };
+          } = response.data;
+          console.log(serverResponse);
+          setUserName(serverResponse.message.studentName);
+          setProfileUrl(serverResponse.message.avatar);
+          setgrade(serverResponse.message.class_id);
+        });
+    }
+  }, [grade, profileUrl, setProfileUrl, setUserName, setgrade]);
 
   let totalGrade = 0;
   let totalMarks = 0;
@@ -100,6 +111,21 @@ export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
       setStudentGrade(totalGrade);
     }
   });
+
+  const [openSnackBar, setOpenSnackBar] = useState(false);
+
+  const handleSnackBarClick = () => {
+    setOpenSnackBar(true);
+  };
+
+  const handleSnackBarClose = (
+    _event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") return;
+    setOpenSnackBar(false);
+  };
+
   return (
     <Toolbar
       sx={{
@@ -118,6 +144,19 @@ export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
         },
       }}
     >
+      <Snackbar
+        open={openSnackBar}
+        autoHideDuration={6000}
+        onClose={handleSnackBarClose}
+        anchorOrigin={{
+          vertical: `bottom`,
+          horizontal: `right`,
+        }}
+      >
+        <SnackbarAlert severity="success" onClose={handleSnackBarClose}>
+          Profile edited successfully!
+        </SnackbarAlert>
+      </Snackbar>
       <Box
         fontSize={{ md: "25px", cursor: `pointer` }}
         fontWeight="bold"
@@ -181,118 +220,151 @@ export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
           /{20}
         </Box>
       </Stack>
-      <Box sx={{ cursor: "pointer" }}>
-        <>
-          <Menu
-            id="question-menu"
-            anchorEl={anchorEl}
-            open={open}
-            MenuListProps={{
-              "aria-labelledby": "question-menu-button",
-            }}
-            onClose={handleCloseMenu}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            sx={{
-              "& .MuiPaper-root": {
-                top: "58px !important",
+      <Stack direction={`row`} alignItems={`center`} position={`relative`}>
+        <Typography
+          fontSize={`18px`}
+          sx={{
+            cursor: `pointer`,
+            display: {
+              xs: `none`,
+              sm: `none`,
+              md: `block`,
+              lg: `block`,
+            },
+            position: `absolute`,
+            top: `50%`,
+            transform: `translateY(-50%)`,
+            left: {
+              lg: `-220px`,
+              md: `-100px`,
+            },
+            transition: `0.3s`,
+            "&:hover": {
+              color: `#fca311`,
+            },
+          }}
+        >
+          <Link
+            to={`/Q&A`}
+            style={{ color: `inherit`, textDecoration: `none` }}
+          >
+            Q&A
+          </Link>
+        </Typography>
+        <Box sx={{ cursor: "pointer" }}>
+          <>
+            <Menu
+              id="question-menu"
+              anchorEl={anchorEl}
+              open={open}
+              MenuListProps={{
+                "aria-labelledby": "question-menu-button",
+              }}
+              onClose={handleCloseMenu}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              sx={{
+                "& .MuiPaper-root": {
+                  top: "58px !important",
 
-                padding: "10px",
-              },
-              "& li": {
-                width: "300px",
-                transition: ".4s",
-              },
-              "& li:hover": {
-                backgroundColor: "#ccc",
-              },
-            }}
-          >
-            <MenuItem
-              sx={{
-                fontWeight: "bold",
-                cursor: "pointer",
-                display: "flex",
-                marginBottom: "5px",
-                borderRadius: "6px",
-              }}
-              onClick={openProfilePopup}
-            >
-              <Stack direction="row" alignItems="center">
-                <Box
-                  width="35px"
-                  height="35px"
-                  borderRadius="50%"
-                  overflow="hidden"
-                  marginRight="15px"
-                >
-                  <img
-                    style={{
-                      display: "block",
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                    src={profileUrl}
-                  />
-                </Box>
-                <Typography textTransform="capitalize" fontWeight="bold">
-                  {userName}
-                </Typography>
-              </Stack>
-            </MenuItem>
-            <MenuItem
-              onClick={handleLogout}
-              sx={{
-                fontWeight: "bold",
-                cursor: "pointer",
-                borderRadius: "6px",
+                  padding: "10px",
+                },
+                "& li": {
+                  width: "300px",
+                  transition: ".4s",
+                },
+                "& li:hover": {
+                  backgroundColor: "#ccc",
+                },
               }}
             >
-              <LogoutIcon
+              <MenuItem
                 sx={{
-                  width: "35px",
-                  marginRight: "15px",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  display: "flex",
+                  marginBottom: "5px",
+                  borderRadius: "6px",
                 }}
+                onClick={openProfilePopup}
+              >
+                <Stack direction="row" alignItems="center">
+                  <Box
+                    width="35px"
+                    height="35px"
+                    borderRadius="50%"
+                    overflow="hidden"
+                    marginRight="15px"
+                  >
+                    <img
+                      style={{
+                        display: "block",
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                      src={profileUrl}
+                    />
+                  </Box>
+                  <Typography textTransform="capitalize" fontWeight="bold">
+                    {userName}
+                  </Typography>
+                </Stack>
+              </MenuItem>
+              <MenuItem
+                onClick={handleLogout}
+                sx={{
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  borderRadius: "6px",
+                }}
+              >
+                <LogoutIcon
+                  sx={{
+                    width: "35px",
+                    marginRight: "15px",
+                  }}
+                />
+                Log out
+              </MenuItem>
+            </Menu>
+            {isProfilePopUpOpen && (
+              <Profile
+                profilePictureUrl={profileUrl}
+                setprofilePicture={setProfileUrl}
+                name={userName}
+                setname={setUserName}
+                grade={grade}
+                closeProfilePopup={() => setisProfilePopUpOpen(false)}
+                loggedInWithGoogle={loggedInWithGoogle}
+                logout={logout}
+                handleSnackBarClick={handleSnackBarClick}
               />
-              Log out
-            </MenuItem>
-          </Menu>
-          {isProfilePopUpOpen && (
-            <Profile
-              profilePictureUrl={profileUrl}
-              setprofilePicture={setProfileUrl}
-              name={userName}
-              setname={setUserName}
-              grade={grade}
-              closeProfilePopup={() => setisProfilePopUpOpen(false)}
-              loggedInWithGoogle={loggedInWithGoogle}
-              logout={logout}
-            />
-          )}
-          <Box
-            width={40}
-            height={40}
-            borderRadius="50%"
-            sx={{ backgroundColor: "var(--orange)", cursor: "pointer" }}
-            textAlign="center"
-            overflow="hidden"
-            onClick={handleOpenMenu}
-          >
-            <img
-              src={profileUrl}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              alt=""
-            />
-          </Box>
-        </>
-      </Box>
+            )}
+            <Box
+              width={40}
+              height={40}
+              borderRadius="50%"
+              sx={{ backgroundColor: "var(--orange)", cursor: "pointer" }}
+              textAlign="center"
+              overflow="hidden"
+              onClick={handleOpenMenu}
+            >
+              <img
+                src={profileUrl}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                alt=""
+              />
+            </Box>
+          </>
+        </Box>
+      </Stack>
       {showIcon ? (
         <Drawer
           anchor="left"
@@ -322,3 +394,9 @@ export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
     </Toolbar>
   );
 };
+
+const SnackbarAlert = forwardRef<HTMLDivElement, AlertProps>(
+  function SnackBarAlert(props, ref) {
+    return <Alert elevation={6} ref={ref} {...props} />;
+  }
+);

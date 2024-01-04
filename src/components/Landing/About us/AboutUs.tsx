@@ -91,6 +91,7 @@ const AboutUs = () => {
                 fontSize: "18px",
                 transition: "0.6s ease-in-out",
                 overflow: "hidden",
+                textAlign: `justify`,
               }}
               maxHeight={
                 isReadMore

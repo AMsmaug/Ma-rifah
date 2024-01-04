@@ -63,7 +63,7 @@ export const Login = ({ isActive }: prop) => {
     useContext(ActiveContext);
 
   // after verifying the authentication credentials, the following function will be invoked
-  const afterLogin = (id: number, name: string, picture: string) => {
+  const afterLogin = (id: number, name: string, picture?: string) => {
     if (isLoggedIn) {
       // In case he has checked the remember device box
       const expirationDate = new Date();
@@ -80,7 +80,9 @@ export const Login = ({ isActive }: prop) => {
       });
     }
     setUserName(name);
-    setProfileUrl(picture);
+    if (picture !== undefined) {
+      setProfileUrl(picture);
+    }
     switch (source) {
       case `land`:
         navigate(`/Courses`, { replace: true });
@@ -127,7 +129,7 @@ export const Login = ({ isActive }: prop) => {
       });
       const username = profile.getName();
       const email = profile.getEmail();
-      const picture = profile.getImageUrl();
+      // const picture = profile.getImageUrl();
       axios
         .post(
           `http://localhost/Ma-rifah/authentication/login_with_google/check_user_existence.php`,
@@ -139,7 +141,7 @@ export const Login = ({ isActive }: prop) => {
             id: number;
           } = response.data;
           if (responseData.status === `exists`) {
-            afterLogin(responseData.id, username, picture);
+            afterLogin(responseData.id, username);
           } else {
             axios
               .get(`http://localhost/Ma-rifah/get_grades.php`)
@@ -239,11 +241,7 @@ export const Login = ({ isActive }: prop) => {
               setAuthMessage(`*${responseData.message}`);
             } else {
               // The student account have been verified
-              afterLogin(
-                responseData.message.id,
-                responseData.message.name,
-                responseData.message.picture
-              );
+              afterLogin(responseData.message.id, responseData.message.name);
             }
           });
       }

@@ -1,7 +1,11 @@
 import { Box, Skeleton } from "@mui/material";
 import { useState, useEffect } from "react";
 
-export const Advertisment = () => {
+export const Advertisment = ({
+  formQuestionAndAnswers,
+}: {
+  formQuestionAndAnswers: boolean;
+}) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -10,16 +14,25 @@ export const Advertisment = () => {
 
   return (
     <Box
-      width={`400px`}
+      width={formQuestionAndAnswers ? `600px` : `400px`}
       padding={`30px`}
       height={`calc(100vh - 64px)`}
       position={"sticky"}
       top={`64px`}
-      display={{
-        xs: `none`,
-        md: `none`,
-        lg: `block`,
-      }}
+      bgcolor={formQuestionAndAnswers ? `white` : ``}
+      display={
+        formQuestionAndAnswers
+          ? {
+              xs: `none`,
+              md: `none`,
+              lg: `block`,
+            }
+          : {
+              xs: `none`,
+              md: `none`,
+              lg: `block`,
+            }
+      }
       // flexShrink={2}
     >
       {isLoading ? (

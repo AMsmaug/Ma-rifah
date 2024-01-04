@@ -4,27 +4,27 @@ import {
   RadioGroup,
   Stack,
   Typography,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
+  // Dialog,
+  // DialogActions,
+  // DialogContent,
+  // DialogContentText,
+  // DialogTitle,
   Button,
 } from "@mui/material";
 import { Possibility } from "./Possibility";
 import { resultType } from "../../pages/Quiz";
-import { useContext, useState } from "react";
+// import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import Cookies from "js-cookie";
-import { CoursesContext } from "../Courses progress/CoursesContext";
+// import axios from "axios";
+// import Cookies from "js-cookie";
+// import { CoursesContext } from "../Courses progress/CoursesContext";
 
 export const QuizResult = ({
   results,
   grade,
-  quizId,
-  setIsSubmitted,
-}: {
+}: // quizId,
+// setIsSubmitted,
+{
   results: resultType[];
   grade: number;
   quizId: number;
@@ -36,9 +36,9 @@ export const QuizResult = ({
   const arrayPath = currentPath.split(`/`);
   const courseName = arrayPath[arrayPath.length - 2];
 
-  const { setStudentGrade, setStudentInfo } = useContext(CoursesContext);
+  // const { setStudentGrade, setStudentInfo } = useContext(CoursesContext);
 
-  const [openWarnDialaog, setOpenWarnDialaog] = useState(false);
+  // const [openWarnDialaog, setOpenWarnDialaog] = useState(false);
 
   const navigate = useNavigate();
 
@@ -160,15 +160,15 @@ export const QuizResult = ({
         >
           Back
         </Button>
-        <Button
+        {/* <Button
           variant="contained"
           sx={{ color: `white` }}
           onClick={() => setOpenWarnDialaog(true)}
         >
           Restart
-        </Button>
+        </Button> */}
       </Stack>
-      <Dialog
+      {/* <Dialog
         open={openWarnDialaog}
         onClose={() => setOpenWarnDialaog(false)}
         aria-labelledby="dialog-title"
@@ -256,7 +256,7 @@ export const QuizResult = ({
             Yes
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 };

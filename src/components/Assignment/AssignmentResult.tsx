@@ -5,26 +5,26 @@ import {
   RadioGroup,
   Stack,
   Typography,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
+  // Dialog,
+  // DialogActions,
+  // DialogContent,
+  // DialogContentText,
+  // DialogTitle,
 } from "@mui/material";
 import { Possibility } from "./Possibility";
 import { resultType } from "../../pages/Assignment";
-import { useContext, useState } from "react";
+// import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import Cookies from "js-cookie";
-import { CoursesContext } from "../Courses progress/CoursesContext";
+// import axios from "axios";
+// import Cookies from "js-cookie";
+// import { CoursesContext } from "../Courses progress/CoursesContext";
 
 export const AssignmentResult = ({
   results,
   grade,
-  assignmentId,
-  setIsSubmitted,
-}: {
+}: // assignmentId,
+// setIsSubmitted,
+{
   results: resultType[];
   grade: number;
   assignmentId: number;
@@ -36,9 +36,9 @@ export const AssignmentResult = ({
   const arrayPath = currentPath.split(`/`);
   const courseName = arrayPath[arrayPath.length - 2];
 
-  const { setStudentGrade, setStudentInfo } = useContext(CoursesContext);
+  // const { setStudentGrade, setStudentInfo } = useContext(CoursesContext);
 
-  const [openWarnDialaog, setOpenWarnDialaog] = useState(false);
+  // const [openWarnDialaog, setOpenWarnDialaog] = useState(false);
 
   const navigate = useNavigate();
 
@@ -149,9 +149,9 @@ export const AssignmentResult = ({
       </Box>
       <Stack
         direction={`row`}
-        justifyContent={`space-between`}
         mt={`15px`}
         mb={10}
+        // justifyContent={`space-between`}
       >
         <Button
           variant="contained"
@@ -160,15 +160,15 @@ export const AssignmentResult = ({
         >
           Back
         </Button>
-        <Button
+        {/* <Button
           variant="contained"
           sx={{ color: `white` }}
-          onClick={() => setOpenWarnDialaog(true)}
+          onClick={() => setOpenWarn(true)}
         >
           Restart
-        </Button>
+        </Button> */}
       </Stack>
-      <Dialog
+      {/* <Dialog
         open={openWarnDialaog}
         onClose={() => setOpenWarnDialaog(false)}
         aria-labelledby="dialog-title"
@@ -260,7 +260,7 @@ export const AssignmentResult = ({
             Yes
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 };

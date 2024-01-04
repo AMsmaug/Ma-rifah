@@ -75,6 +75,7 @@ const QuestionsAnswers = () => {
               sx={{
                 transition: "0.6s ease-in-out",
                 overflow: "hidden",
+                textAlign: `justify`,
               }}
             >
               {readMoreParagraph()}

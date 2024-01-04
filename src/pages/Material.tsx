@@ -29,7 +29,7 @@ export const Material = () => {
       <Stack direction={`row`}>
         <SideBar />
         <MaterialContent />
-        <Advertisment />
+        <Advertisment formQuestionAndAnswers={false} />
       </Stack>
     </Box>
   );

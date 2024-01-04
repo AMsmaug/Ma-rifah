@@ -6,12 +6,15 @@ import {
   Stack,
   Menu,
   MenuItem,
+  Alert,
+  AlertProps,
+  Snackbar,
 } from "@mui/material";
 
 import LogoutIcon from "@mui/icons-material/Logout";
 
 import { useNavigate } from "react-router-dom";
-import { useState, useContext } from "react";
+import { useState, useContext, forwardRef } from "react";
 
 import { ActiveContext } from "../Auth/UserInfo";
 
@@ -85,6 +88,20 @@ export const QuestionsAndAnswersHeader = (
     setanchorEl(null);
   };
 
+  const [openSnackBar, setOpenSnackBar] = useState(false);
+
+  const handleSnackBarClick = () => {
+    setOpenSnackBar(true);
+  };
+
+  const handleSnackBarClose = (
+    _event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") return;
+    setOpenSnackBar(false);
+  };
+
   return (
     <Toolbar
       sx={{
@@ -98,6 +115,19 @@ export const QuestionsAndAnswersHeader = (
         justifyContent: "space-between",
       }}
     >
+      <Snackbar
+        open={openSnackBar}
+        autoHideDuration={6000}
+        onClose={handleSnackBarClose}
+        anchorOrigin={{
+          vertical: `bottom`,
+          horizontal: `right`,
+        }}
+      >
+        <SnackbarAlert severity="success" onClose={handleSnackBarClose}>
+          Profile edited successfully!
+        </SnackbarAlert>
+      </Snackbar>
       <IconButton
         color="inherit"
         aria-label="open drawer"
@@ -286,6 +316,7 @@ export const QuestionsAndAnswersHeader = (
           closeProfilePopup={() => setisProfilePopUpOpen(false)}
           loggedInWithGoogle={loggedInWithGoogle}
           logout={logout}
+          handleSnackBarClick={handleSnackBarClick}
         />
       )}
     </Toolbar>
@@ -320,3 +351,9 @@ const SearchBar = (props: { handleClick: () => void }) => {
     </Stack>
   );
 };
+
+const SnackbarAlert = forwardRef<HTMLDivElement, AlertProps>(
+  function SnackBarAlert(props, ref) {
+    return <Alert elevation={6} ref={ref} {...props} />;
+  }
+);
