@@ -167,7 +167,7 @@ export const SignUp = ({ isActive }: prop) => {
         setAuthMessage(`*Please enter the information correctly!`);
       } else {
         // post data
-        const profilePicture = null;
+        // const profilePicture = "null";
         // if (gender === `male`) {
         //   const imgNumber = Math.floor(Math.random() * 5);
         //   path = `../../../public/images/av${imgNumber}.png`;
@@ -181,7 +181,7 @@ export const SignUp = ({ isActive }: prop) => {
             email,
             password,
             grade,
-            profilePicture,
+            // profilePicture,
           })
           .then((response) => {
             const serverResponse: { code: number; message: string } =
@@ -191,6 +191,7 @@ export const SignUp = ({ isActive }: prop) => {
             } else {
               // In case all the entered data are valid, the server will return the student id as a message.
               // The id will be used for all subsequent pages, so it's important to store it in a global place.
+              console.log(serverResponse);
               Cookies.set(`id`, `${serverResponse.message}`);
               navigate(`/Courses`);
             }
