@@ -406,11 +406,27 @@ export const Question = (props: questionType) => {
             justifyContent="space-between"
           >
             <Stack spacing={2} direction="row" alignItems="center">
-              <Avatar
-                alt={studentName}
-                sx={{ width: 48, height: 48 }}
-                src={studentAvatar || ""}
-              />
+              {studentAvatar !== "null" ? (
+                <Avatar
+                  alt={studentName}
+                  sx={{ width: 48, height: 48 }}
+                  src={studentAvatar || ""}
+                />
+              ) : (
+                <Stack
+                  width="48px"
+                  height="48px"
+                  justifyContent="center"
+                  alignItems="center"
+                  fontSize={22}
+                  bgcolor="secondary.main"
+                  color="white"
+                  borderRadius={50}
+                >
+                  {studentName[0]?.toUpperCase()}
+                </Stack>
+              )}
+
               <Stack spacing={0} direction="column">
                 <Typography variant="h5" fontWeight="bold">
                   {studentName}

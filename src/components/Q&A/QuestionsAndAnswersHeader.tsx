@@ -137,9 +137,36 @@ export const QuestionsAndAnswersHeader = (
       >
         <MenuIcon />
       </IconButton>
-      <Typography variant="h6" noWrap component="div">
-        Ma-Rifah
-      </Typography>
+      <Stack direction="row" alignItems="center" gap={0}>
+        <Box
+          sx={{
+            height: "64px",
+            width: "85px",
+            overflow: "hidden",
+            objectFit: "contain",
+          }}
+        >
+          <img
+            src="../../../public/images/mmmlogo.png"
+            width="100%"
+            height="64px"
+          />
+        </Box>
+        <Typography
+          variant="h5"
+          sx={{
+            display: {
+              xs: "none",
+              sm: "block",
+            },
+            margin: "0",
+            color: "white",
+          }}
+        >
+          Ma'rifah
+        </Typography>
+      </Stack>
+
       <Box
         width={{
           sm: "230px",
@@ -257,15 +284,29 @@ export const QuestionsAndAnswersHeader = (
                   overflow="hidden"
                   marginRight="15px"
                 >
-                  <img
-                    style={{
-                      display: "block",
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                    src={profileUrl}
-                  />
+                  {profileUrl !== "null" ? (
+                    <img
+                      src={profileUrl}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                      alt=""
+                    />
+                  ) : (
+                    <Stack
+                      width="100%"
+                      height="100%"
+                      justifyContent="center"
+                      alignItems="center"
+                      fontSize={20}
+                      bgcolor="secondary.main"
+                      color="white"
+                    >
+                      {userName[0]?.toUpperCase()}
+                    </Stack>
+                  )}
                 </Box>
                 <Typography textTransform="capitalize" fontWeight="bold">
                   {userName}
@@ -298,11 +339,23 @@ export const QuestionsAndAnswersHeader = (
             overflow="hidden"
             onClick={handleOpenMenu}
           >
-            <img
-              src={profileUrl}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              alt=""
-            />
+            {profileUrl !== "null" ? (
+              <img
+                src={profileUrl}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                alt=""
+              />
+            ) : (
+              <Stack
+                width="100%"
+                height="100%"
+                justifyContent="center"
+                alignItems="center"
+                fontSize={20}
+              >
+                {userName[0]?.toUpperCase()}
+              </Stack>
+            )}
           </Box>
         </>
       )}
