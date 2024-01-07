@@ -406,7 +406,7 @@ export const Question = (props: questionType) => {
             justifyContent="space-between"
           >
             <Stack spacing={2} direction="row" alignItems="center">
-              {studentAvatar !== "null" ? (
+              {studentAvatar !== null ? (
                 <Avatar
                   alt={studentName}
                   sx={{ width: 48, height: 48 }}

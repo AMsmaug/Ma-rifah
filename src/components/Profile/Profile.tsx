@@ -402,7 +402,7 @@ export const Profile = (props: ProfilePropsType) => {
                 overflow: "hidden",
               }}
             >
-              {image !== "null" ? (
+              {image !== null ? (
                 <img
                   src={image !== null ? image : ""}
                   width="100%"
@@ -418,6 +418,7 @@ export const Profile = (props: ProfilePropsType) => {
                   alignItems="center"
                   fontSize={80}
                   bgcolor="primary.main"
+                  color="white"
                 >
                   {Name[0]?.toUpperCase()}
                 </Stack>

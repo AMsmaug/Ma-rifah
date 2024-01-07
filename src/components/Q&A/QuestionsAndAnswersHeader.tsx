@@ -72,6 +72,7 @@ export const QuestionsAndAnswersHeader = (
 
   const handleLogout = () => {
     Cookies.remove("id");
+    logout();
     navigate("/login?src=QA");
   };
 
@@ -284,7 +285,7 @@ export const QuestionsAndAnswersHeader = (
                   overflow="hidden"
                   marginRight="15px"
                 >
-                  {profileUrl !== "null" ? (
+                  {profileUrl !== null ? (
                     <img
                       src={profileUrl}
                       style={{
@@ -339,7 +340,7 @@ export const QuestionsAndAnswersHeader = (
             overflow="hidden"
             onClick={handleOpenMenu}
           >
-            {profileUrl !== "null" ? (
+            {profileUrl !== null ? (
               <img
                 src={profileUrl}
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}

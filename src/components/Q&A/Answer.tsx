@@ -365,7 +365,7 @@ export const Answer = (props: answerProps) => {
           justifyContent={{ xs: "center", md: "start" }}
           alignItems="center"
         >
-          {studentAvatar !== "null" ? (
+          {studentAvatar !== null ? (
             <Avatar
               alt={studentName || ""}
               sx={{ width: 48, height: 48 }}
@@ -468,6 +468,8 @@ const CustomTextInput = (props: {
 
   const handleClick = () => {
     onClose();
+    // in case the user updated his answer to be an empty field.
+    if (input === "") return;
     setloadingUpdatingAnswer(true);
     axios
       .post("http://localhost:/Ma-rifah/update_answer.php", {

@@ -95,6 +95,7 @@ export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
 
   const handleLogout = () => {
     Cookies.remove("id");
+    logout();
     navigate("/login?src=land");
   };
 
