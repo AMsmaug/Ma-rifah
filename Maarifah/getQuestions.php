@@ -6,7 +6,7 @@ if (isset($_POST['chapterId'])) {
     
     $chapterId = $_POST['chapterId'];
 
-    $query = "SELECT question.*,student_name
+    $query = "SELECT question.*,student_name,avatar
     FROM question 
     JOIN chapter ON question.chapter_id = chapter.chapter_id  
     JOIN student ON question.student_id = student.id 

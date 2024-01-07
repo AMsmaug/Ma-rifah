@@ -5,8 +5,7 @@ require 'connection.php';
 if (isset($_POST['questionId'])) {
     
     $questionId = $_POST['questionId'];
-
-    $query = "SELECT answer.*,student_name
+    $query = "SELECT answer.*,student_name,avatar
     FROM answer 
     JOIN question ON question.question_id = answer.question_id  
     JOIN student ON answer.student_id = student.id 
