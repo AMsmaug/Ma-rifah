@@ -138,7 +138,13 @@ export const QuestionsAndAnswersHeader = (
       >
         <MenuIcon />
       </IconButton>
-      <Stack direction="row" alignItems="center" gap={0}>
+      <Stack
+        direction="row"
+        alignItems="center"
+        gap={0}
+        sx={{ cursor: "pointer" }}
+        onClick={() => navigate("/")}
+      >
         <Box
           sx={{
             height: "64px",
@@ -162,6 +168,8 @@ export const QuestionsAndAnswersHeader = (
             },
             margin: "0",
             color: "white",
+            fontWeight: "bold",
+            fontSize: "25px",
           }}
         >
           Ma'rifah

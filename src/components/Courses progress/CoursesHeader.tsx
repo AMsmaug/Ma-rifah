@@ -37,12 +37,13 @@ export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
     grade,
     loggedInWithGoogle,
     logout,
+    setloggedInWithGoogle,
   } = useContext(ActiveContext);
 
-  console.log(profileUrl);
+  console.log(profileUrl, userName);
 
   useEffect(() => {
-    if (profileUrl === "") {
+    if (profileUrl === "" || profileUrl === null) {
       console.log(`true from courses header`);
       axios
         .post(
@@ -56,15 +57,24 @@ export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
               studentName: string;
               avatar: string;
               class_id: number;
+              loggedInWithGoogle: boolean;
             };
           } = response.data;
           console.log(serverResponse);
           setUserName(serverResponse.message.studentName);
           setProfileUrl(serverResponse.message.avatar);
           setgrade(serverResponse.message.class_id);
+          setloggedInWithGoogle(serverResponse.message.loggedInWithGoogle);
         });
     }
-  }, [grade, profileUrl, setProfileUrl, setUserName, setgrade]);
+  }, [
+    grade,
+    profileUrl,
+    setProfileUrl,
+    setUserName,
+    setgrade,
+    setloggedInWithGoogle,
+  ]);
 
   let totalGrade = 0;
   let totalMarks = 0;
@@ -99,7 +109,7 @@ export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
     navigate("/login?src=land");
   };
 
-  console.log(studentInfo);
+  // console.log(studentInfo);
 
   if (Array.isArray(studentInfo))
     studentInfo.forEach((student) => {
@@ -158,13 +168,43 @@ export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
           Profile edited successfully!
         </SnackbarAlert>
       </Snackbar>
-      <Box
-        fontSize={{ md: "25px", cursor: `pointer` }}
-        fontWeight="bold"
+      <Stack
+        direction="row"
+        alignItems="center"
+        gap={0}
+        sx={{ cursor: "pointer" }}
         onClick={handleLogoClick}
       >
-        Ma'Rifah
-      </Box>
+        <Box
+          sx={{
+            height: "64px",
+            width: "85px",
+            overflow: "hidden",
+            objectFit: "contain",
+          }}
+        >
+          <img
+            src="../../../public/images/mmmlogo.png"
+            width="100%"
+            height="64px"
+          />
+        </Box>
+        <Typography
+          variant="h5"
+          sx={{
+            display: {
+              xs: "none",
+              sm: "block",
+            },
+            margin: "0",
+            color: "white",
+            fontWeight: "bold",
+            fontSize: "25px",
+          }}
+        >
+          Ma'rifah
+        </Typography>
+      </Stack>
       <Box
         position={`absolute`}
         top={`50%`}
@@ -236,8 +276,8 @@ export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
             top: `50%`,
             transform: `translateY(-50%)`,
             left: {
-              lg: `-220px`,
-              md: `-100px`,
+              lg: `-180px`,
+              md: `-60px`,
             },
             transition: `0.3s`,
             "&:hover": {
@@ -250,6 +290,36 @@ export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
             style={{ color: `inherit`, textDecoration: `none` }}
           >
             Q&A
+          </Link>
+        </Typography>
+        <Typography
+          fontSize={`18px`}
+          sx={{
+            cursor: `pointer`,
+            display: {
+              xs: `none`,
+              sm: `none`,
+              md: `block`,
+              lg: `block`,
+            },
+            position: `absolute`,
+            top: `50%`,
+            transform: `translateY(-50%)`,
+            left: {
+              lg: `-250px`,
+              md: `-120px`,
+            },
+            transition: `0.3s`,
+            "&:hover": {
+              color: `#fca311`,
+            },
+          }}
+        >
+          <Link
+            to={`/FAQ`}
+            style={{ color: `inherit`, textDecoration: `none` }}
+          >
+            FAQ
           </Link>
         </Typography>
         <Box sx={{ cursor: "pointer" }}>
@@ -303,15 +373,29 @@ export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
                     overflow="hidden"
                     marginRight="15px"
                   >
-                    <img
-                      style={{
-                        display: "block",
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                      src={profileUrl}
-                    />
+                    {profileUrl !== null ? (
+                      <img
+                        src={profileUrl}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                        alt=""
+                      />
+                    ) : (
+                      <Stack
+                        width="100%"
+                        height="100%"
+                        justifyContent="center"
+                        alignItems="center"
+                        fontSize={20}
+                        bgcolor="secondary.main"
+                        color="white"
+                      >
+                        {userName[0]?.toUpperCase()}
+                      </Stack>
+                    )}
                   </Box>
                   <Typography textTransform="capitalize" fontWeight="bold">
                     {userName}
@@ -357,11 +441,23 @@ export const CoursesHeader = ({ showIcon }: { showIcon: boolean }) => {
               overflow="hidden"
               onClick={handleOpenMenu}
             >
-              <img
-                src={profileUrl}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                alt=""
-              />
+              {profileUrl !== null ? (
+                <img
+                  src={profileUrl}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  alt=""
+                />
+              ) : (
+                <Stack
+                  width="100%"
+                  height="100%"
+                  justifyContent="center"
+                  alignItems="center"
+                  fontSize={20}
+                >
+                  {userName[0]?.toUpperCase()}
+                </Stack>
+              )}
             </Box>
           </>
         </Box>
