@@ -365,7 +365,26 @@ export const Answer = (props: answerProps) => {
           justifyContent={{ xs: "center", md: "start" }}
           alignItems="center"
         >
-          <Avatar src={studentAvatar || ""} />
+          {studentAvatar !== null ? (
+            <Avatar
+              alt={studentName || ""}
+              sx={{ width: 48, height: 48 }}
+              src={studentAvatar || ""}
+            />
+          ) : (
+            <Stack
+              width="35px"
+              height="35px"
+              justifyContent="center"
+              alignItems="center"
+              fontSize={18}
+              bgcolor="secondary.main"
+              color="white"
+              borderRadius={50}
+            >
+              {studentName !== null && studentName[0]?.toUpperCase()}
+            </Stack>
+          )}
           <Stack direction="column">
             <Typography variant="h6" fontWeight="bold">
               {studentName}
@@ -449,6 +468,8 @@ const CustomTextInput = (props: {
 
   const handleClick = () => {
     onClose();
+    // in case the user updated his answer to be an empty field.
+    if (input === "") return;
     setloadingUpdatingAnswer(true);
     axios
       .post("http://localhost:/Ma-rifah/update_answer.php", {

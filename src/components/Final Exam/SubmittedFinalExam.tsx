@@ -333,7 +333,7 @@ const FinalHeader = (props: FinalHeaderType) => {
             {grade}
           </Typography>
         </Typography>
-        <LoadingButton
+        {/* <LoadingButton
           variant="contained"
           color="secondary"
           onClick={handleOpenConfirmRedoExam}
@@ -341,7 +341,7 @@ const FinalHeader = (props: FinalHeaderType) => {
           startIcon={<ReplayIcon />}
         >
           Redo The Exam
-        </LoadingButton>
+        </LoadingButton> */}
       </Stack>
     </Box>
   );

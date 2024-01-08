@@ -126,7 +126,11 @@ const Footer = () => {
               navigate("/");
             }}
           >
-            Ma'rifah
+            <img
+              src="../../../public/images/mmmlogo.png"
+              width="110px"
+              alt=""
+            />
           </IconButton>
         </Box>
       </Stack>

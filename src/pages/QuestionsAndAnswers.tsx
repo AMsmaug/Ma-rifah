@@ -241,7 +241,6 @@ export const QuestionsAndAnswers = () => {
             setEmail(email);
             setgrade(class_id);
             setloggedInWithGoogle(loggedInWithGoogle);
-            return;
           }
         } catch (error) {
           console.log(error);

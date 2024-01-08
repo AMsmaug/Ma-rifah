@@ -121,16 +121,16 @@ export const Profile = (props: ProfilePropsType) => {
         formData
       );
 
-      // if (profilePictureUrl) {
-      //   // Make an API call to remove the previous image
-      //   try {
-      //     axios.post("http://localhost:/Ma-rifah/remove_image.php", {
-      //       imageURL: profilePictureUrl,
-      //     });
-      //   } catch (error) {
-      //     console.error("Error removing previous image", error);
-      //   }
-      // }
+      if (profilePictureUrl) {
+        // Make an API call to remove the previous image
+        try {
+          axios.post("http://localhost:/Ma-rifah/remove_image.php", {
+            imageURL: profilePictureUrl,
+          });
+        } catch (error) {
+          console.error("Error removing previous image", error);
+        }
+      }
 
       console.log(response);
       return response;
@@ -402,13 +402,27 @@ export const Profile = (props: ProfilePropsType) => {
                 overflow: "hidden",
               }}
             >
-              <img
-                src={image !== null ? image : ""}
-                width="100%"
-                height="100%"
-                style={{ objectFit: "cover" }}
-                alt=""
-              />
+              {image !== null ? (
+                <img
+                  src={image !== null ? image : ""}
+                  width="100%"
+                  height="100%"
+                  style={{ objectFit: "cover" }}
+                  alt=""
+                />
+              ) : (
+                <Stack
+                  width="100%"
+                  height="100%"
+                  justifyContent="center"
+                  alignItems="center"
+                  fontSize={80}
+                  bgcolor="primary.main"
+                  color="white"
+                >
+                  {Name[0]?.toUpperCase()}
+                </Stack>
+              )}
             </Box>
           </Box>
           <Box className="icon-holder">
