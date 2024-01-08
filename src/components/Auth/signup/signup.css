@@ -65,6 +65,12 @@
 }
 
 .container form .inp .error.signup-error {
-  top: 155px;
+  top: 78px;
+  left: 0;
   font-size: 18px;
+  width: 200%;
+}
+
+.exeption {
+  width: 150%;
 }

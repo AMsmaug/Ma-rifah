@@ -237,7 +237,7 @@ export const SignUp = ({ isActive }: prop) => {
         {!validation.validPassword && password.length < 8 ? (
           <span className="error">*Too short password!</span>
         ) : !validation.validPassword ? (
-          <span className="error password-error">
+          <span className="error password-error exeption">
             *This field must contain numbers and capital letters
           </span>
         ) : (
