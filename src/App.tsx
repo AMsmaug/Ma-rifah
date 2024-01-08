@@ -70,8 +70,8 @@ function App() {
 
   return (
     <CoursesListContext.Provider value={{ courses, setCourses }}>
-      <UserInfo>
-        <CoursesData>
+      <CoursesData>
+        <UserInfo>
           <ThemeProvider theme={theme}>
             <Routes>
               <Route element={<Landing />} path="/" />
@@ -127,8 +127,8 @@ function App() {
               <Route element={<ProfilePage />} path="Profile" />
             </Routes>
           </ThemeProvider>
-        </CoursesData>
-      </UserInfo>
+        </UserInfo>
+      </CoursesData>
     </CoursesListContext.Provider>
   );
 }

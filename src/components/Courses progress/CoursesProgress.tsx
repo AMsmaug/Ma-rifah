@@ -19,7 +19,8 @@ import Cookies from "js-cookie";
 import { CoursesListContext } from "../../App";
 
 const CoursesProgress = () => {
-  const { studentInfo, setStudentInfo } = useContext(CoursesContext);
+  const { studentInfo, setStudentInfo, setStudentGrade } =
+    useContext(CoursesContext);
 
   const { setCourses } = useContext(CoursesListContext);
 
@@ -51,6 +52,7 @@ const CoursesProgress = () => {
     axios
       .post(`http://localhost/Ma-rifah/get_student_info.php`, Cookies.get(`id`))
       .then((response) => {
+        setStudentGrade(0);
         setStudentInfo(response.data);
         setCourses(
           response.data.map((element: studentInfoType) => {
@@ -59,7 +61,7 @@ const CoursesProgress = () => {
         );
         setIsLoading(false);
       });
-  }, [setCourses, setStudentInfo]);
+  }, [setCourses, setStudentGrade, setStudentInfo]);
 
   return (
     <Box className="materials">

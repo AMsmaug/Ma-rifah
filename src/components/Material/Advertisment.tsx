@@ -14,7 +14,7 @@ export const Advertisment = ({
 
   return (
     <Box
-      width={formQuestionAndAnswers ? `400px` : `400px`}
+      width={formQuestionAndAnswers ? `600px` : `350px`}
       padding={`30px`}
       height={`calc(100vh - 64px)`}
       position={"sticky"}
