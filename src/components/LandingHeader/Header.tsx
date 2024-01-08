@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ActiveContext } from "../Auth/UserInfo";
 
+import { Stack } from "@mui/material";
+
 export const Header = () => {
   const [anchorEl, setanchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -25,7 +27,9 @@ export const Header = () => {
   return (
     <>
       <div className="container header">
-        <span className="logo">Ma'rifah</span>
+        <Stack className="logo" onClick={() => navigate("/")}>
+          <img src="../../../public/images/mmmlogo.png" width="110px" alt="" />
+        </Stack>
         <ul className="navbar">
           <li>
             <a className="option" href="/#Home">
